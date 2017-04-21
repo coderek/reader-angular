@@ -6,3 +6,17 @@ ul {
 ul li {
   list-style: none;
 }
+ul li:hover {
+  cursor: pointer;
+}
+
+button {
+  margin: 0 10px;
+}
+
+li.selected {
+  background: #c2cff1;
+  margin-left: -10px;
+  margin-right: -10px;
+  padding-left: 10px;
+}

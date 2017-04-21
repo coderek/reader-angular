@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {FeedService} from "../services/feed.service";
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {ReaderService} from "../services/reader.service";
 
 @Component({
@@ -13,37 +12,31 @@ import {ReaderService} from "../services/reader.service";
     </ul>
     <ul>
       <li><b>Subscriptions</b></li>
-      <li *ngFor="let feed of feeds" (click)="openFeed(feed)">
+      <li *ngFor="let feed of feeds" (click)="onOpenFeed(feed)" [ngClass]="{'selected': feed==selectedFeed}">
         {{feed.title}}
       </li>
     </ul>
   `,
   styleUrls: ['./menu.component.css']
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent {
 
-  feeds = []
+  @Input()
+  feeds;
 
-  constructor(private reader: ReaderService, private feedService: FeedService) { }
+  @Input()
+  selectedFeed;
 
-  ngOnInit() {
-    // remove for production
-    this.feedService.fetch("http://codingnow.com/atom.xml").subscribe(feed=> {
-      this.feeds.push(feed);
-      this.openFeed(feed)
-    });
-  }
+  constructor(private reader: ReaderService) {}
 
-  openFeed(feed) {
+  onOpenFeed(feed) {
     this.reader.openFeed(feed);
   }
 
   openDialog() {
     let url = prompt("Feed url: ");
     if (url != null) {
-      this.feedService.fetch(url).subscribe(feed=> {
-        this.feeds.push(feed);
-      });
+      this.reader.addFeed(url);
     }
   }
 }

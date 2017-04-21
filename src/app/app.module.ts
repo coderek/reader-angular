@@ -9,17 +9,24 @@ import { ReadingPaneComponent } from './components/reading-pane.component';
 import {FeedService} from "./services/feed.service";
 import {StorageService} from "./services/storage.service";
 import {ReaderService} from "./services/reader.service";
+import {PrettyDatePipe} from "./pipes/pretty-date";
+import {MaterialModule} from "@angular/material";
+import {ToolsComponent} from "./components/tools.component";
+
 
 @NgModule({
   declarations: [
     ReaderComponent,
     MenuComponent,
-    ReadingPaneComponent
+    ReadingPaneComponent,
+    PrettyDatePipe,
+    ToolsComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    MaterialModule,
   ],
   providers: [FeedService, StorageService, ReaderService],
   bootstrap: [ReaderComponent]

@@ -3,33 +3,71 @@
   border-left: 1px solid #c2cff1;
   display: flex;
   flex-direction: column;
+  background: #ebeff9;
+
 }
 
 header {
-  height: 30px;
+  /*height: 30px;*/
+  flex: none;
   color: black;
   padding-left: 10px;
   line-height:30px;
   background-color: #c2cff1;
 }
 
-ul.entries li {
+feed-toolbar {
+  /*height: 40px;*/
+  flex: none;
+  margin: 10px;
+  border-bottom: #aaa;
+}
+
+time {
+}
+
+.entry.read .title {
+  color: #888888;
+}
+.entries .entry {
+  background-color: #fafafa;
   list-style: none;
   padding: 4px;
   border-top: 1px solid #d4d2d2;
   cursor: pointer;
+  line-height: 26px;
 }
 
-ul.entries {
-  margin: 10px 0;
+.entry:first-child, .entry:last-child {
+  border-radius: 4px;
+}
+.entries .entry:first-child {
+  border-top: none;
+}
+
+.entries .entry> article {
+  margin: 10px 20px;
+  padding: 10px;
+  background-color: #f1f5ff;
+  max-width: 600px;
+}
+
+.entry /deep/ img {
+  max-width: 100%;
+}
+
+.entries {
+  overflow-y: auto;
+  margin: 0 10px;
+  /*flex-grow: 1;*/
   padding: 0;
-  background-color: #fafafa;
+  flex: 1 0;
 }
 
 .reading-area {
-  flex: 1 0;
+  /*flex: 1 0;*/
+  /*flex-shrink: 0;*/
   padding: 10px 4px;
-  overflow-y: auto;
   background: #ebeff9;
 }
 
@@ -40,8 +78,3 @@ ul.entries {
   margin: 20px;
 }
 
-.entries li> article {
-  margin: 10px 20px;
-  padding: 10px;
-  background-color: #ebeff9;
-}
