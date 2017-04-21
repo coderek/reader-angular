@@ -1,0 +1,20 @@
+.body {
+  height: 100%;
+  width: 100%;
+  padding:4px;
+  display: flex;
+  flex-direction: row;
+}
+
+:host /deep/ {
+  font-family: 'Crimson Text', 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  color: #272727;
+}
+
+.body app-menu {
+  width: 300px;
+}
+
+.body app-reading-pane {
+  flex: 1 1;
+}

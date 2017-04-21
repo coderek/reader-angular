@@ -1,0 +1,47 @@
+:host {
+  background-color: white;
+  border-left: 1px solid #c2cff1;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  height: 30px;
+  color: black;
+  padding-left: 10px;
+  line-height:30px;
+  background-color: #c2cff1;
+}
+
+ul.entries li {
+  list-style: none;
+  padding: 4px;
+  border-top: 1px solid #d4d2d2;
+  cursor: pointer;
+}
+
+ul.entries {
+  margin: 10px 0;
+  padding: 0;
+  background-color: #fafafa;
+}
+
+.reading-area {
+  flex: 1 0;
+  padding: 10px 4px;
+  overflow-y: auto;
+  background: #ebeff9;
+}
+
+.empty {
+  background-color: white;
+  border: 1px solid #888;
+  height: 100px;
+  margin: 20px;
+}
+
+.entries li> article {
+  margin: 10px 20px;
+  padding: 10px;
+  background-color: #ebeff9;
+}
