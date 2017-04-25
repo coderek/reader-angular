@@ -1,17 +1,14 @@
-import {Component, Input} from '@angular/core';
+import {AfterViewInit, Component, Input} from '@angular/core';
 import {ReaderService} from "../services/reader.service";
+import {MdSnackBar} from "@angular/material";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-root',
-  template: `    
-    <header>
-      <h1>RSS reader</h1>
-    </header>
-    <div class="body">
-      <app-menu [feeds]="feeds" 
-                [selectedFeed]="selectedFeed"></app-menu>
-      <app-reading-pane [feed]="selectedFeed"></app-reading-pane>
-    </div>
+  template: `
+  <app-menu [feeds]="feeds" [title]="'RSS Reader'"
+            [selectedFeed]="selectedFeed"></app-menu>
+  <app-reading-pane [feed]="selectedFeed"></app-reading-pane>
   `,
   styleUrls: ['./reader.component.css']
 })
@@ -27,5 +24,9 @@ export class ReaderComponent {
     return this.reader.getFeeds();
   };
 
-  constructor(private reader:ReaderService) {}
+  constructor(private reader:ReaderService, private snackBar: MdSnackBar) {
+    reader.toastMessage.subscribe(msg=> {
+      this.snackBar.open(msg, '', {duration: 2000});
+    })
+  }
 }

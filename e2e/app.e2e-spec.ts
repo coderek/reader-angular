@@ -1,6 +1,6 @@
 import { ReaderPage } from './app.po';
 
-describe('reader App', () => {
+describe('reader_service App', () => {
   let page: ReaderPage;
 
   beforeEach(() => {

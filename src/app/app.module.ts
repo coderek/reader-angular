@@ -12,6 +12,7 @@ import {ReaderService} from "./services/reader.service";
 import {PrettyDatePipe} from "./pipes/pretty-date";
 import {MaterialModule} from "@angular/material";
 import {ToolsComponent} from "./components/tools.component";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import {ToolsComponent} from "./components/tools.component";
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpModule,
     MaterialModule,

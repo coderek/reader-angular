@@ -3,12 +3,15 @@ import {ReaderService} from "../services/reader.service";
 
 @Component({
   selector: 'app-menu',
-  template: `
+  template: `    
+    <header>
+      <h1>{{title}}</h1>
+    </header>
     <button (click)="openDialog()">Add a subscription</button>
     <ul>
       <li>Home</li>
       <li>All items</li>
-      <li>Shared items</li>
+      <li>Starred items</li>
     </ul>
     <ul>
       <li><b>Subscriptions</b></li>
@@ -20,6 +23,8 @@ import {ReaderService} from "../services/reader.service";
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent {
+  @Input()
+  title;
 
   @Input()
   feeds;
