@@ -64,6 +64,9 @@ export class StorageService {
                         entries.push(cursor.value);
                     cursor.continue();
                 } else {
+                    entries.sort((a,b)=> {
+                        return b.published - a.published;
+                    })
                     res(entries);
                 }
             };
@@ -89,6 +92,10 @@ export class StorageService {
             }
             if (entry.favorite === undefined) {
                 entry.favorite = false;
+            }
+            if (Array.isArray(entry.published)) {
+                let [y, m, d, h, M, s] = entry.published;
+                entry.published = new Date(y, m-1, d, h, M, s);
             }
             let req = transaction.objectStore('entries').put(entry);
             req.onsuccess = (ev)=>{
