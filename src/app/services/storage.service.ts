@@ -1,53 +1,143 @@
 import {Injectable} from '@angular/core';
-import Dexie from 'dexie';
 
 @Injectable()
 export class StorageService {
 
-    private db = new Dexie('__reader__');
+    db: IDBDatabase = null;
+    initPromise = null;
 
     constructor() {
-        this.db.version(3).stores({
-            feeds: '++id, &url, last_modified',
-            entries: '++id, &url, published, feed_url, star'
+        this.initPromise = this.initDb();
+    }
+
+    initDb() {
+        return new Promise((res, rej)=> {
+            let openrequest = indexedDB.open('__reader__', 1);
+            openrequest.onerror = (err)=> {
+                rej(err);
+            }
+            openrequest.onupgradeneeded = (ev)=>{
+                let db = openrequest.result;
+                db.onerror = console.error;
+                let feedsStore = db.createObjectStore('feeds', {keyPath: 'url'})
+                let entriesStore = db.createObjectStore('entries', {keyPath: 'url'})
+                entriesStore.createIndex('read', 'read');
+                entriesStore.createIndex('favorite', 'favorite');
+                entriesStore.createIndex('feed_url', 'feed_url');
+            };
+            openrequest.onsuccess = (ev)=>{
+                this.db = openrequest.result;
+                console.log("Indexed DB is open now.")
+                res();
+            }
+        });
+    }
+
+    async getFeeds() {
+        await this.initPromise;
+        let feeds = [];
+        return new Promise((res, rej)=> {
+            let req = this.db.transaction('feeds').objectStore('feeds').openCursor();
+            req.onsuccess = function () {
+                let cursor = req.result;
+                if (cursor) {
+                    console.log('pushing', cursor.value)
+                    feeds.push(cursor.value);
+                    cursor.continue();
+                } else {
+                    res(feeds);
+                }
+            };
+            req.onerror = rej;
         })
     }
 
-    getFeeds() {
-        return this.db.table("feeds").toArray();
-    }
-
-    getEntries(feed) {
-        return this.db.table('entries').where({'feed_url': feed.url}).toArray();
+    async getEntries(feed): Promise<any[]> {
+        await this.initPromise;
+        let entries = [];
+        return new Promise<any[]>((res, rej)=> {
+            let req = this.db.transaction('entries').objectStore('entries').openCursor();
+            req.onsuccess = (ev)=> {
+                let cursor = req.result;
+                if (cursor) {
+                    if (cursor.value.feed_url === feed.url)
+                        entries.push(cursor.value);
+                    cursor.continue();
+                } else {
+                    res(entries);
+                }
+            };
+        })
     }
 
     saveEntry(entry) {
-        return this.db.table('entries').put(entry);
-    }
-
-    saveFeed(feed) {
-        feed.entries.forEach(entry => {
-            entry.feed_url = feed.url;
-            if (!entry.read) {
-                entry.read = false;
-            }
-        });
-        return this.db.table('entries').bulkPut(feed.entries).then(() => {
-            delete feed.entries;
-            this.db.table('feeds').put(feed);
-        });
-    }
-
-    deleteFeed(feed) {
-        return this.db.transaction('rw', [this.db.table('feeds'), this.db.table('entries')], async() => {
-            await this.db.table("feeds").delete(feed.id);
-            await this.db.table("entries").where({feed_url: feed.url}).delete();
+        let transaction = this.db.transaction('entries', 'readwrite');
+        transaction.objectStore('entries').put(entry);
+        return new Promise((res, rej)=> {
+            transaction.oncomplete = res;
+            transaction.onerror = rej;
         })
     }
 
-    markAllRead(feed) {
-        return this.db.table('entries').where({feed_url: feed.url}).modify({read: true}).then(() => {
-            return this.getEntries(feed);
+    saveFeed(feed) {
+        let transaction = this.db.transaction(['entries', 'feeds'], 'readwrite');
+
+        feed.entries.forEach(entry => {
+            entry.feed_url = feed.url;
+            if (entry.read === undefined) {
+                entry.read = false;
+            }
+            if (entry.favorite === undefined) {
+                entry.favorite = false;
+            }
+            let req = transaction.objectStore('entries').put(entry);
+            req.onsuccess = (ev)=>{
+                console.log('Saved entry: ' + req.result);
+            }
+        });
+        delete feed.entries;
+        transaction.objectStore('feeds').put(feed);
+        return new Promise((res, rej)=> {
+            transaction.oncomplete = ()=> {
+                res();
+                console.log('Saved entries');
+            };
+            transaction.onerror = rej;
+        })
+    }
+
+    deleteFeed(feed) {
+        let transaction = this.db.transaction(['entries', 'feeds'], 'readwrite');
+        let store = transaction.objectStore('entries');
+        let idx = store.index('feed_url');
+        console.log('feed.url: ' + feed.url)
+        let req = idx.openKeyCursor();
+        req.onsuccess = (ev) => {
+            let cursor = req.result;
+            if (cursor) {
+                store.delete(cursor.primaryKey);
+                cursor.continue();
+            } else {
+
+            }
+        };
+        transaction.objectStore('feeds').delete(feed.url);
+        return new Promise((res, rej)=> {
+            transaction.oncomplete = ()=> {
+                res();
+                console.log('Deleted feed and its entries');
+            }
+        });
+    }
+
+    markAllRead(entries) {
+        let transaction = this.db.transaction('entries', 'readwrite');
+        for (let entry of entries) {
+            transaction.objectStore('entries').put(entry);
+        }
+        return new Promise((res, rej)=> {
+            transaction.oncomplete = res;
+            transaction.onerror = rej;
         })
     }
 }

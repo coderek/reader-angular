@@ -17,6 +17,9 @@ export class ToolsComponent {
   @Output()
   onPullFeed = new EventEmitter<void>();
 
+  @Output()
+  onReadEntries = new EventEmitter<void>();
+
   constructor(private reader: ReaderService) {}
 
   onDelete(feed) {
@@ -27,5 +30,7 @@ export class ToolsComponent {
   onPull(feed) {
     this.reader.pullFeed(feed).then(()=> this.onPullFeed.next())
   }
-  onReadAll(feed) {this.reader.markAllRead(feed);}
+  onReadAll() {
+      this.onReadEntries.next();
+  }
 }

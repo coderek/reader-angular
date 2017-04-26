@@ -8,7 +8,7 @@ import {List} from "immutable";
     template: `
     <header>{{feed == null ? "All feeds" : feed.title}}</header>
 
-    <feed-toolbar [feed]="feed" (onPullFeed)="onPullFeed()"></feed-toolbar>
+    <feed-toolbar [feed]="feed" (onPullFeed)="onPullFeed()" (onReadEntries)="onReadEntries()"></feed-toolbar>
 
     <div *ngIf="entries.size" class="entries">
       <div *ngFor="let entry of entries" class="entry" [ngClass]="{'read': entry.read}">
@@ -39,7 +39,7 @@ export class ReadingPaneComponent {
             this.entriesShown.clear();
             return List();
         } else {
-            return this.reader.getEntriesForFeed(this.feed);
+            return this.reader.getEntriesForFeed();
         }
     }
 
@@ -50,12 +50,16 @@ export class ReadingPaneComponent {
     onPullFeed() {
         this.changeDetector.detectChanges();
     }
+    onReadEntries() {
+        let entries = this.entries.toJS();
+        entries.forEach(e=>e.read=true);
+        this.reader.markAllRead(entries);
+    }
 
     toggleStarEntry(entry) {
         entry.star = !entry.star;
         this.reader.saveEntry(entry);
     }
-
     open(url) {
         window.open(url, '_blank');
     }

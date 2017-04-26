@@ -19,7 +19,11 @@ export class ReaderService {
     }
 
     updateFeeds() {
-        this.storage.getFeeds().then(feeds => this.feeds = List(feeds));
+        console.log('Getting feeds');
+        let promise = this.storage.getFeeds();
+        promise.then(feeds => {
+            this.feeds = List(feeds)
+        }).catch(console.error);
     }
 
     openFeed(feed) {
@@ -39,9 +43,7 @@ export class ReaderService {
 
     addFeed(url) {
         this.feedService.fetch(url).then(feed => {
-            this.storage.saveFeed(feed).then(() => {
-                this.updateFeeds();
-            });
+            this.storage.saveFeed(feed).then(()=> this.updateFeeds())
         });
     }
 
@@ -64,13 +66,13 @@ export class ReaderService {
         });
     }
 
-    getEntriesForFeed(feed) {
+    getEntriesForFeed() {
         return this.entriesForSelectedFeed;
     }
 
     saveEntry(entry) {
         this.storage.saveEntry(entry).then(async() => {
-            this.entriesForSelectedFeed = await this.getEntriesForFeed(this.selectedFeed);
+            this.entriesForSelectedFeed = List(await this.getEntriesForFeed());
         });
         this.toastMessage.next("Entry updated");
     }
@@ -86,8 +88,6 @@ export class ReaderService {
     }
 
     markAllRead(feed) {
-        this.storage.markAllRead(feed).then(entries => {
-            this.entriesForSelectedFeed = List(entries);
-        })
+        this.storage.markAllRead(feed);
     }
 }
