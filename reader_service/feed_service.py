@@ -5,7 +5,7 @@ import pytz
 
 from datetime import datetime
 from time import mktime, localtime
-
+from datetime import datetime, timedelta
 
 def test_feed(count):
     feed = """<?xml version="1.0" encoding="utf-8"?>
@@ -24,14 +24,14 @@ def test_feed(count):
        <title>Atom-Powered Robots Run Amok</title>
        <link href="http://example.org/2003/12/13/atom03{id}"/>
        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a{id}</id>
-       <updated>2003-12-13T18:30:02Z</updated>
+       <updated>{updated}</updated>
        <etag>{id}</etag>
        <summary>Some text.{id}</summary>
      </entry>
     """
     print("Counter: " + str(count))
     for i in range(count):
-        feed += entry.format(id=i)
+        feed += entry.format(id=i, updated=(datetime.now() - timedelta(days=100-i)))
     return feed + "</feed>"
 
 

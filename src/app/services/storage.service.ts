@@ -97,9 +97,13 @@ export class StorageService {
                 let [y, m, d, h, M, s] = entry.published;
                 entry.published = new Date(y, m-1, d, h, M, s);
             }
-            let req = transaction.objectStore('entries').put(entry);
+
+            let req = transaction.objectStore('entries').get(entry.url);
             req.onsuccess = (ev)=>{
-                console.log('Saved entry: ' + req.result);
+                if (!req.result) {
+                    console.log('Saved entry: ' + req.result);
+                    transaction.objectStore('entries').add(entry);
+                }
             }
         });
         delete feed.entries;
@@ -118,7 +122,7 @@ export class StorageService {
         let store = transaction.objectStore('entries');
         let idx = store.index('feed_url');
         console.log('feed.url: ' + feed.url)
-        let req = idx.openKeyCursor();
+        let req = idx.openKeyCursor(IDBKeyRange.only(feed.url));
         req.onsuccess = (ev) => {
             let cursor = req.result;
             if (cursor) {

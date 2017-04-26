@@ -49,15 +49,7 @@ export class ReaderService {
 
     pullFeed(feed) {
         return this.feedService.fetch(feed.url).then(async updatedFeed => {
-            let entries = await this.storage.getEntries(feed);
-            for (let entry of updatedFeed.entries) {
-                let existing = entries.find(e=>e.url==entry.url);
-                if (existing) {
-                    entry.id = existing.id;
-                }
-            }
-            updatedFeed.id = feed.id;
-            console.log(updatedFeed)
+            updatedFeed.last_pull = new Date();
             await this.storage.saveFeed(updatedFeed);
             if (this.selectedFeed == feed) {
                 console.log("this is selected");
