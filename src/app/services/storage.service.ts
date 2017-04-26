@@ -43,7 +43,6 @@ export class StorageService {
             req.onsuccess = function () {
                 let cursor = req.result;
                 if (cursor) {
-                    console.log('pushing', cursor.value)
                     feeds.push(cursor.value);
                     cursor.continue();
                 } else {
@@ -66,7 +65,7 @@ export class StorageService {
                         entries.push(cursor.value);
                     cursor.continue();
                 } else {
-                    entries.sort((a, b) => {
+                    entries = entries.sort((a, b) => {
                         return b.published - a.published;
                     })
                     res(entries);
@@ -140,6 +139,16 @@ export class StorageService {
         return new Promise((res, rej) => {
             transaction.oncomplete = () => {
                 res(count);
+            }
+        });
+    }
+
+    async getFeed(url) {
+        await this.initPromise;
+        return new Promise((res, rej)=> {
+            let req = this.db.transaction('feeds').objectStore('feeds').get(url);
+            req.onsuccess = (ev)=> {
+                res(req.result);
             }
         });
     }

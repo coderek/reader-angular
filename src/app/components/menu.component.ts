@@ -5,7 +5,7 @@ import {ReaderService} from "../services/reader.service";
     selector: 'app-menu',
     template: `    
     <header>
-      <h1>{{title}}</h1>
+      <h1 routerLink="/">{{title}}</h1>
     </header>
     <button (click)="openDialog()">Add a subscription</button>
     <ul>
@@ -15,8 +15,8 @@ import {ReaderService} from "../services/reader.service";
     </ul>
     <ul>
       <li><b>Subscriptions</b></li>
-      <li *ngFor="let feed of feeds" (click)="onOpenFeed(feed)" [ngClass]="{'selected': feed==selectedFeed}">
-        {{feed.title}}
+      <li *ngFor="let feed of feeds" (click)="onOpenFeed(feed)">
+        <div routerLink="/feeds/{{feed.url | hash}}" routerLinkActive="selected">{{feed.title}}</div>
       </li>
     </ul>
   `,

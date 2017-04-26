@@ -34,8 +34,9 @@ export class ReaderService {
         })
     }
 
-    getSelectedFeed() {
-        return this.selectedFeed;
+    getFeed(url) : Promise<Feed> {
+        if (url == null) return Promise.resolve(null);
+        return this.storage.getFeed(url)
     }
 
     getFeeds() {
@@ -69,15 +70,13 @@ export class ReaderService {
         });
     }
 
-    getEntriesForFeed() {
-        return this.entriesForSelectedFeed;
+    getEntriesForFeed(feed) {
+        return this.storage.getEntries(feed);
     }
 
     saveEntry(entry) {
-        this.storage.saveEntry(entry).then(async() => {
-            this.entriesForSelectedFeed = List(await this.getEntriesForFeed());
-        });
         this.toastMessage.next("Entry updated");
+        return this.storage.saveEntry(entry);
     }
 
     deleteFeed(feed) {

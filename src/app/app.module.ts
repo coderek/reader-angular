@@ -12,15 +12,22 @@ import {PrettyDatePipe} from "./pipes/pretty-date";
 import {MaterialModule} from "@angular/material";
 import {ToolsComponent} from "./components/tools.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {RouterModule, PreloadAllModules} from "@angular/router";
+import {AppComponent} from "./components/app.component";
+import {HashPipe} from "./pipes/hash";
+import {ArticleComponent} from "./components/article.component";
 
 
 @NgModule({
     declarations: [
+        AppComponent,
         ReaderComponent,
         MenuComponent,
         ReadingPaneComponent,
         PrettyDatePipe,
+        HashPipe,
         ToolsComponent,
+        ArticleComponent,
     ],
     imports: [
         BrowserModule,
@@ -28,9 +35,31 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         FormsModule,
         HttpModule,
         MaterialModule,
+        RouterModule.forRoot([
+            {
+                path: 'feeds/:id',
+                component: ReaderComponent,
+            },
+            {
+                path: 'feeds/:id/:eid',
+                component: ReaderComponent,
+            },
+            {
+                path: 'feeds',
+                component: ReaderComponent,
+            },
+            {
+                path: '',
+                redirectTo: '/feeds',
+                pathMatch: 'full'
+            },
+        ],
+
+        { preloadingStrategy: PreloadAllModules }
+        )
     ],
     providers: [FeedService, StorageService, ReaderService],
-    bootstrap: [ReaderComponent]
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }

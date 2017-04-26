@@ -26,7 +26,7 @@ button {
     margin: 0 10px;
 }
 
-li.selected {
+.selected {
     background: #c2cff1;
     margin-left: -10px;
     margin-right: -10px;

@@ -1,8 +1,8 @@
-import {Component, Input, ChangeDetectorRef, OnChanges} from "@angular/core";
+import {Component, Input, ChangeDetectorRef, OnChanges, SimpleChanges} from "@angular/core";
 import {ReaderService} from "../services/reader.service";
 import {Feed} from "../models/feed";
 import {Entry} from "../models/entry";
-import {List} from "immutable";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-reading-pane',
@@ -11,7 +11,7 @@ import {List} from "immutable";
 
     <feed-toolbar [feed]="feed" [newItemsCount]="newItemsCount" (onPullFeed)="onPullFeed()" (onReadEntries)="onReadEntries()"></feed-toolbar>
 
-    <div *ngIf="entries.size" class="entries">
+    <div *ngIf="entries.length" class="entries">
       <div *ngFor="let entry of entries" class="entry" [ngClass]="{'read': entry.read}">
         <div class="title">
           <md-icon (click)="toggleStarEntry(entry)">
@@ -21,10 +21,10 @@ import {List} from "immutable";
           <time>{{entry.published | prettyDate }}</time>
           <md-icon (click)="open(entry.url)">link</md-icon>
         </div>
-        <article *ngIf="shouldShowEntry(entry)" [innerHTML]="getContent(entry)"></article>
+        <article *ngIf="entryShown === entry" [innerHTML]="getContent(entry)"></article>
       </div>
     </div>
-    <div class="empty" *ngIf="entries.size===0">
+    <div class="empty" *ngIf="entries.length===0">
       No feed is selected
     </div>
   `,
@@ -32,14 +32,22 @@ import {List} from "immutable";
 })
 export class ReadingPaneComponent implements OnChanges {
 
-    @Input() feed: Feed;
+    @Input()
+    feed: Feed = null;
 
-    @Input() entries: List<Entry>;
+    @Input()
+    entries: Entry[] = [];
 
     newItemsCount = 0;
-    entriesShown = new Set();
 
-    constructor(private reader: ReaderService, private changeDetector: ChangeDetectorRef) {
+    @Input()
+    entryShown: Entry = null;
+
+    constructor(
+        private router: Router,
+        private reader: ReaderService,
+        private changeDetector: ChangeDetectorRef) {
+        this.updateNewItemsCount();
     }
 
     onPullFeed() {
@@ -52,15 +60,12 @@ export class ReadingPaneComponent implements OnChanges {
     }
 
     onReadEntries() {
-        let entries = this.entries.toJS();
+        let entries = this.entries;
         entries.forEach(e => e.read = true);
         this.reader.markAllRead(entries);
     }
 
-    ngOnChanges() {
-        setTimeout(()=> {
-            this.updateNewItemsCount();
-        }, 0)
+    ngOnChanges(changes: SimpleChanges) {
     }
 
     toggleStarEntry(entry) {
@@ -80,21 +85,16 @@ export class ReadingPaneComponent implements OnChanges {
         }
     }
 
-    shouldShowEntry(entry) {
-        return this.entriesShown.has(entry);
-    }
-
     toggleEntry(entry) {
         if (!entry.read) {
             entry.read = true;
-            this.reader.saveEntry(entry);
+            this.reader.saveEntry(entry).then(()=>this.updateNewItemsCount());
         }
 
-        if (this.entriesShown.has(entry)) {
-            this.entriesShown.delete(entry);
+        if (this.entryShown === entry) {
+            this.router.navigate(['/feeds', encodeURIComponent(this.feed.url)]);
         } else {
-            this.entriesShown.add(entry);
+            this.router.navigate(['/feeds', encodeURIComponent(this.feed.url), encodeURIComponent(entry.url)]);
         }
     }
-
 }
