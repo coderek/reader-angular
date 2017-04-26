@@ -1,8 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {StorageService} from "./storage.service";
 import {List} from "immutable";
 import {FeedService} from "./feed.service";
-import {Observable, Subject} from "rxjs";
+import {Subject} from "rxjs";
+import {Feed} from "../models/feed";
 
 @Injectable()
 export class ReaderService {
@@ -41,15 +42,25 @@ export class ReaderService {
         return this.feeds;
     }
 
+    getNewItemsCount(feed: Feed): Promise<number> {
+        /**
+         * new item is defined as unread entry is this less or equal than 10 days old than last pull date
+         */
+        if (feed == null || feed.last_pull == null) return Promise.resolve(0);
+
+        let lastPullDate: number = feed.last_pull.valueOf();
+        let boundary = lastPullDate - 10 * 3600 * 24 * 10;
+        return this.storage.countNewerEntries(feed, boundary);
+    }
+
     addFeed(url) {
         this.feedService.fetch(url).then(feed => {
-            this.storage.saveFeed(feed).then(()=> this.updateFeeds())
+            this.storage.saveFeed(feed).then(() => this.updateFeeds())
         });
     }
 
     pullFeed(feed) {
         return this.feedService.fetch(feed.url).then(async updatedFeed => {
-            updatedFeed.last_pull = new Date();
             await this.storage.saveFeed(updatedFeed);
             if (this.selectedFeed == feed) {
                 console.log("this is selected");

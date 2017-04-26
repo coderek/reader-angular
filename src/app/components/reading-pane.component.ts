@@ -1,6 +1,7 @@
-import {Component, Input, OnChanges, OnInit, ChangeDetectorRef} from '@angular/core';
-import {StorageService} from "../services/storage.service";
+import {Component, Input, ChangeDetectorRef, OnChanges} from "@angular/core";
 import {ReaderService} from "../services/reader.service";
+import {Feed} from "../models/feed";
+import {Entry} from "../models/entry";
 import {List} from "immutable";
 
 @Component({
@@ -8,7 +9,7 @@ import {List} from "immutable";
     template: `
     <header>{{feed == null ? "All feeds" : feed.title}}</header>
 
-    <feed-toolbar [feed]="feed" (onPullFeed)="onPullFeed()" (onReadEntries)="onReadEntries()"></feed-toolbar>
+    <feed-toolbar [feed]="feed" [newItemsCount]="newItemsCount" (onPullFeed)="onPullFeed()" (onReadEntries)="onReadEntries()"></feed-toolbar>
 
     <div *ngIf="entries.size" class="entries">
       <div *ngFor="let entry of entries" class="entry" [ngClass]="{'read': entry.read}">
@@ -29,37 +30,44 @@ import {List} from "immutable";
   `,
     styleUrls: ['./reading-pane.component.css']
 })
-export class ReadingPaneComponent {
+export class ReadingPaneComponent implements OnChanges {
 
-    @Input() feed;
+    @Input() feed: Feed;
 
-    @Input()
-    get entries() {
-        if (this.feed == null) {
-            this.entriesShown.clear();
-            return List();
-        } else {
-            return this.reader.getEntriesForFeed();
-        }
-    }
+    @Input() entries: List<Entry>;
 
+    newItemsCount = 0;
     entriesShown = new Set();
 
-    constructor(private reader: ReaderService, private changeDetector: ChangeDetectorRef) {}
+    constructor(private reader: ReaderService, private changeDetector: ChangeDetectorRef) {
+    }
 
     onPullFeed() {
         this.changeDetector.detectChanges();
+        this.updateNewItemsCount();
     }
+
+    updateNewItemsCount() {
+        this.reader.getNewItemsCount(this.feed).then(count => this.newItemsCount = count);
+    }
+
     onReadEntries() {
         let entries = this.entries.toJS();
-        entries.forEach(e=>e.read=true);
+        entries.forEach(e => e.read = true);
         this.reader.markAllRead(entries);
+    }
+
+    ngOnChanges() {
+        setTimeout(()=> {
+            this.updateNewItemsCount();
+        }, 0)
     }
 
     toggleStarEntry(entry) {
         entry.star = !entry.star;
         this.reader.saveEntry(entry);
     }
+
     open(url) {
         window.open(url, '_blank');
     }

@@ -1,9 +1,9 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {Component, Input} from "@angular/core";
 import {ReaderService} from "../services/reader.service";
 
 @Component({
-  selector: 'app-menu',
-  template: `    
+    selector: 'app-menu',
+    template: `    
     <header>
       <h1>{{title}}</h1>
     </header>
@@ -20,28 +20,29 @@ import {ReaderService} from "../services/reader.service";
       </li>
     </ul>
   `,
-  styleUrls: ['./menu.component.css']
+    styleUrls: ['./menu.component.css']
 })
 export class MenuComponent {
-  @Input()
-  title;
+    @Input()
+    title;
 
-  @Input()
-  feeds;
+    @Input()
+    feeds;
 
-  @Input()
-  selectedFeed;
+    @Input()
+    selectedFeed;
 
-  constructor(private reader: ReaderService) {}
-
-  onOpenFeed(feed) {
-    this.reader.openFeed(feed);
-  }
-
-  openDialog() {
-    let url = prompt("Feed url: ");
-    if (url != null) {
-      this.reader.addFeed(url);
+    constructor(private reader: ReaderService) {
     }
-  }
+
+    onOpenFeed(feed) {
+        this.reader.openFeed(feed);
+    }
+
+    openDialog() {
+        let url = prompt("Feed url: ");
+        if (url != null) {
+            this.reader.addFeed(url);
+        }
+    }
 }

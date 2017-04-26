@@ -1,32 +1,34 @@
 :host {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
+
 ul {
-  padding: 10px;
-  border-top: 1px solid #c2cff1;
+    padding: 10px;
+    border-top: 1px solid #c2cff1;
 }
 
 header {
-  margin-left: 10px;
-  flex: none;
-  width: 100%;
+    margin-left: 10px;
+    flex: none;
+    width: 100%;
 }
 
 ul li {
-  list-style: none;
+    list-style: none;
 }
+
 ul li:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 button {
-  margin: 0 10px;
+    margin: 0 10px;
 }
 
 li.selected {
-  background: #c2cff1;
-  margin-left: -10px;
-  margin-right: -10px;
-  padding-left: 10px;
+    background: #c2cff1;
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 10px;
 }
