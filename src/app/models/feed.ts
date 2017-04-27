@@ -5,4 +5,5 @@ export interface Feed {
     url: string
     last_modified: Date
     last_pull: Date
+    unreadCount: number
 }

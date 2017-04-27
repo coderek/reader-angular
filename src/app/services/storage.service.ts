@@ -38,18 +38,31 @@ export class StorageService {
     async getFeeds() {
         await this.initPromise;
         let feeds = [];
+        let transaction = this.db.transaction(['feeds', 'entries']);
         return new Promise((res, rej) => {
-            let req = this.db.transaction('feeds').objectStore('feeds').openCursor();
+            let req = transaction.objectStore('feeds').openCursor();
             req.onsuccess = function () {
                 let cursor = req.result;
                 if (cursor) {
-                    feeds.push(cursor.value);
+                    let f = cursor.value;
+                    feeds.push(f);
+                    let count = 0;
+                    let entriesReq = transaction.objectStore('entries').index('feed_url').openCursor(IDBKeyRange.only(f.url));
+                    entriesReq.onsuccess=()=>{
+                        let c = entriesReq.result;
+                        if (c) {
+                            if (!c.value.read) count++;
+                            c.continue();
+                        }
+                        else f.unreadCount = count;
+                    }
                     cursor.continue();
-                } else {
-                    res(feeds);
                 }
             };
             req.onerror = rej;
+            transaction.oncomplete = ()=> {
+                res(feeds);
+            }
         })
     }
 

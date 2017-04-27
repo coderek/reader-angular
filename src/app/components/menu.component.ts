@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnChanges} from "@angular/core";
 import {ReaderService} from "../services/reader.service";
 
 @Component({
@@ -16,7 +16,7 @@ import {ReaderService} from "../services/reader.service";
     <ul>
       <li><b>Subscriptions</b></li>
       <li *ngFor="let feed of feeds" (click)="onOpenFeed(feed)">
-        <div routerLink="/feeds/{{feed.url | hash}}" routerLinkActive="selected">{{feed.title}}</div>
+        <div routerLink="/feeds/{{feed.url | hash}}" routerLinkActive="selected">{{feed.title}} ({{feed.unreadCount}})</div>
       </li>
     </ul>
   `,
@@ -32,9 +32,7 @@ export class MenuComponent {
     @Input()
     selectedFeed;
 
-    constructor(private reader: ReaderService) {
-    }
-
+    constructor(private reader: ReaderService) {}
     onOpenFeed(feed) {
         this.reader.openFeed(feed);
     }
