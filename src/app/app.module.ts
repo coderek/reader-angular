@@ -41,10 +41,6 @@ import {ArticleComponent} from "./components/article.component";
                 component: ReaderComponent,
             },
             {
-                path: 'feeds/:id/:eid',
-                component: ReaderComponent,
-            },
-            {
                 path: 'feeds',
                 component: ReaderComponent,
             },

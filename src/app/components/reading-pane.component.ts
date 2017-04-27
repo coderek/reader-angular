@@ -92,9 +92,14 @@ export class ReadingPaneComponent implements OnChanges {
         }
 
         if (this.entryShown === entry) {
-            this.router.navigate(['/feeds', encodeURIComponent(this.feed.url)]);
+            this.router.navigate(['feeds', encodeURIComponent(this.feed.url)]);
         } else {
-            this.router.navigate(['/feeds', encodeURIComponent(this.feed.url), encodeURIComponent(entry.url)]);
+            this.router.navigate(
+                ['feeds', encodeURIComponent(this.feed.url),
+                    {
+                        eid: encodeURIComponent(entry.url)
+                    }
+                ]);
         }
     }
 }
