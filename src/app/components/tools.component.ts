@@ -23,6 +23,9 @@ export class ToolsComponent {
     @Output()
     onReadEntries = new EventEmitter<void>();
 
+    @Output()
+    onDeleteFeed = new EventEmitter<void>();
+
     constructor(private reader: ReaderService) {
     }
 
@@ -30,6 +33,7 @@ export class ToolsComponent {
         if (confirm(`Are you sure to delete ${feed.title}`)) {
             this.reader.deleteFeed(feed);
         }
+        this.onDeleteFeed.next();
     }
 
     onPull(feed) {

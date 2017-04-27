@@ -35,11 +35,11 @@ export class StorageService {
         });
     }
 
-    async getFeeds() {
+    async getFeeds(): Promise<Feed[]> {
         await this.initPromise;
         let feeds = [];
         let transaction = this.db.transaction(['feeds', 'entries']);
-        return new Promise((res, rej) => {
+        return new Promise<Feed[]>((res, rej) => {
             let req = transaction.objectStore('feeds').openCursor();
             req.onsuccess = function () {
                 let cursor = req.result;
@@ -63,6 +63,7 @@ export class StorageService {
             transaction.oncomplete = ()=> {
                 res(feeds);
             }
+            transaction.onerror = console.error;
         })
     }
 

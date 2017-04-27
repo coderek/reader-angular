@@ -37,13 +37,14 @@ import {ArticleComponent} from "./components/article.component";
         MaterialModule,
         RouterModule.forRoot([
             {
-                path: 'feeds/:id',
-                component: ReaderComponent,
-            },
-            {
                 path: 'feeds',
                 component: ReaderComponent,
             },
+                {
+                path: 'feeds/:id',
+                component: ReaderComponent,
+            },
+
             {
                 path: '',
                 redirectTo: '/feeds',

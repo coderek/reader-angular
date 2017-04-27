@@ -1,46 +1,30 @@
 import {Injectable} from "@angular/core";
 import {StorageService} from "./storage.service";
-import {List} from "immutable";
 import {FeedService} from "./feed.service";
 import {Subject} from "rxjs";
 import {Feed} from "../models/feed";
 
 @Injectable()
 export class ReaderService {
-    selectedFeed = null;
-    entriesForSelectedFeed = List();
-    feeds = List();
+    feeds = new Subject<Feed[]>();
 
     public toastMessage = new Subject<string>();
 
-
     constructor(private feedService: FeedService,
                 private storage: StorageService) {
-        this.updateFeeds();
     }
 
     updateFeeds() {
-        console.log('Getting feeds');
         let promise = this.storage.getFeeds();
         promise.then(feeds => {
-            this.feeds = List(feeds)
+            console.log('updated feeds', feeds.length)
+            this.feeds.next(feeds);
         }).catch(console.error);
-    }
-
-    openFeed(feed) {
-        this.selectedFeed = feed;
-        this.storage.getEntries(feed).then(entries => {
-            this.entriesForSelectedFeed = List(entries);
-        })
     }
 
     getFeed(url) : Promise<Feed> {
         if (url == null) return Promise.resolve(null);
         return this.storage.getFeed(url)
-    }
-
-    getFeeds() {
-        return this.feeds;
     }
 
     getNewItemsCount(feed: Feed): Promise<number> {
@@ -61,29 +45,22 @@ export class ReaderService {
     }
 
     pullFeed(feed) {
-        return this.feedService.fetch(feed.url).then(async updatedFeed => {
-            await this.storage.saveFeed(updatedFeed);
-            if (this.selectedFeed == feed) {
-                console.log("this is selected");
-                this.entriesForSelectedFeed = List(await this.storage.getEntries(updatedFeed));
-            }
+        return this.feedService.fetch(feed.url).then(updatedFeed => {
+            return this.storage.saveFeed(updatedFeed);
         });
     }
 
     getEntriesForFeed(feed) {
+        if (feed==null) return Promise.resolve(null);
         return this.storage.getEntries(feed);
     }
 
     saveEntry(entry) {
         this.toastMessage.next("Entry updated");
-        return this.storage.saveEntry(entry);
+        return this.storage.saveEntry(entry).then(()=> this.updateFeeds());
     }
 
     deleteFeed(feed) {
-        if (feed === this.selectedFeed) {
-            this.selectedFeed = null;
-            this.entriesForSelectedFeed = List();
-        }
         this.storage.deleteFeed(feed).then(() => {
             this.updateFeeds();
         });

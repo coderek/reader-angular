@@ -1,15 +1,15 @@
-import {Component, Input, ChangeDetectorRef, OnChanges, SimpleChanges} from "@angular/core";
+import {Component, Input, ChangeDetectorRef, OnChanges, SimpleChanges, OnInit} from "@angular/core";
 import {ReaderService} from "../services/reader.service";
 import {Feed} from "../models/feed";
 import {Entry} from "../models/entry";
-import {Router} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'app-reading-pane',
     template: `
     <header>{{feed == null ? "All feeds" : feed.title}}</header>
 
-    <feed-toolbar [feed]="feed" [newItemsCount]="newItemsCount" (onPullFeed)="onPullFeed()" (onReadEntries)="onReadEntries()"></feed-toolbar>
+    <feed-toolbar [feed]="feed" [newItemsCount]="newItemsCount" (onPullFeed)="onPullFeed()" (onReadEntries)="onReadEntries()" (onDeleteFeed)="onDeleteFeed()"></feed-toolbar>
 
     <div *ngIf="entries.length" class="entries">
       <div *ngFor="let entry of entries" class="entry" [ngClass]="{'read': entry.read}">
@@ -21,7 +21,7 @@ import {Router} from "@angular/router";
           <time>{{entry.published | prettyDate }}</time>
           <md-icon (click)="open(entry.url)">link</md-icon>
         </div>
-        <article *ngIf="entryShown === entry" [innerHTML]="getContent(entry)"></article>
+        <article *ngIf="entryUrlShown === entry.url" [innerHTML]="getContent(entry)"></article>
       </div>
     </div>
     <div class="empty" *ngIf="entries.length===0">
@@ -30,28 +30,27 @@ import {Router} from "@angular/router";
   `,
     styleUrls: ['./reading-pane.component.css']
 })
-export class ReadingPaneComponent implements OnChanges {
+export class ReadingPaneComponent implements OnChanges, OnInit {
 
     @Input()
     feed: Feed = null;
 
-    @Input()
     entries: Entry[] = [];
 
     newItemsCount = 0;
 
-    @Input()
-    entryShown: Entry = null;
+    entryUrlShown: string = null;
 
     constructor(
         private router: Router,
+        private route: ActivatedRoute,
         private reader: ReaderService,
         private changeDetector: ChangeDetectorRef) {
-        this.updateNewItemsCount();
+        // this.updateNewItemsCount();
     }
 
     onPullFeed() {
-        this.changeDetector.detectChanges();
+        this.reader.getEntriesForFeed(this.feed).then(entries=> this.entries=entries);
         this.updateNewItemsCount();
     }
 
@@ -84,6 +83,9 @@ export class ReadingPaneComponent implements OnChanges {
             return entry.summary;
         }
     }
+    onDeleteFeed() {
+        this.router.navigate(['feeds']);
+    }
 
     toggleEntry(entry) {
         if (!entry.read) {
@@ -91,7 +93,7 @@ export class ReadingPaneComponent implements OnChanges {
             this.reader.saveEntry(entry).then(()=>this.updateNewItemsCount());
         }
 
-        if (this.entryShown === entry) {
+        if (this.entryUrlShown === entry.url) {
             this.router.navigate(['feeds', encodeURIComponent(this.feed.url)]);
         } else {
             this.router.navigate(
@@ -101,5 +103,21 @@ export class ReadingPaneComponent implements OnChanges {
                     }
                 ]);
         }
+    }
+
+    ngOnInit() {
+        this.route.params.subscribe(params=> {
+            if (!params['id']) return;
+            let feedUrl = decodeURIComponent(params['id']);
+            console.log('feed url: ' + feedUrl)
+            this.reader.getFeed(feedUrl).then(feed=>{
+                this.feed=feed;
+                this.reader.getEntriesForFeed(feed).then(entries=>this.entries = entries);
+            });
+            this.entryUrlShown = decodeURIComponent(params['eid']);
+            if (!this.entryUrlShown) {
+                this.entryUrlShown = null;
+            }
+        });
     }
 }

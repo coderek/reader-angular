@@ -1,5 +1,6 @@
-import {Component, Input, OnChanges} from "@angular/core";
+import {Component, Input, OnChanges, OnInit, ChangeDetectorRef} from "@angular/core";
 import {ReaderService} from "../services/reader.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-menu',
@@ -15,26 +16,31 @@ import {ReaderService} from "../services/reader.service";
     </ul>
     <ul>
       <li><b>Subscriptions</b></li>
-      <li *ngFor="let feed of feeds" (click)="onOpenFeed(feed)">
+      <li *ngFor="let feed of feeds | async" (click)="onOpenFeed(feed)">
         <div routerLink="/feeds/{{feed.url | hash}}" routerLinkActive="selected">{{feed.title}} ({{feed.unreadCount}})</div>
       </li>
     </ul>
   `,
     styleUrls: ['./menu.component.css']
 })
-export class MenuComponent {
+export class MenuComponent implements OnChanges {
     @Input()
     title;
 
-    @Input()
     feeds;
 
-    @Input()
-    selectedFeed;
+    constructor(
+        private reader: ReaderService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private changeDetector: ChangeDetectorRef
+    ) {
+        this.feeds = this.reader.feeds;
+        this.reader.updateFeeds();
+    }
 
-    constructor(private reader: ReaderService) {}
     onOpenFeed(feed) {
-        this.reader.openFeed(feed);
+        this.router.navigate(['feeds', encodeURIComponent(feed.url)]);
     }
 
     openDialog() {
@@ -42,5 +48,7 @@ export class MenuComponent {
         if (url != null) {
             this.reader.addFeed(url);
         }
+    }
+    ngOnChanges() {
     }
 }
