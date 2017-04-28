@@ -10,24 +10,24 @@ import {ActivatedRoute, Router} from "@angular/router";
     </header>
     <button (click)="openDialog()">Add a subscription</button>
     <ul>
-      <li>Home</li>
-      <li>All items</li>
-      <li>Starred items</li>
+      <li (click)="openFavorite()">Favorites</li>
     </ul>
     <ul>
       <li><b>Subscriptions</b></li>
-      <li *ngFor="let feed of feeds | async" (click)="onOpenFeed(feed)">
-        <div routerLink="/feeds/{{feed.url | hash}}" routerLinkActive="selected">{{feed.title}} ({{feed.unreadCount}})</div>
+      <li [ngClass]="{'selected': selectedFeedUrl === feed.url}" *ngFor="let feed of feeds | async" (click)="onOpenFeed(feed)">
+        <div>{{feed.title}} ({{feed.unreadCount}})</div>
       </li>
     </ul>
   `,
     styleUrls: ['./menu.component.css']
 })
-export class MenuComponent implements OnChanges {
+export class MenuComponent implements OnChanges, OnInit {
     @Input()
     title;
 
     feeds;
+
+    selectedFeedUrl: string;
 
     constructor(
         private reader: ReaderService,
@@ -40,7 +40,10 @@ export class MenuComponent implements OnChanges {
     }
 
     onOpenFeed(feed) {
-        this.router.navigate(['feeds', encodeURIComponent(feed.url)]);
+        this.router.navigate(['feeds', {id: encodeURIComponent(feed.url)}]);
+    }
+    openFavorite() {
+        this.router.navigate([])
     }
 
     openDialog() {
@@ -48,6 +51,14 @@ export class MenuComponent implements OnChanges {
         if (url != null) {
             this.reader.addFeed(url);
         }
+    }
+
+    ngOnInit() {
+        this.route.params.subscribe(params=> {
+            if (params['id']) {
+                this.selectedFeedUrl = decodeURIComponent(params['id']);
+            }
+        });
     }
     ngOnChanges() {
     }

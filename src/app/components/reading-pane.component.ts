@@ -32,7 +32,6 @@ import {Router, ActivatedRoute} from "@angular/router";
 })
 export class ReadingPaneComponent implements OnChanges, OnInit {
 
-    @Input()
     feed: Feed = null;
 
     entries: Entry[] = [];
@@ -84,7 +83,9 @@ export class ReadingPaneComponent implements OnChanges, OnInit {
         }
     }
     onDeleteFeed() {
-        this.router.navigate(['feeds']);
+        this.feed = null;
+        this.entries = [];
+        this.router.navigate(['feeds', {}]);
     }
 
     toggleEntry(entry) {
@@ -94,11 +95,12 @@ export class ReadingPaneComponent implements OnChanges, OnInit {
         }
 
         if (this.entryUrlShown === entry.url) {
-            this.router.navigate(['feeds', encodeURIComponent(this.feed.url)]);
+            this.router.navigate(['feeds', {id: encodeURIComponent(this.feed.url)}]);
         } else {
             this.router.navigate(
-                ['feeds', encodeURIComponent(this.feed.url),
+                ['feeds',
                     {
+                        id: encodeURIComponent(this.feed.url),
                         eid: encodeURIComponent(entry.url)
                     }
                 ]);

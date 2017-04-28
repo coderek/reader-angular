@@ -36,23 +36,18 @@ import {ArticleComponent} from "./components/article.component";
         HttpModule,
         MaterialModule,
         RouterModule.forRoot([
-            {
-                path: 'feeds',
-                component: ReaderComponent,
-            },
                 {
-                path: 'feeds/:id',
-                component: ReaderComponent,
-            },
+                    path: 'feeds',
+                    component: ReaderComponent,
+                },
 
-            {
-                path: '',
-                redirectTo: '/feeds',
-                pathMatch: 'full'
-            },
-        ],
+                {
+                    path: '',
+                    redirectTo: '/feeds',
+                    pathMatch: 'full'
+                },
+            ],
 
-        { preloadingStrategy: PreloadAllModules }
         )
     ],
     providers: [FeedService, StorageService, ReaderService],

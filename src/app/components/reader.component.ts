@@ -10,17 +10,11 @@ import {MdSnackBar} from "@angular/material";
     `,
     styleUrls: ['./reader.component.css']
 })
-export class ReaderComponent implements OnInit {
-
+export class ReaderComponent {
     constructor(private reader: ReaderService,
                 private snackBar: MdSnackBar) {
-        console.log('init reader component');
-        // this.feeds = this.reader.feeds;
-        // console.log(this.feeds)
         reader.toastMessage.subscribe(msg => {
             this.snackBar.open(msg, '', {duration: 2000});
         })
-    }
-    ngOnInit() {
     }
 }
