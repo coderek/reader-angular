@@ -4,7 +4,7 @@ import {ReaderService} from "../services/reader.service";
     selector: 'feed-toolbar',
     template: `
       Show : {{newItemsCount}} new items - all items
-      <button (click)="onReadAll(feed)">Mark all as read</button>
+      <button (click)="onReadAll()">Mark all as read</button>
       <button (click)="onPull(feed)">Refresh</button>
       <button (click)="onDelete(feed)">Delete</button>
   `

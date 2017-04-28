@@ -1,5 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
+
 @Component({
     selector: 'reader-app',
     template: `
@@ -17,5 +18,4 @@ export class AppComponent implements OnInit {
             console.log(param);
         });
     }
-
 }

@@ -1,6 +1,7 @@
 # py3
 import json
 import sys
+
 from flask import Flask, request, make_response
 
 sys.path.append('/home/coderek/Code/reader/reader_service')

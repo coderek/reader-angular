@@ -1,11 +1,8 @@
-import requests
 from lxml.html.clean import Cleaner
 import feedparser
-import pytz
-
-from datetime import datetime
-from time import mktime, localtime
+from time import localtime
 from datetime import datetime, timedelta
+import subprocess
 
 def test_feed(count):
     feed = """<?xml version="1.0" encoding="utf-8"?>
@@ -40,7 +37,8 @@ def fetch_feed(url, count):
     if url == test_feed_url:
         text = test_feed(count)
     else:
-        text = requests.get(url, timeout=10).text
+        res = subprocess.run(['curl', url], stdout=subprocess.PIPE)
+        text = res.stdout.decode('utf-8')
     
     d = feedparser.parse(text)
     
