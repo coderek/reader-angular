@@ -67,7 +67,7 @@ export class StorageService {
         })
     }
 
-    async getEntries(feed): Promise<any[]> {
+    async getEntries(conditions): Promise<any[]> {
         await this.initPromise;
         let entries = [];
         return new Promise<any[]>((res, rej) => {
@@ -75,7 +75,7 @@ export class StorageService {
             req.onsuccess = (ev) => {
                 let cursor = req.result;
                 if (cursor) {
-                    if (cursor.value.feed_url === feed.url)
+                    if (matchConditions(cursor.value, conditions))
                         entries.push(cursor.value);
                     cursor.continue();
                 } else {
@@ -141,6 +141,7 @@ export class StorageService {
         let idx = store.index('feed_url');
         let req = idx.openCursor(IDBKeyRange.only(feed.url));
         let count = 0;
+        console.log('countNewerEntries');
         req.onsuccess = () => {
             let cursor = req.result;
             if (cursor) {
@@ -201,4 +202,12 @@ export class StorageService {
             transaction.onerror = rej;
         })
     }
+}
+
+
+function matchConditions(target, conditions={}) {
+    for (let prop in conditions) {
+        if (target[prop] !== conditions[prop]) return false;
+    }
+    return true;
 }

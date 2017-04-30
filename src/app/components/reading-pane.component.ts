@@ -7,7 +7,7 @@ import {Router, ActivatedRoute} from "@angular/router";
 @Component({
     selector: 'app-reading-pane',
     template: `
-    <header>{{feed == null ? "All feeds" : feed.title}}</header>
+    <header>{{title}}</header>
 
     <feed-toolbar [feed]="feed" [newItemsCount]="newItemsCount" (onPullFeed)="onPullFeed()" (onReadEntries)="onReadEntries()" (onDeleteFeed)="onDeleteFeed()"></feed-toolbar>
 
@@ -15,10 +15,11 @@ import {Router, ActivatedRoute} from "@angular/router";
       <div *ngFor="let entry of entries" class="entry" [ngClass]="{'read': entry.read}">
         <div class="title">
           <md-icon (click)="toggleStarEntry(entry)">
-            {{entry.star ? 'favorite' : 'favorite_bordered'}}
+            {{entry.favorite ? 'favorite' : 'favorite_bordered'}}
           </md-icon>
-          <span (click)="toggleEntry(entry)" >{{entry.title}} |</span>
-          <time>{{entry.published | prettyDate }}</time>
+          <span (click)="toggleEntry(entry)" >
+              {{entry.title}} | <time>{{entry.published | prettyDate }}</time>
+          </span>
           <md-icon (click)="open(entry.url)">link</md-icon>
         </div>
         <article *ngIf="entryUrlShown === entry.url" [innerHTML]="getContent(entry)"></article>
@@ -40,6 +41,15 @@ export class ReadingPaneComponent implements OnChanges, OnInit {
 
     entryUrlShown: string = null;
 
+    isFavorites: boolean = false;
+
+    get title() {
+        if (this.isFavorites) {
+            return 'Favorites';
+        } else {
+            return this.feed == null ? "All feeds" : this.feed.title
+        }
+    }
     constructor(
         private router: Router,
         private route: ActivatedRoute,
@@ -64,10 +74,11 @@ export class ReadingPaneComponent implements OnChanges, OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        this.updateNewItemsCount();
     }
 
     toggleStarEntry(entry) {
-        entry.star = !entry.star;
+        entry.favorite = !entry.favorite;
         this.reader.saveEntry(entry);
     }
 
@@ -94,32 +105,37 @@ export class ReadingPaneComponent implements OnChanges, OnInit {
             this.reader.saveEntry(entry).then(()=>this.updateNewItemsCount());
         }
 
-        if (this.entryUrlShown === entry.url) {
-            this.router.navigate(['feeds', {id: encodeURIComponent(this.feed.url)}]);
+        let eid = this.entryUrlShown === entry.url? undefined: encodeURIComponent(entry.url);
+        if (this.isFavorites) {
+            this.router.navigate(['feeds', {favorites: 1, eid: eid}]);
         } else {
-            this.router.navigate(
-                ['feeds',
-                    {
-                        id: encodeURIComponent(this.feed.url),
-                        eid: encodeURIComponent(entry.url)
-                    }
-                ]);
+            this.router.navigate(['feeds',
+                {id: encodeURIComponent(this.feed.url), eid: eid}
+            ]);
         }
     }
 
     ngOnInit() {
         this.route.params.subscribe(params=> {
-            if (!params['id']) return;
-            let feedUrl = decodeURIComponent(params['id']);
-            console.log('feed url: ' + feedUrl)
-            this.reader.getFeed(feedUrl).then(feed=>{
-                this.feed=feed;
-                this.reader.getEntriesForFeed(feed).then(entries=>this.entries = entries);
-            });
-            this.entryUrlShown = decodeURIComponent(params['eid']);
-            if (!this.entryUrlShown) {
+            if (params['favorites']) {
+                this.isFavorites = true;
+                this.feed = null;
+                this.reader.getFavorites().then(entries=>this.entries=entries);
+            } else {
+                this.isFavorites = false;
+                if (!params['id']) return;
+                let feedUrl = decodeURIComponent(params['id']);
+                this.reader.getFeed(feedUrl).then(feed=>{
+                    this.feed=feed;
+                    this.reader.getEntriesForFeed(feed).then(entries=>this.entries = entries);
+                });
+            }
+            if (params['eid']) {
+                this.entryUrlShown = decodeURIComponent(params['eid']);
+            } else {
                 this.entryUrlShown = null;
             }
+
         });
     }
 }

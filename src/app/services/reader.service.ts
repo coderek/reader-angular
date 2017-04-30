@@ -52,7 +52,7 @@ export class ReaderService {
 
     getEntriesForFeed(feed) {
         if (feed==null) return Promise.resolve(null);
-        return this.storage.getEntries(feed);
+        return this.storage.getEntries({feed_url: feed.url});
     }
 
     saveEntry(entry) {
@@ -68,5 +68,9 @@ export class ReaderService {
 
     markAllRead(feed) {
         this.storage.markAllRead(feed);
+    }
+
+    getFavorites() {
+        return this.storage.getEntries({favorite: true});
     }
 }

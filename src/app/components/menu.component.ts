@@ -10,7 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
     </header>
     <button (click)="openDialog()">Add a subscription</button>
     <ul>
-      <li (click)="openFavorite()">Favorites</li>
+      <li (click)="openFavorite()" [ngClass]="{'selected': selectedFeedUrl === 'favorites'}" >Favorites</li>
     </ul>
     <ul>
       <li><b>Subscriptions</b></li>
@@ -43,7 +43,7 @@ export class MenuComponent implements OnChanges, OnInit {
         this.router.navigate(['feeds', {id: encodeURIComponent(feed.url)}]);
     }
     openFavorite() {
-        this.router.navigate([])
+        this.router.navigate(['feeds', {favorites: '1'}]);
     }
 
     openDialog() {
@@ -55,7 +55,10 @@ export class MenuComponent implements OnChanges, OnInit {
 
     ngOnInit() {
         this.route.params.subscribe(params=> {
-            if (params['id']) {
+            if (params['favorites']) {
+                this.selectedFeedUrl = 'favorites';
+            }
+            else if (params['id']) {
                 this.selectedFeedUrl = decodeURIComponent(params['id']);
             }
         });
