@@ -1,57 +1,60 @@
+import {NgModule, Injectable} from "@angular/core";
+import {AppComponent} from "./containers/app";
+import {ComponentsModule} from "./components";
+import {RouterModule, PreloadingStrategy, Route, Router} from "@angular/router";
+import {reducer} from "./reducers/feed-list";
+import {StoreModule} from "@ngrx/store";
 import {BrowserModule} from "@angular/platform-browser";
-import {NgModule} from "@angular/core";
-import {FormsModule} from "@angular/forms";
-import {HttpModule} from "@angular/http";
-import {ReaderComponent} from "./components/reader.component";
-import {MenuComponent} from "./components/menu.component";
-import {ReadingPaneComponent} from "./components/reading-pane.component";
-import {FeedService} from "./services/feed.service";
-import {StorageService} from "./services/storage.service";
-import {ReaderService} from "./services/reader.service";
-import {PrettyDatePipe} from "./pipes/pretty-date";
-import {MaterialModule} from "@angular/material";
-import {ToolsComponent} from "./components/tools.component";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {RouterModule, PreloadAllModules} from "@angular/router";
-import {AppComponent} from "./components/app.component";
-import {HashPipe} from "./pipes/hash";
-import {ArticleComponent} from "./components/article.component";
+import {Observable} from "rxjs";
+
+
+const routes = [
+    {
+        path: '',
+        redirectTo: '/feeds',
+        pathMatch: 'full',
+    }
+];
+
+@Injectable()
+export class SelectivePreloadingStrategy implements PreloadingStrategy {
+    preloadedModules: string[] = [];
+
+    preload(route: Route, load: () => Observable<any>): Observable<any> {
+        if (route.data && route.data['preload']) {
+            // add the route path to the preloaded module array
+            this.preloadedModules.push(route.path);
+
+            // log the route path to the console
+            console.log('Preloaded: ' + route.path);
+
+            return load();
+        } else {
+            return Observable.of(null);
+        }
+    }
+}
 
 
 @NgModule({
     declarations: [
         AppComponent,
-        ReaderComponent,
-        MenuComponent,
-        ReadingPaneComponent,
-        PrettyDatePipe,
-        HashPipe,
-        ToolsComponent,
-        ArticleComponent,
     ],
     imports: [
         BrowserModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        HttpModule,
-        MaterialModule,
-        RouterModule.forRoot([
-                {
-                    path: 'feeds',
-                    component: ReaderComponent,
-                },
-
-                {
-                    path: '',
-                    redirectTo: '/feeds',
-                    pathMatch: 'full'
-                },
-            ],
-
-        )
+        ComponentsModule,
+        StoreModule.provideStore(reducer),
+        RouterModule.forRoot(routes,
+            {preloadingStrategy: SelectivePreloadingStrategy}
+        ),
     ],
-    providers: [FeedService, StorageService, ReaderService],
+    providers: [
+        SelectivePreloadingStrategy
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {
+    constructor(router: Router) {
+        console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
+    }
 }

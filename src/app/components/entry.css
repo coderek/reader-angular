@@ -1,0 +1,35 @@
+md-icon {
+    font-size: 12px;
+}
+
+article /deep/ pre {
+    max-width: 100%;
+    overflow: auto;
+}
+
+article /deep/ img {
+    max-width: 100%;
+    display: block;
+}
+
+article {
+    margin: 10px 20px;
+    padding: 10px;
+    background-color: #f1f5ff;
+    max-width: 800px;
+    font-size: 110%;
+    border: 1px solid #c2cff1;
+}
+
+:host {
+    background-color: #fafafa;
+    list-style: none;
+    padding: 4px;
+    border-top: 1px solid #d4d2d2;
+    cursor: pointer;
+    line-height: 26px;
+}
+
+md-icon {
+    font-size: 12px;
+}

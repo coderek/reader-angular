@@ -1,6 +1,9 @@
-import {Component, Input, OnChanges, OnInit, ChangeDetectorRef} from "@angular/core";
-import {ReaderService} from "../services/reader.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Component, Input, OnChanges, OnInit, Output, EventEmitter, ChangeDetectionStrategy} from "@angular/core";
+import {Observable} from "rxjs";
+import {Feed} from "../models/feed";
+import * as fromFeeds from "../reducers/feed-list";
+import {Store} from "@ngrx/store";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-menu',
@@ -10,58 +13,49 @@ import {ActivatedRoute, Router} from "@angular/router";
     </header>
     <button (click)="openDialog()">Add a subscription</button>
     <ul>
-      <li (click)="openFavorite()" [ngClass]="{'selected': selectedFeedUrl === 'favorites'}" >Favorites</li>
+      <li (click)="openFavorite()" [ngClass]="{'selected': selected === 'favorites'}" >Favorites</li>
     </ul>
     <ul>
       <li><b>Subscriptions</b></li>
-      <li [ngClass]="{'selected': selectedFeedUrl === feed.url}" *ngFor="let feed of feeds | async" (click)="onOpenFeed(feed)">
-        <div>{{feed.title}} ({{feed.unreadCount}})</div>
+      <li [ngClass]="{'selected': (selected | async) === feed.url}" *ngFor="let feed of feeds | async">
+        <div (click)="link(feed)">{{feed.title}} ({{feed.unreadCount}})</div>
       </li>
     </ul>
   `,
-    styleUrls: ['./menu.component.css']
+    styleUrls: ['./menu.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuComponent implements OnChanges, OnInit {
     @Input()
     title;
 
-    feeds;
+    @Output()
+    onNewFeed = new EventEmitter<string>();
 
-    selectedFeedUrl: string;
+    feeds: Observable<Feed[]>;
+    selected: Observable<string>;
 
-    constructor(
-        private reader: ReaderService,
-        private route: ActivatedRoute,
-        private router: Router,
-        private changeDetector: ChangeDetectorRef
-    ) {
-        this.feeds = this.reader.feeds;
-        this.reader.updateFeeds();
+    constructor(private store: Store<fromFeeds.State>, private router: Router) {
+        this.feeds = store.select(s => s.feeds);
+        this.selected = store.select(s => s.selected);
     }
 
-    onOpenFeed(feed) {
-        this.router.navigate(['feeds', {id: encodeURIComponent(feed.url)}]);
+    link(feed) {
+        this.router.navigate(['feeds', encodeURIComponent(feed.url)]);
     }
+
     openFavorite() {
-        this.router.navigate(['feeds', {favorites: '1'}]);
+        // this.router.navigate(['feeds', {favorites: '1'}]);
     }
 
     openDialog() {
         let url = prompt("Feed url: ");
         if (url != null) {
-            this.reader.addFeed(url);
+            this.onNewFeed.next(url);
         }
     }
 
     ngOnInit() {
-        this.route.params.subscribe(params=> {
-            if (params['favorites']) {
-                this.selectedFeedUrl = 'favorites';
-            }
-            else if (params['id']) {
-                this.selectedFeedUrl = decodeURIComponent(params['id']);
-            }
-        });
     }
     ngOnChanges() {
     }

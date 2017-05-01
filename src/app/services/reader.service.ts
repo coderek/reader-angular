@@ -17,9 +17,13 @@ export class ReaderService {
     updateFeeds() {
         let promise = this.storage.getFeeds();
         promise.then(feeds => {
-            console.log('updated feeds', feeds.length)
+            console.log('updated feeds', feeds.length);
             this.feeds.next(feeds);
         }).catch(console.error);
+    }
+
+    getFeeds(): Promise<Feed[]> {
+        return this.storage.getFeeds();
     }
 
     getFeed(url) : Promise<Feed> {
@@ -39,8 +43,8 @@ export class ReaderService {
     }
 
     addFeed(url) {
-        this.feedService.fetch(url).then(feed => {
-            this.storage.saveFeed(feed).then(() => this.updateFeeds())
+        return this.feedService.fetch(url).then(feed => {
+            return this.storage.saveFeed(feed);
         });
     }
 
@@ -50,9 +54,8 @@ export class ReaderService {
         });
     }
 
-    getEntriesForFeed(feed) {
-        if (feed==null) return Promise.resolve(null);
-        return this.storage.getEntries({feed_url: feed.url});
+    getEntriesForFeed(feedUrl) {
+        return this.storage.getEntries({feed_url: feedUrl});
     }
 
     saveEntry(entry) {

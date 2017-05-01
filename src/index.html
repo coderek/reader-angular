@@ -22,26 +22,13 @@
 <reader-app>Loading...</reader-app>
 
 <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js').then(function (registration) {
-            console.log('Service Worker registered');
-        }).catch(function (err) {
-            console.log('Service Worker registration failed: ', err);
-        });
-//        navigator.serviceWorker.ready.then(function (registration) {
-//            registration.periodicSync.register({
-//                tag: 'get-new-feeds',
-//                minPeriod: 1000,
-//                powerState: 'avoid-draining',
-//                networkState: 'avoid-cellular'
-//            }).then(function (periodicSyncReg) {
-//                console.log('Registered periodic sync.');
-//            }, function () {
-//                console.error('Failed to register')
-//            })
-//
-//        })
-    }
+    //    if ('serviceWorker' in navigator) {
+    //        navigator.serviceWorker.register('/service-worker.js').then(function (registration) {
+    //            console.log('Service Worker registered');
+    //        }).catch(function (err) {
+    //            console.log('Service Worker registration failed: ', err);
+    //        });
+    //    }
 </script>
 </body>
 </html>

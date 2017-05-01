@@ -17,19 +17,19 @@ export class StorageService {
             let openrequest = indexedDB.open('__reader__', 1);
             openrequest.onerror = (err) => {
                 rej(err);
-            }
+            };
             openrequest.onupgradeneeded = (ev) => {
                 let db = openrequest.result;
                 db.onerror = console.error;
-                let feedsStore = db.createObjectStore('feeds', {keyPath: 'url'})
-                let entriesStore = db.createObjectStore('entries', {keyPath: 'url'})
+                let feedsStore = db.createObjectStore('feeds', {keyPath: 'url'});
+                let entriesStore = db.createObjectStore('entries', {keyPath: 'url'});
                 entriesStore.createIndex('read', 'read');
                 entriesStore.createIndex('favorite', 'favorite');
                 entriesStore.createIndex('feed_url', 'feed_url');
             };
             openrequest.onsuccess = (ev) => {
                 this.db = openrequest.result;
-                console.log("Indexed DB is open now.")
+                console.log("Indexed DB is open now.");
                 res();
             }
         });
@@ -55,14 +55,14 @@ export class StorageService {
                             c.continue();
                         }
                         else f.unreadCount = count;
-                    }
+                    };
                     cursor.continue();
                 }
             };
             req.onerror = rej;
             transaction.oncomplete = ()=> {
                 res(feeds);
-            }
+            };
             transaction.onerror = console.error;
         })
     }
@@ -81,7 +81,7 @@ export class StorageService {
                 } else {
                     entries = entries.sort((a, b) => {
                         return b.published - a.published;
-                    })
+                    });
                     res(entries);
                 }
             };
@@ -150,7 +150,7 @@ export class StorageService {
                     count++;
                 cursor.continue();
             }
-        }
+        };
         return new Promise((res, rej) => {
             transaction.oncomplete = () => {
                 res(count);
@@ -172,7 +172,7 @@ export class StorageService {
         let transaction = this.db.transaction(['entries', 'feeds'], 'readwrite');
         let store = transaction.objectStore('entries');
         let idx = store.index('feed_url');
-        console.log('feed.url: ' + feed.url)
+        console.log('feed.url: ' + feed.url);
         let req = idx.openKeyCursor(IDBKeyRange.only(feed.url));
         req.onsuccess = (ev) => {
             let cursor = req.result;
