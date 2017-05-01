@@ -15,6 +15,7 @@ import {RouterModule} from "@angular/router";
 import {EmptyPaneComponent} from "./empty.component";
 import {ReaderMainComponent} from "./reader-main";
 import {CommonModule} from "@angular/common";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 const COMPONENTS = [
     MenuComponent,
@@ -33,6 +34,7 @@ const COMPONENTS = [
     imports: [
         CommonModule,
         MaterialModule,
+        BrowserAnimationsModule,
         RouterModule.forChild([
             {
                 path: 'feeds',
@@ -41,6 +43,10 @@ const COMPONENTS = [
                     {
                         path: ':feed',
                         component: ReadingPaneComponent,
+                    },
+                    {
+                        path: '',
+                        component: EmptyPaneComponent
                     }
                 ]
             },

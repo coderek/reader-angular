@@ -12,6 +12,13 @@
             margin: 0;
             padding: 0;
         }
+
+        .spinner-text {
+            background: #f5f5c9;
+            border-radius: 4px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
     </style>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Crimson+Text|Inconsolata' rel="stylesheet">
@@ -19,7 +26,9 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-<reader-app>Loading...</reader-app>
+<reader-app>
+    <span class="spinner-text">Loading...</span>
+</reader-app>
 
 <script>
     //    if ('serviceWorker' in navigator) {

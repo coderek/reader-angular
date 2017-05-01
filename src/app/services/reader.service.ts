@@ -1,27 +1,48 @@
 import {Injectable} from "@angular/core";
 import {StorageService} from "./storage.service";
 import {FeedService} from "./feed.service";
-import {Subject} from "rxjs";
 import {Feed} from "../models/feed";
+import {Store} from "@ngrx/store";
+import {State} from "../reducers";
+import {StopLoadingAction, StartLoadingAction} from "../actions/global";
+
+
+function async(target, prop, property) {
+    const contr = target.constructor;
+    const fn = contr.prototype[prop];
+    property.value = function () {
+        let promise = fn.apply(this, arguments);
+        this.addAsyncTask(promise);
+        return promise;
+    };
+}
+
 
 @Injectable()
 export class ReaderService {
-    feeds = new Subject<Feed[]>();
-
-    public toastMessage = new Subject<string>();
+    asyncTasks = new Set();
 
     constructor(private feedService: FeedService,
-                private storage: StorageService) {
+                private storage: StorageService,
+                private store: Store<State>) {
+
     }
 
-    updateFeeds() {
-        let promise = this.storage.getFeeds();
-        promise.then(feeds => {
-            console.log('updated feeds', feeds.length);
-            this.feeds.next(feeds);
-        }).catch(console.error);
+    addAsyncTask(task: Promise<any>) {
+        console.log('addAsyncTask');
+        this.asyncTasks.add(task);
+        task.then(
+            () => this.asyncTasks.delete(task),
+            () => this.asyncTasks.delete(task)
+        ).then(() => {
+            if (this.asyncTasks.size === 0) {
+                this.store.dispatch(new StopLoadingAction());
+            }
+        });
+        this.store.dispatch(new StartLoadingAction());
     }
 
+    @async
     getFeeds(): Promise<Feed[]> {
         return this.storage.getFeeds();
     }
@@ -42,31 +63,31 @@ export class ReaderService {
         return this.storage.countNewerEntries(feed, boundary);
     }
 
+    @async
     addFeed(url) {
         return this.feedService.fetch(url).then(feed => {
             return this.storage.saveFeed(feed);
         });
     }
 
-    pullFeed(feed) {
+    @async
+    pullFeed(feed: Feed) {
         return this.feedService.fetch(feed.url).then(updatedFeed => {
             return this.storage.saveFeed(updatedFeed);
         });
     }
 
+    @async
     getEntriesForFeed(feedUrl) {
         return this.storage.getEntries({feed_url: feedUrl});
     }
 
     saveEntry(entry) {
-        this.toastMessage.next("Entry updated");
-        return this.storage.saveEntry(entry).then(()=> this.updateFeeds());
+        return this.storage.saveEntry(entry);
     }
 
     deleteFeed(feed) {
-        this.storage.deleteFeed(feed).then(() => {
-            this.updateFeeds();
-        });
+        return this.storage.deleteFeed(feed);
     }
 
     markAllRead(feed) {

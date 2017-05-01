@@ -1,6 +1,6 @@
 import {Component, Input} from "@angular/core";
 import {Entry} from "../models/entry";
-import {State} from "../reducers/feed-list";
+import {State} from "../reducers";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {OpenEntryAction} from "../actions/entry";

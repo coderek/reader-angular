@@ -9,4 +9,4 @@ export class OpenEntryAction implements Action {
     }
 }
 
-export type EntryActions = OpenEntryAction
+export type Actions = OpenEntryAction

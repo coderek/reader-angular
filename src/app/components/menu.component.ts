@@ -1,7 +1,7 @@
 import {Component, Input, OnChanges, OnInit, Output, EventEmitter, ChangeDetectionStrategy} from "@angular/core";
 import {Observable} from "rxjs";
 import {Feed} from "../models/feed";
-import * as fromFeeds from "../reducers/feed-list";
+import * as fromFeeds from "../reducers";
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
 

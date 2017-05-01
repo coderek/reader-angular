@@ -1,8 +1,10 @@
-from lxml.html.clean import Cleaner
-import feedparser
-from time import localtime
 from datetime import datetime, timedelta
-import subprocess
+from time import localtime
+
+import feedparser
+import requests
+from lxml.html.clean import Cleaner
+
 
 def test_feed(count):
     feed = """<?xml version="1.0" encoding="utf-8"?>
@@ -37,21 +39,20 @@ def fetch_feed(url, count):
     if url == test_feed_url:
         text = test_feed(count)
     else:
-        res = subprocess.run(['curl', url], stdout=subprocess.PIPE)
-        text = res.stdout.decode('utf-8')
-    
+        text = requests.get(url, timeout=10).text
+
     d = feedparser.parse(text)
-    
+
     feed = get_feed_obj(d)
     feed['entries'] = []
     feed['url'] = url
-    
+
     for _, entry_item in enumerate(d['entries']):
         try:
             feed['entries'].append(get_entry_obj(entry_item))
         except:
             pass
-    
+
     return feed
 
 
@@ -64,7 +65,7 @@ def get_feed_obj(source):
         )
     )
     last_modified = published_parsed
-    
+
     return {
         'title': f.get('title'),
         'description': f.get('description'),
@@ -85,12 +86,12 @@ def get_entry_obj(source):
         content = source.content[0].get('value')
     except:
         content = '<p></p>'
-    
+
     try:
         summary = source.description
     except:
         summary = '<p></p>'
-    
+
     return {
         'title': source.title,
         'url': source.link,

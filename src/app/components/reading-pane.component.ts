@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {Entry} from "../models/entry";
 import {Store} from "@ngrx/store";
-import {State} from "../reducers/feed-list";
+import {State} from "../reducers";
 import {Observable} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {SelectFeedAction} from "../actions/feeds";
@@ -9,8 +9,8 @@ import {SelectFeedAction} from "../actions/feeds";
 @Component({
     selector: 'reader-entries',
     template: `
-      <feed-entry [entry]="entry"  *ngFor="let entry of entries | async" class="entry" [ngClass]="{'read': entry.read}"></feed-entry>
-  `,
+      <feed-entry [entry]="entry" *ngFor="let entry of entries | async" class="entry" [ngClass]="{'read': entry.read}"></feed-entry>
+    `,
     styleUrls: ['./reading-pane.component.css']
 })
 export class ReadingPaneComponent implements OnInit {
@@ -28,8 +28,5 @@ export class ReadingPaneComponent implements OnInit {
                     this.store.dispatch(new SelectFeedAction(url));
             }
         })
-    }
-
-    onPullFeed() {
     }
 }

@@ -1,46 +1,41 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {ReaderService} from "../services/reader.service";
+import {Feed} from "../models/feed";
 @Component({
     selector: 'feed-toolbar',
     template: `
       Show : {{newItemsCount}} new items - all items
       <button (click)="onReadAll()">Mark all as read</button>
-      <button (click)="onPull(feed)">Refresh</button>
-      <button (click)="onDelete(feed)">Delete</button>
+      <button (click)="onPull()">Refresh</button>
+      <button (click)="onDelete()">Delete</button>
   `
 })
 export class ToolsComponent {
-
-    @Input()
-    feed;
-
     @Input()
     newItemsCount;
 
-    @Output()
-    onPullFeed = new EventEmitter<void>();
+    @Input()
+    feed: Feed;
 
     @Output()
-    onReadEntries = new EventEmitter<void>();
+    onPullFeed = new EventEmitter<Feed>();
 
     @Output()
-    onDeleteFeed = new EventEmitter<void>();
+    onReadEntries = new EventEmitter<Feed>();
 
-    constructor(private reader: ReaderService) {
-    }
+    @Output()
+    onDeleteFeed = new EventEmitter<Feed>();
 
-    onDelete(feed) {
-        if (confirm(`Are you sure to delete ${feed.title}`)) {
-            this.reader.deleteFeed(feed);
+    onDelete() {
+        if (confirm(`Are you sure to delete ${this.feed.title}`)) {
+            this.onDeleteFeed.next(this.feed);
         }
-        this.onDeleteFeed.next();
     }
 
-    onPull(feed) {
-        this.reader.pullFeed(feed).then(() => this.onPullFeed.next())
+    onPull() {
+        this.onPullFeed.next(this.feed);
     }
 
     onReadAll() {
-        this.onReadEntries.next();
+        this.onReadEntries.next(this.feed);
     }
 }

@@ -12,6 +12,7 @@ export class FeedService {
     }
 
     fetch(url) {
+        console.assert(url);
         return this.http.post(READER_SERVICE_SERVER, {url}).map(res => res.json()).toPromise();
     }
 }

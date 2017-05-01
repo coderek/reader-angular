@@ -2,10 +2,11 @@ import {NgModule, Injectable} from "@angular/core";
 import {AppComponent} from "./containers/app";
 import {ComponentsModule} from "./components";
 import {RouterModule, PreloadingStrategy, Route, Router} from "@angular/router";
-import {reducer} from "./reducers/feed-list";
+import {reducer} from "./reducers";
 import {StoreModule} from "@ngrx/store";
 import {BrowserModule} from "@angular/platform-browser";
 import {Observable} from "rxjs";
+import {SpinnerComponent} from "./containers/spinner";
 
 
 const routes = [
@@ -39,6 +40,7 @@ export class SelectivePreloadingStrategy implements PreloadingStrategy {
 @NgModule({
     declarations: [
         AppComponent,
+        SpinnerComponent
     ],
     imports: [
         BrowserModule,

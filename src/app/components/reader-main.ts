@@ -1,11 +1,17 @@
-import {Component, OnInit, OnDestroy} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
+import {Component} from "@angular/core";
+import {Observable} from "rxjs";
+import {Store} from "@ngrx/store";
+import {State} from "../reducers";
+import {Feed} from "../models/feed";
+import {ReaderService} from "../services/reader.service";
+import {LoadEntriesAction} from "../actions/feeds";
 
 @Component({
     selector: 'reader-main',
     template: `
-        <header>{{title}}</header>
-        <feed-toolbar [feed]="feed" [newItemsCount]="newItemsCount" (onPullFeed)="onPullFeed()" (onReadEntries)="onReadEntries()" (onDeleteFeed)="onDeleteFeed()"></feed-toolbar>
+        <header>{{(feed | async)?.title || title}}</header>
+        
+        <feed-toolbar *ngIf="feed | async" [feed]="feed | async" [newItemsCount]="newItemsCount" (onPullFeed)="onPullFeed($event)" (onReadEntries)="onReadEntries($event)" (onDeleteFeed)="onDeleteFeed($event)"></feed-toolbar>
         
         <router-outlet></router-outlet>
     `,
@@ -34,27 +40,27 @@ import {ActivatedRoute} from "@angular/router";
         `
     ]
 })
-export class ReaderMainComponent implements OnInit, OnDestroy {
+export class ReaderMainComponent {
     title = 'All feeds';
+    newItemsCount = 0;
+    feed: Observable<Feed>;
 
-    constructor(private route: ActivatedRoute) {
-        console.log('loaded')
+    constructor(private store: Store<State>,
+                private reader: ReaderService) {
+        this.feed = this.store.switchMap(s => Observable.of(s.feeds.find(f => f.url === s.selected)));
     }
 
-    ngOnDestroy() {
-        console.log('quit')
+    onPullFeed(feed: Feed) {
+        this.reader.pullFeed(feed).then(() => {
+            this.reader.getEntriesForFeed(feed.url).then(entries => {
+                this.store.dispatch(new LoadEntriesAction(entries));
+            })
+        })
     }
 
-    ngOnInit() {
-        this.route.params.subscribe(params => {
-            console.log(params);
-            // if (params['feed']) {
-            //     let url = decodeURIComponent(params['feed']);
-            //     let feed = feeds.find(f=> f.url == url);
-            //     if (feed)
-            //         this.store.dispatch(new SelectFeedAction(feed));
-            // }
-        }, console.log, console.error);
+    onReadEntries() {
     }
 
+    onDeleteFeed() {
+    }
 }

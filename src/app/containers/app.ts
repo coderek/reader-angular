@@ -1,14 +1,17 @@
 import {Component, ChangeDetectionStrategy, OnInit} from "@angular/core";
-import * as fromFeeds from "../reducers/feed-list";
 import {Store} from "@ngrx/store";
+import {State} from "../reducers";
 import {FetchAllCompleteAction, LoadEntriesAction} from "../actions/feeds";
 import {ReaderService} from "../services/reader.service";
 import {ActivatedRoute} from "@angular/router";
 import {Feed} from "../models/feed";
+import {MdSnackBar} from "@angular/material";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'reader-app',
     template: `
+        <spinner [spin]="spin | async"></spinner>
         <app-menu (onNewFeed)="onNewFeed($event)" [title]="'RSS Reader'"></app-menu>
         <div class="app-main-display">
             <router-outlet></router-outlet>
@@ -18,14 +21,19 @@ import {Feed} from "../models/feed";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-    constructor(private store: Store<fromFeeds.State>,
+    spin: Observable<boolean>;
+
+    constructor(private store: Store<State>,
                 private reader: ReaderService,
+                private snackbar: MdSnackBar,
                 private route: ActivatedRoute) {
         this.store.select(s => s.selected).subscribe(f => {
             this.reader.getEntriesForFeed(f).then(entries => {
                 this.store.dispatch(new LoadEntriesAction(entries));
             })
         });
+
+        this.spin = this.store.select(s => s.loading);
     }
 
     ngOnInit() {
