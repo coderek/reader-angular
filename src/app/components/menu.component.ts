@@ -1,9 +1,40 @@
-import {Component, Input, OnChanges, OnInit, Output, EventEmitter, ChangeDetectionStrategy} from "@angular/core";
-import {Observable} from "rxjs";
+import {
+    Component,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    EventEmitter,
+    ChangeDetectionStrategy,
+    OnDestroy
+} from "@angular/core";
+import {Observable, Subscription} from "rxjs";
 import {Feed} from "../models/feed";
 import * as fromFeeds from "../reducers";
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
+import {ReaderService} from "../services/reader.service";
+
+@Component({
+    selector: 'feed-item',
+    template: `
+        <div (click)="link(feed)">{{feed.title}} ({{feed.unreadCount}}) <span *ngIf="feed.loading" class="spinner-text">loading...</span></div>
+    `
+})
+export class FeedItemView {
+    @Input() feed: Feed;
+
+    constructor(private router: Router) {
+
+    }
+
+    link(feed) {
+        this.router.navigate(['feeds', encodeURIComponent(feed.url)]);
+    }
+}
+
+
+
 
 @Component({
     selector: 'app-menu',
@@ -11,21 +42,24 @@ import {Router} from "@angular/router";
     <header>
       <h1 routerLink="/">{{title}}</h1>
     </header>
-    <button (click)="openDialog()">Add a subscription</button>
+    <add-feed-button></add-feed-button>
     <ul>
-      <li (click)="openFavorite()" [ngClass]="{'selected': selected === 'favorites'}" >Favorites</li>
+      <li routerLink="/feeds/favorites" routerLinkActive="selected" >Favorites</li>
     </ul>
-    <ul>
+    <ul class="feed-list">
       <li><b>Subscriptions</b></li>
       <li [ngClass]="{'selected': (selected | async) === feed.url}" *ngFor="let feed of feeds | async">
-        <div (click)="link(feed)">{{feed.title}} ({{feed.unreadCount}})</div>
+        <feed-item [feed]="feed"></feed-item>
       </li>
     </ul>
+    <footer>
+        <button (click)="pullAll()">Pull all</button>
+    </footer>
   `,
     styleUrls: ['./menu.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuComponent implements OnChanges, OnInit {
+export class MenuComponent implements OnChanges, OnInit, OnDestroy {
     @Input()
     title;
 
@@ -35,18 +69,17 @@ export class MenuComponent implements OnChanges, OnInit {
     feeds: Observable<Feed[]>;
     selected: Observable<string>;
 
-    constructor(private store: Store<fromFeeds.State>, private router: Router) {
+    currentFeeds: Feed[] = [];
+    currentFeedsSubscription: Subscription;
+
+    constructor(private store: Store<fromFeeds.State>, private router: Router, private reader: ReaderService) {
         this.feeds = store.select(s => s.feeds);
         this.selected = store.select(s => s.selected);
+        this.currentFeedsSubscription = this.feeds.subscribe(feeds => {
+            this.currentFeeds = feeds;
+        })
     }
 
-    link(feed) {
-        this.router.navigate(['feeds', encodeURIComponent(feed.url)]);
-    }
-
-    openFavorite() {
-        // this.router.navigate(['feeds', {favorites: '1'}]);
-    }
 
     openDialog() {
         let url = prompt("Feed url: ");
@@ -55,8 +88,16 @@ export class MenuComponent implements OnChanges, OnInit {
         }
     }
 
+    pullAll() {
+        this.currentFeeds.forEach((feed: Feed) => {
+        })
+    }
     ngOnInit() {
     }
     ngOnChanges() {
+    }
+
+    ngOnDestroy() {
+        this.currentFeedsSubscription.unsubscribe();
     }
 }

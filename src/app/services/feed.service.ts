@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {Http, Headers} from "@angular/http";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/toPromise";
 
-const READER_SERVICE_SERVER = 'http://localhost:5000';
+const READER_SERVICE_SERVER = 'http://localhost:8000/reader-service/';
 
 @Injectable()
 export class FeedService {
@@ -13,6 +13,9 @@ export class FeedService {
 
     fetch(url) {
         console.assert(url);
-        return this.http.post(READER_SERVICE_SERVER, {url}).map(res => res.json()).toPromise();
+        let headers = new Headers({
+            'Content-type': 'application/x-www-form-urlencoded',
+        });
+        return this.http.post(READER_SERVICE_SERVER, `url=${encodeURIComponent(url)}`, {headers}).map(res => res.json()).toPromise();
     }
 }

@@ -5,6 +5,8 @@ import {State} from "../reducers";
 import {Feed} from "../models/feed";
 import {ReaderService} from "../services/reader.service";
 import {LoadEntriesAction} from "../actions/feeds";
+import {Router} from "@angular/router";
+import {DeleteFeedAction} from "../actions/feed";
 
 @Component({
     selector: 'reader-main',
@@ -19,6 +21,7 @@ import {LoadEntriesAction} from "../actions/feeds";
         `
         :host {
             display: flex;
+            flex: 1 1;
             flex-direction: column;
             height: 100%;
         }
@@ -46,7 +49,8 @@ export class ReaderMainComponent {
     feed: Observable<Feed>;
 
     constructor(private store: Store<State>,
-                private reader: ReaderService) {
+                private reader: ReaderService,
+                private router: Router,) {
         this.feed = this.store.switchMap(s => Observable.of(s.feeds.find(f => f.url === s.selected)));
     }
 
@@ -61,6 +65,10 @@ export class ReaderMainComponent {
     onReadEntries() {
     }
 
-    onDeleteFeed() {
+    onDeleteFeed(feed: Feed) {
+        this.reader.deleteFeed(feed).then(async() => {
+            this.store.dispatch(new DeleteFeedAction(feed));
+            this.router.navigate(['feeds']);
+        })
     }
 }

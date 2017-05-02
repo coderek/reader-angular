@@ -71,7 +71,7 @@ export class ReaderService {
     }
 
     @async
-    pullFeed(feed: Feed) {
+    pullFeed(feed: Feed): Promise<Feed> {
         return this.feedService.fetch(feed.url).then(updatedFeed => {
             return this.storage.saveFeed(updatedFeed);
         });
@@ -94,6 +94,7 @@ export class ReaderService {
         this.storage.markAllRead(feed);
     }
 
+    @async
     getFavorites() {
         return this.storage.getEntries({favorite: true});
     }

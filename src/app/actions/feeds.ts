@@ -8,7 +8,14 @@ export const FETCH_ALL = '[Feeds] fetch all';
 export const FETCH_ALL_COMPLETE = '[Feeds] fetch all complete';
 export const SELECT_FEED = '[Feeds] select';
 export const LOAD_ENTRIES = '[Entries] load';
+export const LOAD_FAVORITES = '[Entries] load favorites';
 
+export class LoadFavoritesAction implements Action {
+    readonly type = LOAD_FAVORITES;
+
+    constructor(public payload: Entry[]) {
+    }
+}
 
 export class LoadEntriesAction implements Action {
     readonly type = LOAD_ENTRIES;

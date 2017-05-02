@@ -15,6 +15,7 @@ import {Observable} from "rxjs";
         <app-menu (onNewFeed)="onNewFeed($event)" [title]="'RSS Reader'"></app-menu>
         <div class="app-main-display">
             <router-outlet></router-outlet>
+            <footer></footer>
         </div>
     `,
     styleUrls: ['./app.css'],
@@ -44,12 +45,6 @@ export class AppComponent implements OnInit {
         return this.reader.getFeeds().then(feeds => {
             this.store.dispatch(new FetchAllCompleteAction(feeds));
             return feeds;
-        })
-    }
-
-    onNewFeed(url) {
-        this.reader.addFeed(url).then(() => {
-            this.loadAllFeeds();
         })
     }
 }

@@ -1,7 +1,7 @@
 import {NgModule} from "@angular/core";
 import {MaterialModule} from "@angular/material";
 import {ReadingPaneComponent} from "./reading-pane.component";
-import {MenuComponent} from "./menu.component";
+import {MenuComponent, FeedItemView} from "./menu.component";
 import {PrettyDatePipe} from "../pipes/pretty-date";
 import {HashPipe} from "../pipes/hash";
 import {ArticleComponent} from "./article.component";
@@ -16,6 +16,8 @@ import {EmptyPaneComponent} from "./empty.component";
 import {ReaderMainComponent} from "./reader-main";
 import {CommonModule} from "@angular/common";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {AddFeedButtonComponent, NewFeedFormComponent} from "./add-button.component";
+import {FormsModule} from "@angular/forms";
 
 const COMPONENTS = [
     MenuComponent,
@@ -28,18 +30,26 @@ const COMPONENTS = [
     EncodeUrlPipe,
     EmptyPaneComponent,
     ReaderMainComponent,
+    AddFeedButtonComponent,
+    NewFeedFormComponent,
+    FeedItemView,
 ];
 
 @NgModule({
     imports: [
         CommonModule,
         MaterialModule,
+        FormsModule,
         BrowserAnimationsModule,
         RouterModule.forChild([
             {
                 path: 'feeds',
                 component: ReaderMainComponent,
                 children: [
+                    {
+                        path: 'favorites',
+                        component: ReadingPaneComponent,
+                    },
                     {
                         path: ':feed',
                         component: ReadingPaneComponent,
@@ -58,6 +68,7 @@ const COMPONENTS = [
         RouterModule,
         MenuComponent
     ],
+    entryComponents: [NewFeedFormComponent],
     providers: [ReaderService, FeedService, StorageService]
 })
 export class ComponentsModule {

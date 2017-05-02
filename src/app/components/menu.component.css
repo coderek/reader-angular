@@ -8,6 +8,13 @@ ul {
     border-top: 1px solid #c2cff1;
 }
 
+.feed-list {
+    flex: 1 0;
+}
+
+.spinner-text {
+    font-size: 80%;
+}
 header {
     margin-left: 10px;
     flex: none;
@@ -22,7 +29,7 @@ ul li:hover {
     cursor: pointer;
 }
 
-button {
+add-feed-button {
     margin: 0 10px;
 }
 

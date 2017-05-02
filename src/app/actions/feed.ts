@@ -1,39 +1,42 @@
 import {Action} from "@ngrx/store";
-export const READ = '[Feed] read';
-export const FAVORITE = '[Feed] favorite';
-export const DELETE = '[Feed] delete';
-export const FETCH = '[Feed] fetch';
+import {Feed} from "../models/feed";
+export const READ_FEED = '[Feed] read';
+export const FAVORITE_FEED = '[Feed] favorite';
+export const DELETE_FEED = '[Feed] delete';
 
 export class ReadFeedAction implements Action {
-    readonly type = READ;
+    readonly type = READ_FEED;
     // feed id
-    constructor(public payload: number) {
+    constructor(public payload: Feed) {
+    }
+}
+
+export const PULL_FEED = '[Feed] pull';
+
+export class PullFeedAction implements Action {
+    readonly type = PULL_FEED;
+
+    constructor(public payload: Feed) {
     }
 }
 
 export class FavoriteFeedAction implements Action {
-    readonly type = FAVORITE;
+    readonly type = FAVORITE_FEED;
     // feed id
-    constructor(public payload: number) {
+    constructor(public payload: Feed) {
     }
 }
 
 export class DeleteFeedAction implements Action {
-    readonly type = DELETE;
+    readonly type = DELETE_FEED;
 
-    constructor(public payload: number) {
+    constructor(public payload: Feed) {
     }
 }
 
-export class FetchFeedAction implements Action {
-    readonly type = FETCH;
-
-    constructor(public payload: number) {
-    }
-}
 
 export type Actions
     = ReadFeedAction
     | FavoriteFeedAction
     | DeleteFeedAction
-    | FetchFeedAction;
+    | PullFeedAction

@@ -10,6 +10,12 @@
     flex-direction: row;
 }
 
+:host /deep/ footer {
+    height: 30px;
+    background-color: #e8e8ea;
+    border-top: 1px solid #b9b8b8;
+}
+
 .body {
 }
 

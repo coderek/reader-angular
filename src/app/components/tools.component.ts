@@ -5,7 +5,7 @@ import {Feed} from "../models/feed";
     template: `
       Show : {{newItemsCount}} new items - all items
       <button (click)="onReadAll()">Mark all as read</button>
-      <button (click)="onPull()">Refresh</button>
+      <button (click)="onPull()">Pull</button>
       <button (click)="onDelete()">Delete</button>
   `
 })

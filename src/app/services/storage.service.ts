@@ -97,7 +97,7 @@ export class StorageService {
         })
     }
 
-    saveFeed(feed) {
+    saveFeed(feed): Promise<Feed> {
         let transaction = this.db.transaction(['entries', 'feeds'], 'readwrite');
         let date = new Date();
         feed.entries.forEach(entry => {
@@ -128,7 +128,7 @@ export class StorageService {
         transaction.objectStore('feeds').put(feed);
         return new Promise((res, rej) => {
             transaction.oncomplete = () => {
-                res();
+                res(feed);
                 console.log('Saved entries');
             };
             transaction.onerror = rej;

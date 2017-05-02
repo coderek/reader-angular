@@ -4,6 +4,7 @@ import {State} from "../reducers";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {OpenEntryAction} from "../actions/entry";
+import {ReaderService} from "../services/reader.service";
 @Component({
     template: `
         <div>
@@ -24,7 +25,7 @@ export class EntryComponent {
     @Input() entry: Entry;
     isOpen: Observable<boolean>;
 
-    constructor(private store: Store<State>) {
+    constructor(private store: Store<State>, private reader: ReaderService) {
         this.isOpen = store.switchMap(s => {
             console.log(s.openedEntry === this.entry);
             return Observable.of(s.openedEntry === this.entry);
@@ -43,6 +44,10 @@ export class EntryComponent {
         window.open(url, '_blank');
     }
 
+    toggleStarEntry(entry) {
+        entry.favorite = !entry.favorite;
+        this.reader.saveEntry(entry);
+    }
     toggleEntry(entry) {
         this.store.dispatch(new OpenEntryAction(entry));
     }
