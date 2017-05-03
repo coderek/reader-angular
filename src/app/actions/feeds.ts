@@ -1,35 +1,30 @@
 import {Action} from "@ngrx/store";
 import {Feed} from "../models/feed";
-import {Entry} from "../models/entry";
 
 export const ADD = '[Feeds] add';
 export const ADD_COMPLETE = '[Feeds] add complete';
-export const FETCH_ALL = '[Feeds] fetch all';
-export const FETCH_ALL_COMPLETE = '[Feeds] fetch all complete';
-export const SELECT_FEED = '[Feeds] select';
-export const LOAD_ENTRIES = '[Entries] load';
-export const LOAD_FAVORITES = '[Entries] load favorites';
+export const DELETE_FEED = '[Feed] delete';
+export const LOAD = '[Feeds] load';
+export const LOAD_COMPLETE = '[Feeds] load complete';
 
-export class LoadFavoritesAction implements Action {
-    readonly type = LOAD_FAVORITES;
+export class Load implements Action {
+    readonly type = LOAD;
+}
 
-    constructor(public payload: Entry[]) {
+export class LoadComplete implements Action {
+    readonly type = LOAD_COMPLETE;
+
+    constructor(public payload: Feed[]) {
     }
 }
 
-export class LoadEntriesAction implements Action {
-    readonly type = LOAD_ENTRIES;
+export class Delete implements Action {
+    readonly type = DELETE_FEED;
 
-    constructor(public payload: Entry[]) {
+    constructor(public payload: Feed) {
     }
 }
 
-export class SelectFeedAction implements Action {
-    readonly type = SELECT_FEED;
-
-    constructor(public payload: string) {
-    }
-}
 
 export class AddFeedAction implements Action {
     readonly type = ADD;
@@ -45,15 +40,22 @@ export class AddFeedCompleteAction implements Action {
     }
 }
 
-export class FetchAllAction implements Action {
-    readonly type = FETCH_ALL;
-}
+export type Actions = Load | LoadComplete | AddFeedAction | AddFeedCompleteAction | Delete;
 
-export class FetchAllCompleteAction implements Action {
-    readonly type = FETCH_ALL_COMPLETE;
 
-    constructor(public payload: Feed[]) {
+const initial = [];
+
+export function reducer(state: Feed[] = initial, action: Actions): Feed[] {
+
+    switch (action.type) {
+        case ADD_COMPLETE:
+            return [...state, action.payload];
+        case LOAD_COMPLETE:
+            return action.payload;
+        case DELETE_FEED:
+            return state.filter(s => s.url != action.payload.url);
+        default:
+            return state;
     }
 }
 
-export type Actions = AddFeedAction | AddFeedCompleteAction | FetchAllAction | FetchAllCompleteAction | SelectFeedAction | LoadEntriesAction;

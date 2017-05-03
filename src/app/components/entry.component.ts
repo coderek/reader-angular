@@ -3,7 +3,6 @@ import {Entry} from "../models/entry";
 import {State} from "../reducers";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
-import {OpenEntryAction} from "../actions/entry";
 import {ReaderService} from "../services/reader.service";
 @Component({
     template: `
@@ -26,10 +25,10 @@ export class EntryComponent {
     isOpen: Observable<boolean>;
 
     constructor(private store: Store<State>, private reader: ReaderService) {
-        this.isOpen = store.switchMap(s => {
-            console.log(s.openedEntry === this.entry);
-            return Observable.of(s.openedEntry === this.entry);
-        });
+        // this.isOpen = store.switchMap(s => {
+        // console.log(s.openedEntry === this.entry);
+        // return Observable.of(s.openedEntry === this.entry);
+        // });
     }
 
     getContent(entry) {
@@ -49,6 +48,6 @@ export class EntryComponent {
         this.reader.saveEntry(entry);
     }
     toggleEntry(entry) {
-        this.store.dispatch(new OpenEntryAction(entry));
+        // this.store.dispatch(new ReadEntryAction(entry));
     }
 }

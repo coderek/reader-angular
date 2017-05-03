@@ -18,22 +18,12 @@ import {ReaderService} from "../services/reader.service";
 @Component({
     selector: 'feed-item',
     template: `
-        <div (click)="link(feed)">{{feed.title}} ({{feed.unreadCount}}) <span *ngIf="feed.loading" class="spinner-text">loading...</span></div>
+        {{feed.title}} ({{feed.unreadCount}}) <span *ngIf="feed.loading" class="spinner-text">loading...</span>
     `
 })
 export class FeedItemView {
     @Input() feed: Feed;
-
-    constructor(private router: Router) {
-
-    }
-
-    link(feed) {
-        this.router.navigate(['feeds', encodeURIComponent(feed.url)]);
-    }
 }
-
-
 
 
 @Component({
@@ -48,7 +38,7 @@ export class FeedItemView {
     </ul>
     <ul class="feed-list">
       <li><b>Subscriptions</b></li>
-      <li [ngClass]="{'selected': (selected | async) === feed.url}" *ngFor="let feed of feeds | async">
+      <li routerLinkActive="selected" *ngFor="let feed of feeds | async" routerLink="feeds/{{feed.url | hash}}">
         <feed-item [feed]="feed"></feed-item>
       </li>
     </ul>
@@ -67,19 +57,16 @@ export class MenuComponent implements OnChanges, OnInit, OnDestroy {
     onNewFeed = new EventEmitter<string>();
 
     feeds: Observable<Feed[]>;
-    selected: Observable<string>;
 
     currentFeeds: Feed[] = [];
     currentFeedsSubscription: Subscription;
 
     constructor(private store: Store<fromFeeds.State>, private router: Router, private reader: ReaderService) {
         this.feeds = store.select(s => s.feeds);
-        this.selected = store.select(s => s.selected);
         this.currentFeedsSubscription = this.feeds.subscribe(feeds => {
             this.currentFeeds = feeds;
         })
     }
-
 
     openDialog() {
         let url = prompt("Feed url: ");

@@ -18,6 +18,9 @@ import {CommonModule} from "@angular/common";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {AddFeedButtonComponent, NewFeedFormComponent} from "./add-button.component";
 import {FormsModule} from "@angular/forms";
+import {LoadFeedsEffects} from "../effects/load-feeds";
+import {EffectsModule} from "@ngrx/effects";
+import {LoadEntriesEffect} from "../effects/load-entries";
 
 const COMPONENTS = [
     MenuComponent,
@@ -41,6 +44,8 @@ const COMPONENTS = [
         MaterialModule,
         FormsModule,
         BrowserAnimationsModule,
+        EffectsModule.run(LoadFeedsEffects),
+        EffectsModule.run(LoadEntriesEffect),
         RouterModule.forChild([
             {
                 path: 'feeds',

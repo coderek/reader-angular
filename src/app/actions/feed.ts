@@ -1,42 +1,52 @@
 import {Action} from "@ngrx/store";
 import {Feed} from "../models/feed";
-export const READ_FEED = '[Feed] read';
-export const FAVORITE_FEED = '[Feed] favorite';
-export const DELETE_FEED = '[Feed] delete';
+import {Entry} from "../models/entry";
+export const READ_ALL_ENTRIES = '[Feed] read all entries';
+export const PULL_FEED = '[Feed] pull';
+export const PULL_FEED_FINISHED = '[Feed] pull finished';
 
-export class ReadFeedAction implements Action {
-    readonly type = READ_FEED;
-    // feed id
+export class Read implements Action {
+    readonly type = READ_ALL_ENTRIES;
     constructor(public payload: Feed) {
     }
 }
 
-export const PULL_FEED = '[Feed] pull';
-
-export class PullFeedAction implements Action {
+export class Pull implements Action {
     readonly type = PULL_FEED;
 
     constructor(public payload: Feed) {
     }
 }
 
-export class FavoriteFeedAction implements Action {
-    readonly type = FAVORITE_FEED;
-    // feed id
-    constructor(public payload: Feed) {
-    }
-}
+export class PullFinished implements Action {
+    readonly type = PULL_FEED_FINISHED;
 
-export class DeleteFeedAction implements Action {
-    readonly type = DELETE_FEED;
-
-    constructor(public payload: Feed) {
+    constructor(public payload: Entry[]) {
     }
 }
 
 
-export type Actions
-    = ReadFeedAction
-    | FavoriteFeedAction
-    | DeleteFeedAction
-    | PullFeedAction
+export type FeedActions = Read  | Pull | PullFinished;
+
+const initial = {
+    title: '',
+    description: '',
+    etag: '',
+    url: '',
+    last_modified: null,
+    last_pull: null,
+    unreadCount: 0
+};
+
+export function reducer(state: Feed = initial, action: FeedActions): Feed {
+    switch (action.type) {
+        case READ_ALL_ENTRIES:
+            return Object.assign(state, {unreadCount: 0});
+        case PULL_FEED:
+            return Object.assign(state, {loading: true});
+        case PULL_FEED_FINISHED:
+            return Object.assign(state, {loading: false});
+        default:
+            return state;
+    }
+}

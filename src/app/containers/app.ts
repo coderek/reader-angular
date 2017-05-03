@@ -1,12 +1,11 @@
 import {Component, ChangeDetectionStrategy, OnInit} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {State} from "../reducers";
-import {FetchAllCompleteAction, LoadEntriesAction} from "../actions/feeds";
 import {ReaderService} from "../services/reader.service";
 import {ActivatedRoute} from "@angular/router";
-import {Feed} from "../models/feed";
 import {MdSnackBar} from "@angular/material";
 import {Observable} from "rxjs";
+import {Load} from "../actions/feeds";
 
 @Component({
     selector: 'reader-app',
@@ -29,22 +28,20 @@ export class AppComponent implements OnInit {
                 private snackbar: MdSnackBar,
                 private route: ActivatedRoute) {
         this.store.select(s => s.selected).subscribe(f => {
+
             this.reader.getEntriesForFeed(f).then(entries => {
-                this.store.dispatch(new LoadEntriesAction(entries));
+                // this.store.dispatch(new LoadEntriesAction(entries));
             })
         });
 
-        this.spin = this.store.select(s => s.loading);
+        // this.spin = this.store.select(s => s.loading);
     }
 
     ngOnInit() {
         this.loadAllFeeds();
     }
 
-    loadAllFeeds(): Promise<Feed[]> {
-        return this.reader.getFeeds().then(feeds => {
-            this.store.dispatch(new FetchAllCompleteAction(feeds));
-            return feeds;
-        })
+    loadAllFeeds() {
+        this.store.dispatch(new Load());
     }
 }

@@ -1,20 +1,14 @@
 import {Component} from "@angular/core";
-import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
 import {State} from "../reducers";
 import {Feed} from "../models/feed";
 import {ReaderService} from "../services/reader.service";
-import {LoadEntriesAction} from "../actions/feeds";
 import {Router} from "@angular/router";
-import {DeleteFeedAction} from "../actions/feed";
 
 @Component({
     selector: 'reader-main',
     template: `
         <header>{{(feed | async)?.title || title}}</header>
-        
-        <feed-toolbar *ngIf="feed | async" [feed]="feed | async" [newItemsCount]="newItemsCount" (onPullFeed)="onPullFeed($event)" (onReadEntries)="onReadEntries($event)" (onDeleteFeed)="onDeleteFeed($event)"></feed-toolbar>
-        
         <router-outlet></router-outlet>
     `,
     styles: [
@@ -46,18 +40,16 @@ import {DeleteFeedAction} from "../actions/feed";
 export class ReaderMainComponent {
     title = 'All feeds';
     newItemsCount = 0;
-    feed: Observable<Feed>;
 
     constructor(private store: Store<State>,
                 private reader: ReaderService,
                 private router: Router,) {
-        this.feed = this.store.switchMap(s => Observable.of(s.feeds.find(f => f.url === s.selected)));
     }
 
     onPullFeed(feed: Feed) {
         this.reader.pullFeed(feed).then(() => {
             this.reader.getEntriesForFeed(feed.url).then(entries => {
-                this.store.dispatch(new LoadEntriesAction(entries));
+                // this.store.dispatch(new LoadEntriesAction(entries));
             })
         })
     }
@@ -67,7 +59,7 @@ export class ReaderMainComponent {
 
     onDeleteFeed(feed: Feed) {
         this.reader.deleteFeed(feed).then(async() => {
-            this.store.dispatch(new DeleteFeedAction(feed));
+            // this.store.dispatch(new DeleteFeedAction(feed));
             this.router.navigate(['feeds']);
         })
     }

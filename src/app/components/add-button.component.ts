@@ -2,7 +2,6 @@ import {Component} from "@angular/core";
 import {MdDialog, MdDialogRef} from "@angular/material";
 import {NgForm} from "@angular/forms";
 import {ReaderService} from "../services/reader.service";
-import {FetchAllCompleteAction} from "../actions/feeds";
 import {Store} from "@ngrx/store";
 import {State} from "../reducers/index";
 import {ShowSuccessAction} from "../actions/global";
@@ -69,7 +68,7 @@ export class NewFeedFormComponent {
         this.reader.addFeed(feedUrl).then(() => {
             this.store.dispatch(new ShowSuccessAction('Feed added successfully!'));
             return this.reader.getFeeds().then(feeds => {
-                this.store.dispatch(new FetchAllCompleteAction(feeds));
+                // this.store.dispatch(new FetchAllCompleteAction(feeds));
                 return feeds;
             })
         }, err => {

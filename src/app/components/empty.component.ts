@@ -1,5 +1,4 @@
 import {Component} from "@angular/core";
-import {SelectFeedAction} from "../actions/feeds";
 import {Store} from "@ngrx/store";
 import {State} from "../reducers";
 
@@ -12,6 +11,6 @@ import {State} from "../reducers";
 export class EmptyPaneComponent {
 
     constructor(private store: Store<State>) {
-        store.dispatch(new SelectFeedAction(null));
+        // store.dispatch(new SelectFeedAction(null));
     }
 }
