@@ -3,6 +3,7 @@ import {Entry} from "../models/entry";
 import {Action, combineReducers} from "@ngrx/store";
 import {reducer as feedsReducer} from "../actions/feeds";
 import {reducer as entriesReducer} from "../actions/entries";
+import {START_LOADING, END_LOADING} from "../actions/global";
 
 export const SELECT_FEED = '[Feeds] select';
 
@@ -23,6 +24,7 @@ export class ShowSuccessMessage implements Action {
 
 export interface State {
     feeds: Feed[];
+    loading: false;
     entries: Entry[];
     success_message: string;
 }
@@ -34,6 +36,10 @@ export function valueReducer(state, action) {
             return action.payload;
         case SUCCESS_MESSAGE:
             return action.payload;
+        case START_LOADING:
+            return true;
+        case END_LOADING:
+            return false;
         default:
             return state;
     }
@@ -41,6 +47,7 @@ export function valueReducer(state, action) {
 
 export const reducer = combineReducers({
     feeds: feedsReducer,
+    loading: valueReducer,
     entries: entriesReducer,
     success_message: valueReducer,
 });

@@ -19,6 +19,3 @@ export class StartLoadingAction implements Action {
 export class StopLoadingAction implements Action {
     readonly type = END_LOADING;
 }
-
-
-export type Actions = ShowSuccessAction | StartLoadingAction | StopLoadingAction;

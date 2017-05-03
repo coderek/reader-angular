@@ -5,7 +5,8 @@ import {FeedActions, READ_ALL_ENTRIES, PULL_FEED_FINISHED} from "./feed";
 
 const LOAD_ENTRIES_COMPLETE = '[Entries] load complete';
 export const LOAD_ENTRIES = '[Entries] load';
-const LOAD_FAVORITES = '[Entries] load favorites';
+export const LOAD_FAVORITES = '[Entries] load favorites';
+const LOAD_FAVORITES_COMPLETE = '[Entries] load favorites complete';
 
 export class LoadAllForFeedComplete implements Action {
     readonly type = LOAD_ENTRIES_COMPLETE;
@@ -22,13 +23,17 @@ export class LoadEntries implements Action {
 }
 
 export class LoadFavorites implements Action {
-    readonly type = LOAD_FAVORITES;
+    readonly type = LOAD_FAVORITES
+}
+
+export class LoadFavoritesComplete implements Action {
+    readonly type = LOAD_FAVORITES_COMPLETE;
 
     constructor(public payload: Entry[]) {
     }
 }
 
-type EntriesActions = LoadAllForFeedComplete | LoadFavorites;
+type EntriesActions = LoadAllForFeedComplete | LoadFavorites | LoadFavoritesComplete;
 
 
 const initial = [];
@@ -41,7 +46,7 @@ export function reducer(state = initial, action: EntriesActions | EntryActions |
                 console.assert(feed.url === s.feed_url);
                 return Object.assign(s, {read: true});
             });
-        case LOAD_FAVORITES:
+        case LOAD_FAVORITES_COMPLETE:
         case LOAD_ENTRIES_COMPLETE:
         case PULL_FEED_FINISHED:
             return action.payload;

@@ -2,8 +2,6 @@ import {Component, ChangeDetectionStrategy, OnInit} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {State} from "../reducers";
 import {ReaderService} from "../services/reader.service";
-import {ActivatedRoute} from "@angular/router";
-import {MdSnackBar} from "@angular/material";
 import {Observable} from "rxjs";
 import {Load} from "../actions/feeds";
 
@@ -24,17 +22,8 @@ export class AppComponent implements OnInit {
     spin: Observable<boolean>;
 
     constructor(private store: Store<State>,
-                private reader: ReaderService,
-                private snackbar: MdSnackBar,
-                private route: ActivatedRoute) {
-        this.store.select(s => s.selected).subscribe(f => {
-
-            this.reader.getEntriesForFeed(f).then(entries => {
-                // this.store.dispatch(new LoadEntriesAction(entries));
-            })
-        });
-
-        // this.spin = this.store.select(s => s.loading);
+                private reader: ReaderService,) {
+        this.spin = this.store.select(s => s.loading);
     }
 
     ngOnInit() {

@@ -27,13 +27,6 @@ import {Router} from "@angular/router";
             line-height: 30px;
             background-color: #c2cff1;
         }
-        feed-toolbar {
-            /*height: 40px;*/
-            flex: none;
-            margin: 10px 10px 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #d8d4d4;
-        }
         `
     ]
 })

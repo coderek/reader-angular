@@ -2,6 +2,9 @@ md-icon {
     font-size: 12px;
 }
 
+.read {
+    color: #888888;
+}
 article /deep/ pre {
     max-width: 100%;
     overflow: auto;
