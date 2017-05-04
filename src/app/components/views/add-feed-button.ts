@@ -1,10 +1,10 @@
 import {Component} from "@angular/core";
 import {MdDialog, MdDialogRef} from "@angular/material";
 import {NgForm} from "@angular/forms";
-import {ReaderService} from "../services/reader.service";
+import {ReaderService} from "../../services/reader.service";
 import {Store} from "@ngrx/store";
-import {State} from "../reducers/index";
-import {ShowSuccessAction} from "../actions/global";
+import {State} from "../../reducers/index";
+import {AddFeedAction} from "../../reducers/feeds";
 
 
 @Component({
@@ -65,15 +65,7 @@ export class NewFeedFormComponent {
 
     onSubmit(form: NgForm) {
         let {feedUrl} = form.value;
-        this.reader.addFeed(feedUrl).then(() => {
-            this.store.dispatch(new ShowSuccessAction('Feed added successfully!'));
-            return this.reader.getFeeds().then(feeds => {
-                // this.store.dispatch(new FetchAllCompleteAction(feeds));
-                return feeds;
-            })
-        }, err => {
-            console.log(err)
-        });
+        this.store.dispatch(new AddFeedAction(feedUrl));
         this.dialogRef.close();
     }
 }

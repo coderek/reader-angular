@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {Feed} from "../models/feed";
+import {Feed} from "../../models/feed";
 @Component({
     selector: 'feed-toolbar',
     template: `
@@ -14,28 +14,28 @@ export class ToolsComponent {
     newItemsCount;
 
     @Input()
-    feed: Feed;
+    feedUrl: string;
 
     @Output()
-    onPullFeed = new EventEmitter<Feed>();
+    onPullFeed = new EventEmitter<string>();
 
     @Output()
-    onReadEntries = new EventEmitter<Feed>();
+    onReadEntries = new EventEmitter<string>();
 
     @Output()
-    onDeleteFeed = new EventEmitter<Feed>();
+    onDeleteFeed = new EventEmitter<string>();
 
     onDelete() {
-        if (confirm(`Are you sure to delete ${this.feed.title}`)) {
-            this.onDeleteFeed.next(this.feed);
+        if (confirm(`Are you sure to delete`)) {
+            this.onDeleteFeed.next(this.feedUrl);
         }
     }
 
     onPull() {
-        this.onPullFeed.next(this.feed);
+        this.onPullFeed.next(this.feedUrl);
     }
 
     onReadAll() {
-        this.onReadEntries.next(this.feed);
+        this.onReadEntries.next(this.feedUrl);
     }
 }

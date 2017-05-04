@@ -9,11 +9,11 @@ import {
     OnDestroy
 } from "@angular/core";
 import {Observable, Subscription} from "rxjs";
-import {Feed} from "../models/feed";
-import * as fromFeeds from "../reducers";
+import {Feed} from "../../models/feed";
+import * as fromFeeds from "../../reducers";
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
-import {ReaderService} from "../services/reader.service";
+import {ReaderService} from "../../services/reader.service";
 
 @Component({
     selector: 'feed-item',
@@ -46,7 +46,7 @@ export class FeedItemView {
         <button (click)="pullAll()">Pull all</button>
     </footer>
   `,
-    styleUrls: ['./menu.component.css'],
+    styleUrls: ['menu.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuComponent implements OnChanges, OnInit, OnDestroy {

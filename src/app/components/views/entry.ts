@@ -1,9 +1,10 @@
 import {Component, Input} from "@angular/core";
-import {Entry} from "../models/entry";
-import {State} from "../reducers";
+import {Entry} from "../../models/entry";
 import {Store} from "@ngrx/store";
-import {ReaderService} from "../services/reader.service";
-import {Router} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
+import {Favorite} from "../../reducers/entry";
+import {State, selectors} from "../../reducers/index";
+import {Observable} from "rxjs";
 @Component({
     template: `
         <div>
@@ -15,16 +16,17 @@ import {Router} from "@angular/router";
           </span>
           <md-icon (click)="open(entry.url)">link</md-icon>
         </div>
-        <article *ngIf="isOpen" [innerHTML]="getContent(entry)"></article>
-`,
+        <article *ngIf="obIsOpen | async" [innerHTML]="getContent(entry)"></article>
+    `,
     selector: 'feed-entry',
-    styleUrls: ['./entry.css']
+    styleUrls: ['entry.css']
 })
 export class EntryComponent {
     @Input() entry: Entry;
-    @Input() isOpen;
+    obIsOpen: Observable<boolean>;
 
-    constructor(private store: Store<State>, private reader: ReaderService, private router: Router) {
+    constructor(private store: Store<State>, private route: ActivatedRoute, private router: Router) {
+        this.obIsOpen = this.store.select(selectors.selectedEntry).map(entryUrl=> entryUrl===this.entry.url);
     }
 
     getContent(entry) {
@@ -40,16 +42,13 @@ export class EntryComponent {
     }
 
     toggleStarEntry(entry) {
-        entry.favorite = !entry.favorite;
-        this.reader.saveEntry(entry);
+        this.store.dispatch(new Favorite(entry));
     }
+
     toggleEntry(entry) {
-        if (entry.read === false) {
-            entry.read = true;
-        }
+        let isOpen = decodeURIComponent(this.route.snapshot.params['open']) === this.entry.url;
+        let open = isOpen ? null : encodeURIComponent(entry.url);
         this.router.navigate(
-            ['feeds',
-                encodeURIComponent(entry.feed_url),
-                {open: this.isOpen ? null : encodeURIComponent(entry.url)}]);
+            ['feeds', encodeURIComponent(entry.feed_url), {open}]);
     }
 }

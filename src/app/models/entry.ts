@@ -7,4 +7,5 @@ export interface Entry {
     favorite: boolean
     published: Date
     last_pull: Date
+    is_open?: boolean
 }

@@ -1,18 +1,19 @@
 import {Action} from "@ngrx/store";
 import {Feed} from "../models/feed";
 
-export const ADD = '[Feeds] add';
+export const ADD_FEED = '[Feeds] add';
 export const ADD_COMPLETE = '[Feeds] add complete';
 export const DELETE_FEED = '[Feed] delete';
-export const LOAD = '[Feeds] load';
-export const LOAD_COMPLETE = '[Feeds] load complete';
+export const DELETE_FEED_COMPLETE = '[Feed] delete complete';
+export const LOAD_FEED = '[Feeds] load';
+export const LOAD_FEED_COMPLETE = '[Feeds] load complete';
 
 export class Load implements Action {
-    readonly type = LOAD;
+    readonly type = LOAD_FEED;
 }
 
 export class LoadComplete implements Action {
-    readonly type = LOAD_COMPLETE;
+    readonly type = LOAD_FEED_COMPLETE;
 
     constructor(public payload: Feed[]) {
     }
@@ -21,13 +22,17 @@ export class LoadComplete implements Action {
 export class Delete implements Action {
     readonly type = DELETE_FEED;
 
-    constructor(public payload: Feed) {
-    }
+    constructor(public payload: string) {}
+}
+
+
+export class DeleteComplete implements Action {
+    readonly type = DELETE_FEED_COMPLETE;
 }
 
 
 export class AddFeedAction implements Action {
-    readonly type = ADD;
+    readonly type = ADD_FEED;
 
     constructor(public payload: string) {
     }
@@ -40,7 +45,7 @@ export class AddFeedCompleteAction implements Action {
     }
 }
 
-export type Actions = Load | LoadComplete | AddFeedAction | AddFeedCompleteAction | Delete;
+export type Actions = Load | LoadComplete | DeleteComplete | AddFeedAction | AddFeedCompleteAction | Delete;
 
 
 const initial = [];
@@ -50,10 +55,10 @@ export function reducer(state: Feed[] = initial, action: Actions): Feed[] {
     switch (action.type) {
         case ADD_COMPLETE:
             return [...state, action.payload];
-        case LOAD_COMPLETE:
+        case LOAD_FEED_COMPLETE:
             return action.payload;
         case DELETE_FEED:
-            return state.filter(s => s.url != action.payload.url);
+            return state.filter(s => s.url != action.payload);
         default:
             return state;
     }

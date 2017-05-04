@@ -1,30 +1,32 @@
 import {NgModule} from "@angular/core";
 import {MaterialModule} from "@angular/material";
-import {ReadingPaneComponent} from "./reading-pane.component";
-import {MenuComponent, FeedItemView} from "./menu.component";
+import {MenuComponent, FeedItemView} from "./views/menu";
 import {PrettyDatePipe} from "../pipes/pretty-date";
 import {HashPipe} from "../pipes/hash";
-import {ArticleComponent} from "./article.component";
-import {ToolsComponent} from "./tools.component";
+import {ArticleComponent} from "./views/article";
+import {ToolsComponent} from "./views/tools-bar";
 import {ReaderService} from "../services/reader.service";
 import {FeedService} from "../services/feed.service";
 import {StorageService} from "../services/storage.service";
-import {EntryComponent} from "./entry.component";
+import {EntryComponent} from "./views/entry";
 import {EncodeUrlPipe} from "../pipes/encode-url";
-import {RouterModule} from "@angular/router";
-import {EmptyPaneComponent} from "./empty.component";
-import {ReaderMainComponent} from "./reader-main";
+import {RouterModule, Router} from "@angular/router";
+import {EmptyPaneComponent} from "./views/empty-entries";
+import {ReaderMainComponent} from "./containers/reader";
 import {CommonModule} from "@angular/common";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {AddFeedButtonComponent, NewFeedFormComponent} from "./add-button.component";
+import {AddFeedButtonComponent, NewFeedFormComponent} from "./views/add-feed-button";
 import {FormsModule} from "@angular/forms";
 import {LoadFeedsEffects} from "../effects/load-feeds";
 import {EffectsModule} from "@ngrx/effects";
 import {LoadEntriesEffect} from "../effects/load-entries";
+import {FeedEntriesComponent} from "./views/entries";
+import {FavoriteEntriesComponent} from "./views/favorites";
+import {routes} from "./routes";
 
 const COMPONENTS = [
     MenuComponent,
-    ReadingPaneComponent,
+    FavoriteEntriesComponent,
     PrettyDatePipe,
     HashPipe,
     ToolsComponent,
@@ -36,9 +38,11 @@ const COMPONENTS = [
     AddFeedButtonComponent,
     NewFeedFormComponent,
     FeedItemView,
+    FeedEntriesComponent,
 ];
 
 @NgModule({
+    declarations: COMPONENTS,
     imports: [
         CommonModule,
         MaterialModule,
@@ -46,29 +50,8 @@ const COMPONENTS = [
         BrowserAnimationsModule,
         EffectsModule.run(LoadFeedsEffects),
         EffectsModule.run(LoadEntriesEffect),
-        RouterModule.forChild([
-            {
-                path: 'feeds',
-                component: ReaderMainComponent,
-                children: [
-                    {
-                        path: 'favorites',
-                        component: ReadingPaneComponent,
-                    },
-                    {
-                        path: ':feed',
-                        component: ReadingPaneComponent,
-                    },
-                    {
-                        path: '',
-                        component: EmptyPaneComponent
-                    }
-                ]
-            },
-
-        ]),
+        RouterModule.forChild(routes),
     ],
-    declarations: COMPONENTS,
     exports: [
         RouterModule,
         MenuComponent
@@ -77,4 +60,7 @@ const COMPONENTS = [
     providers: [ReaderService, FeedService, StorageService]
 })
 export class ComponentsModule {
+    constructor() {
+        console.log(routes)
+    }
 }

@@ -4,7 +4,8 @@ import {FeedService} from "./feed.service";
 import {Feed} from "../models/feed";
 import {Store} from "@ngrx/store";
 import {State} from "../reducers";
-import {StopLoadingAction, StartLoadingAction} from "../actions/global";
+import {StopLoadingAction, StartLoadingAction} from "../reducers/global";
+import {Entry} from "../models/entry";
 
 
 function async(target, prop, property) {
@@ -29,7 +30,6 @@ export class ReaderService {
     }
 
     addAsyncTask(task: Promise<any>) {
-        console.log('addAsyncTask');
         this.asyncTasks.add(task);
         task.then(
             () => this.asyncTasks.delete(task),
@@ -71,9 +71,10 @@ export class ReaderService {
     }
 
     @async
-    pullFeed(feed: Feed): Promise<Feed> {
-        return this.feedService.fetch(feed.url).then(updatedFeed => {
-            return this.storage.saveFeed(updatedFeed);
+    pullFeed(feedUrl): Promise<Entry[]> {
+        return this.feedService.fetch(feedUrl).then(async updatedFeed => {
+            await this.storage.saveFeed(updatedFeed);
+            return this.storage.getEntries({feed_url: feedUrl});
         });
     }
 
@@ -82,14 +83,17 @@ export class ReaderService {
         return this.storage.getEntries({feed_url: feedUrl});
     }
 
+    @async
     saveEntry(entry) {
         return this.storage.saveEntry(entry);
     }
 
-    deleteFeed(feed) {
-        return this.storage.deleteFeed(feed);
+    @async
+    deleteFeed(feedUrl) : Promise<void>{
+        return this.storage.deleteFeed(feedUrl);
     }
 
+    @async
     markAllRead(feed) {
         this.storage.markAllRead(feed);
     }

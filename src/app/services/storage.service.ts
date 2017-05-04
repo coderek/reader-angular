@@ -88,11 +88,11 @@ export class StorageService {
         })
     }
 
-    saveEntry(entry) {
+    saveEntry(entry: Entry) :Promise<Entry>{
         let transaction = this.db.transaction('entries', 'readwrite');
         transaction.objectStore('entries').put(entry);
         return new Promise((res, rej) => {
-            transaction.oncomplete = res;
+            transaction.oncomplete = ()=> res(entry);
             transaction.onerror = rej;
         })
     }
@@ -166,14 +166,15 @@ export class StorageService {
                 res(req.result);
             }
         });
+
     }
 
-    deleteFeed(feed) {
+    deleteFeed(feedUrl) : Promise<void> {
         let transaction = this.db.transaction(['entries', 'feeds'], 'readwrite');
         let store = transaction.objectStore('entries');
         let idx = store.index('feed_url');
-        console.log('feed.url: ' + feed.url);
-        let req = idx.openKeyCursor(IDBKeyRange.only(feed.url));
+        console.log('feedUrl.url: ' + feedUrl);
+        let req = idx.openKeyCursor(IDBKeyRange.only(feedUrl));
         req.onsuccess = (ev) => {
             let cursor = req.result;
             if (cursor) {
@@ -183,11 +184,11 @@ export class StorageService {
 
             }
         };
-        transaction.objectStore('feeds').delete(feed.url);
-        return new Promise((res, rej) => {
+        transaction.objectStore('feeds').delete(feedUrl);
+        return new Promise<void>((res, rej) => {
             transaction.oncomplete = () => {
                 res();
-                console.log('Deleted feed and its entries');
+                console.log('Deleted feedUrl and its entries');
             }
         });
     }
