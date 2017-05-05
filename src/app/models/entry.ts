@@ -8,4 +8,5 @@ export interface Entry {
     published: Date
     last_pull: Date
     is_open?: boolean
+    feed_url: string
 }

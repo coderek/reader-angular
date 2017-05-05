@@ -10,7 +10,7 @@ import {FeedService} from "../services/feed.service";
 import {StorageService} from "../services/storage.service";
 import {EntryComponent} from "./views/entry";
 import {EncodeUrlPipe} from "../pipes/encode-url";
-import {RouterModule, Router} from "@angular/router";
+import {RouterModule} from "@angular/router";
 import {EmptyPaneComponent} from "./views/empty-entries";
 import {ReaderMainComponent} from "./containers/reader";
 import {CommonModule} from "@angular/common";
@@ -19,7 +19,7 @@ import {AddFeedButtonComponent, NewFeedFormComponent} from "./views/add-feed-but
 import {FormsModule} from "@angular/forms";
 import {LoadFeedsEffects} from "../effects/load-feeds";
 import {EffectsModule} from "@ngrx/effects";
-import {LoadEntriesEffect} from "../effects/load-entries";
+import {EntryEffects} from "../effects/load-entries";
 import {FeedEntriesComponent} from "./views/entries";
 import {FavoriteEntriesComponent} from "./views/favorites";
 import {routes} from "./routes";
@@ -49,7 +49,7 @@ const COMPONENTS = [
         FormsModule,
         BrowserAnimationsModule,
         EffectsModule.run(LoadFeedsEffects),
-        EffectsModule.run(LoadEntriesEffect),
+        EffectsModule.run(EntryEffects),
         RouterModule.forChild(routes),
     ],
     exports: [

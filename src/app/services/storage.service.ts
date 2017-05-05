@@ -88,6 +88,23 @@ export class StorageService {
         })
     }
 
+    async updateEntry(id, attr, val): Promise<Entry> {
+        await this.initPromise;
+        let transaction = this.db.transaction('entries', 'readwrite');
+        let obj = {[attr]: val, url: id};
+        let req = transaction.objectStore('entries').get(id);
+        let entry = null;
+        req.onsuccess = (ev) => {
+            entry = req.result;
+            entry[attr] = val;
+            transaction.objectStore('entries').put(entry);
+        };
+        return new Promise<Entry>((res, rej) => {
+            transaction.oncomplete = () => res(entry);
+            transaction.onerror = rej;
+        })
+    }
+
     saveEntry(entry: Entry) :Promise<Entry>{
         let transaction = this.db.transaction('entries', 'readwrite');
         transaction.objectStore('entries').put(entry);
@@ -135,13 +152,33 @@ export class StorageService {
         })
     }
 
+    countUnreadEntries(feed: Feed) {
+        let transaction = this.db.transaction('entries');
+        let store = transaction.objectStore('entries');
+        let idx = store.index('feed_url');
+        let req = idx.openCursor(IDBKeyRange.only(feed.url));
+        let count = 0;
+        req.onsuccess = () => {
+            let cursor = req.result;
+            if (cursor) {
+                let entry: Entry = cursor.value;
+                if (!entry.read) count++;
+                cursor.continue();
+            }
+        };
+        return new Promise((res, rej) => {
+            transaction.oncomplete = () => {
+                res(count);
+            }
+        });
+    }
+
     countNewerEntries(feed: Feed, boundary: Number) {
         let transaction = this.db.transaction('entries');
         let store = transaction.objectStore('entries');
         let idx = store.index('feed_url');
         let req = idx.openCursor(IDBKeyRange.only(feed.url));
         let count = 0;
-        console.log('countNewerEntries');
         req.onsuccess = () => {
             let cursor = req.result;
             if (cursor) {

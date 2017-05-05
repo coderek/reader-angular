@@ -1,14 +1,22 @@
 import {Action} from "@ngrx/store";
 import {Entry} from "../models/entry";
-export const MARK_FAVORITE = '[Entry] favorite';
+import {EntityPayload} from "./index";
+export const TOGGLE_FAVORITE = '[Entry] favorite';
 export const MARK_FAVORITE_COMPLETE = '[Entry] favorite complete';
 export const READ_ENTRY = '[Entry] read';
+export const READ_ENTRY_COMPLETE = '[Entry] read complete';
 export const OPEN_ENTRY = '[Entry] open';
 export const CLOSE_ENTRY = '[Entry] close';
 
-export class Read implements Action {
+export class ReadEntryAction implements Action {
     readonly type = READ_ENTRY;
-    constructor(public payload: string) {}
+
+    constructor(public payload: EntityPayload) {
+    }
+}
+
+export class ReadEntryCompleteAction implements Action {
+    readonly type = READ_ENTRY_COMPLETE;
 }
 
 export class Open implements Action {
@@ -21,16 +29,18 @@ export class Close implements Action {
 }
 
 
-export class Favorite implements Action {
-    readonly type = MARK_FAVORITE;
-    constructor(public payload: string) {}
+export class ToggleFavoriteAction implements Action {
+    readonly type = TOGGLE_FAVORITE;
+
+    constructor(public payload: EntityPayload) {
+    }
 }
 
 export class FavoriteComplete implements Action {
     readonly type = MARK_FAVORITE_COMPLETE;
 }
 
-export type EntryActions = Read | Open | Favorite;
+export type EntryActions = ReadEntryAction | Open | ToggleFavoriteAction;
 
 
 const initial = {
@@ -46,10 +56,14 @@ const initial = {
 
 export function reducer(state: Entry = initial, action): Entry {
     switch (action.type) {
-        case MARK_FAVORITE:
-            return Object.assign(state, {favorite: !state.favorite});
-        case OPEN_ENTRY:
-            return Object.assign(state, {is_open: true});
+        case TOGGLE_FAVORITE: {
+            let {value} = action.payload;
+            return Object.assign({}, state, {favorite: value});
+        }
+        case READ_ENTRY: {
+            let {value} = action.payload;
+            return Object.assign({}, state, {read: true});
+        }
         default:
             return state;
     }

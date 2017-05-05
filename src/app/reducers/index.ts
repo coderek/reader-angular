@@ -78,6 +78,40 @@ export const reducer = combineReducers({
 
 const selectedFeed = s=>s.globals.selectedFeed;
 const selectedEntry = s=>s.globals.selectedEntry;
+const loading = s => s.globals.loading;
+
 export const selectors = {
-    selectedFeed, selectedEntry
+    selectedFeed, selectedEntry, loading
 };
+
+
+export type EntityPayload = {
+    id: string,
+    value?: any
+};
+
+/**
+ * Function that applies reducer to the correct item in the list
+ * @param reducer - Reducer used for item in the array
+ * @param action - Action that has payload of type <EntityPayload>
+ * @param arrayState
+ * @returns {any}
+ */
+export function entityReducer(reducer, action, arrayState, idAttr = 'url') {
+    let {id} = action.payload as EntityPayload;
+    let idx = arrayState.findIndex(e => e[idAttr] === id);
+    // not found
+    if (idx === -1) return arrayState;
+
+    let newEntry = reducer(arrayState[idx], action);
+    if (arrayState[idx] === newEntry) {
+        // no change
+        return arrayState;
+    } else {
+        // changed, return new array
+        return arrayState.map(e => {
+            if (e.url !== id) return e;
+            return newEntry;
+        });
+    }
+}

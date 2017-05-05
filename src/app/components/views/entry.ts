@@ -1,10 +1,9 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {Entry} from "../../models/entry";
 import {Store} from "@ngrx/store";
 import {Router, ActivatedRoute} from "@angular/router";
-import {Favorite} from "../../reducers/entry";
-import {State, selectors} from "../../reducers/index";
-import {Observable} from "rxjs";
+import {ToggleFavoriteAction, ReadEntryAction} from "../../reducers/entry";
+import {State, EntityPayload} from "../../reducers/index";
 @Component({
     template: `
         <div>
@@ -16,20 +15,23 @@ import {Observable} from "rxjs";
           </span>
           <md-icon (click)="open(entry.url)">link</md-icon>
         </div>
-        <article *ngIf="obIsOpen | async" [innerHTML]="getContent(entry)"></article>
+        <article *ngIf="showArticle" [innerHTML]="content"></article>
     `,
     selector: 'feed-entry',
     styleUrls: ['entry.css']
 })
-export class EntryComponent {
+export class EntryComponent implements OnInit {
     @Input() entry: Entry;
-    obIsOpen: Observable<boolean>;
 
-    constructor(private store: Store<State>, private route: ActivatedRoute, private router: Router) {
-        this.obIsOpen = this.store.select(selectors.selectedEntry).map(entryUrl=> entryUrl===this.entry.url);
+    private get showArticle() {
+        return decodeURIComponent(this.route.snapshot.params['open']) === this.entry.url;
     }
 
-    getContent(entry) {
+    constructor(private store: Store<State>, private route: ActivatedRoute, private router: Router) {
+    }
+
+    get content() {
+        let entry = this.entry;
         if (entry.content.length > entry.summary.length) {
             return entry.content;
         } else {
@@ -37,18 +39,38 @@ export class EntryComponent {
         }
     }
 
+    ngOnInit() {
+    }
+
+    /**
+     * Open in new window
+     * @param url
+     */
     open(url) {
         window.open(url, '_blank');
     }
 
+    /**
+     * Send action
+     * @param entry
+     */
     toggleStarEntry(entry) {
-        this.store.dispatch(new Favorite(entry));
+        let payload: EntityPayload = {
+            id: entry.url,
+            value: !entry.favorite
+        };
+        this.store.dispatch(new ToggleFavoriteAction(payload));
     }
 
+    /**
+     * use router to transfer the selected entry to the global state
+     * @param entry
+     */
     toggleEntry(entry) {
-        let isOpen = decodeURIComponent(this.route.snapshot.params['open']) === this.entry.url;
-        let open = isOpen ? null : encodeURIComponent(entry.url);
-        this.router.navigate(
-            ['feeds', encodeURIComponent(entry.feed_url), {open}]);
+        if (!this.entry.read) {
+            this.store.dispatch(new ReadEntryAction({id: this.entry.url}));
+        }
+        let open = this.showArticle ? null : encodeURIComponent(entry.url);
+        this.router.navigate(['feeds', encodeURIComponent(entry.feed_url), {open}]);
     }
 }

@@ -64,6 +64,11 @@ export class ReaderService {
     }
 
     @async
+    countUnreadEntries(feed: Feed) {
+        return this.storage.countUnreadEntries(feed);
+    }
+
+    @async
     addFeed(url) {
         return this.feedService.fetch(url).then(feed => {
             return this.storage.saveFeed(feed);
@@ -86,6 +91,11 @@ export class ReaderService {
     @async
     saveEntry(entry) {
         return this.storage.saveEntry(entry);
+    }
+
+    @async
+    updateEntry(id, attr, val): Promise<Entry> {
+        return this.storage.updateEntry(id, attr, val);
     }
 
     @async

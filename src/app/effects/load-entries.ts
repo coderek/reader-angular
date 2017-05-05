@@ -3,38 +3,56 @@ import {ReaderService} from "../services/reader.service";
 import {Actions, Effect, toPayload} from "@ngrx/effects";
 import {Action} from "@ngrx/store";
 import {Observable} from "rxjs";
-import {LOAD_ENTRIES, LoadAllForFeedComplete, LOAD_FAVORITES} from "../reducers/entries";
-import {MARK_FAVORITE, FavoriteComplete} from "../reducers/entry";
-import {Entry} from "../models/entry";
-import {SELECT_FEED} from "../reducers/index";
+import {LoadEntriesComplete, LOAD_ENTRIES} from "../reducers/entries";
+import {READ_ENTRY, ReadEntryCompleteAction, TOGGLE_FAVORITE, FavoriteComplete} from "../reducers/entry";
+import {SELECT_FEED, EntityPayload} from "../reducers/index";
+import {DecrementUnreadAction} from "../reducers/feed";
 
 
 @Injectable()
-export class LoadEntriesEffect {
+export class EntryEffects {
     constructor(private reader: ReaderService, private actions: Actions) {
     }
 
     @Effect()
-    loadEntries: Observable<Action> = this.actions.ofType(SELECT_FEED)
+    loadEntries: Observable<Action> = this.actions.ofType(SELECT_FEED, LOAD_ENTRIES)
         .map(toPayload)
         .distinctUntilChanged()
         .switchMap(url => {
-            return Observable.fromPromise(this.reader.getEntriesForFeed(url)).map(entries => {
-                return new LoadAllForFeedComplete(entries);
-            })
-        });
+            console.log(url);
+            if (url === 'favorites') {
+                return Observable
+                    .fromPromise(this.reader.getFavorites())
+                    .map(entries => new LoadEntriesComplete(entries))
 
-    @Effect()
-    loadFavorites: Observable<Action> = this.actions.ofType(LOAD_FAVORITES)
-        .switchMap(() => {
-            return Observable.fromPromise(this.reader.getFavorites()).map(entries => new LoadAllForFeedComplete(entries))
-        });
-
-    @Effect()
-    favorite: Observable<Action> = this.actions.ofType(MARK_FAVORITE)
-        .map(toPayload)
-        .switchMap((entry: Entry)=> {
-                return Observable.fromPromise(this.reader.saveEntry(entry)).map(() => new FavoriteComplete());
+            } else if (url.startsWith('http')) {
+                return Observable
+                    .fromPromise(this.reader.getEntriesForFeed(url))
+                    .map(entries => new LoadEntriesComplete(entries))
             }
-        )
+        });
+
+    @Effect()
+    favorite: Observable<Action> = this.actions.ofType(TOGGLE_FAVORITE)
+        .map(toPayload)
+        .switchMap((payload: EntityPayload) => {
+                let {id, value} = payload;
+                return Observable
+                    .fromPromise(this.reader.updateEntry(id, 'favorite', value))
+                    .map(() => new FavoriteComplete());
+            }
+        );
+
+    @Effect()
+    markRead: Observable<Action> = this.actions.ofType(READ_ENTRY)
+        .map(toPayload)
+        .switchMap((payload: EntityPayload) => {
+            let {id} = payload;
+            return Observable
+                .fromPromise(this.reader.updateEntry(id, 'read', true))
+                .flatMap((entry) => {
+                    return [new ReadEntryCompleteAction(), new DecrementUnreadAction({id: entry.feed_url})]
+                });
+            }
+        );
 }
