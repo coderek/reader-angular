@@ -5,8 +5,9 @@ import {Action} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {LoadEntriesComplete, LOAD_ENTRIES} from "../reducers/entries";
 import {READ_ENTRY, ReadEntryCompleteAction, TOGGLE_FAVORITE, FavoriteComplete} from "../reducers/entry";
-import {SELECT_FEED, EntityPayload} from "../reducers/index";
-import {UpdateUnreadAction, DecrementUnreadAction} from "../reducers/feed";
+import {EntityPayload} from "../reducers/index";
+import {DecrementUnreadAction} from "../reducers/feed";
+import {SELECT_FEED} from "../reducers/global";
 
 
 @Injectable()

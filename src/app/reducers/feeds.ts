@@ -2,6 +2,7 @@ import {Action} from "@ngrx/store";
 import {Feed} from "../models/feed";
 import {UPDATE_UNREAD_COUNT, reducer as feedReducer, FeedActions, DECREMENT_UNREAD_COUNT} from "./feed";
 import {entityReducer} from "./index";
+import {SELECT_FEED, GlobalActions} from "./global";
 
 export const ADD_FEED = '[Feeds] add';
 export const ADD_COMPLETE = '[Feeds] add complete';
@@ -16,9 +17,7 @@ export class Load implements Action {
 
 export class LoadComplete implements Action {
     readonly type = LOAD_FEED_COMPLETE;
-
-    constructor(public payload: Feed[]) {
-    }
+    constructor(public payload: Feed[]) {}
 }
 
 export class Delete implements Action {
@@ -49,11 +48,7 @@ export class AddFeedCompleteAction implements Action {
 
 export type Actions = Load | LoadComplete | DeleteComplete | AddFeedAction | AddFeedCompleteAction | Delete;
 
-
-const initial = [];
-
-export function reducer(state: Feed[] = initial, action: Actions | FeedActions): Feed[] {
-
+export function reducer(state: Feed[] = [], action: Actions | FeedActions | GlobalActions): Feed[] {
     switch (action.type) {
         case ADD_COMPLETE:
             return [...state, action.payload];

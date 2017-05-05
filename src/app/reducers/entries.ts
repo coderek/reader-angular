@@ -2,6 +2,7 @@ import {Action} from "@ngrx/store";
 import {Entry} from "../models/entry";
 import {reducer as entryReducer, EntryActions, READ_ENTRY, TOGGLE_FAVORITE} from "./entry";
 import {entityReducer} from "./index";
+import {PULL_FEED_COMPLETE, FeedActions} from "./feed";
 
 const LOAD_ENTRIES_COMPLETE = '[Entries] load complete';
 export const LOAD_ENTRIES = '[Entries] load';
@@ -23,10 +24,7 @@ export class LoadEntries implements Action {
 
 type EntriesActions = LoadEntriesComplete ;
 
-
-const initial = [];
-
-export function reducer(state: Entry[] = initial, action: EntriesActions | EntryActions): Entry[] {
+export function reducer(state: Entry[] = [], action: FeedActions | EntriesActions | EntryActions): Entry[] {
     switch (action.type) {
         // case UPDATE_UNREAD_COUNT:
         //     let feedUrl = action.payload;
@@ -39,6 +37,8 @@ export function reducer(state: Entry[] = initial, action: EntriesActions | Entry
         case READ_ENTRY:
         case TOGGLE_FAVORITE:
             return entityReducer(entryReducer, action, state);
+        case PULL_FEED_COMPLETE:
+            return action.payload;
         default:
             return state;
     }

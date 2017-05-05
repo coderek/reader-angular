@@ -114,9 +114,18 @@ export class StorageService {
         })
     }
 
-    saveFeed(feed): Promise<Feed> {
+    /**
+     * Save feed and update unread count
+     * @param feed
+     * @returns {Promise<T>}
+     */
+    async saveFeed(feed): Promise<Feed> {
+        let unreadCount = await this.countUnreadEntries(feed.url);
+        console.log(unreadCount);
         let transaction = this.db.transaction(['entries', 'feeds'], 'readwrite');
         let date = new Date();
+        let entriesStore = transaction.objectStore('entries');
+        let entrySaveProcesses = [];
         feed.entries.forEach(entry => {
             entry.feed_url = feed.url;
             if (entry.read === undefined) {
@@ -130,20 +139,30 @@ export class StorageService {
                 entry.published = new Date(y, m - 1, d, h, M, s);
             }
 
-            let req = transaction.objectStore('entries').get(entry.url);
-            // add if absent
-            req.onsuccess = (ev) => {
-                if (!req.result) {
-                    console.log('Saved entry: ' + req.result);
-                    entry.last_pull = date;
-                    transaction.objectStore('entries').add(entry);
-                }
-            }
+            let req = entriesStore.get(entry.url);
+            entrySaveProcesses.push(new Promise((res, rej)=> {
+                // add if absent
+                req.onsuccess = (ev) => {
+                    if (!req.result) {
+                        console.log('Saved entry: ' + req.result);
+                        entry.last_pull = date;
+                        transaction.objectStore('entries').add(entry);
+                        unreadCount++;
+                    }
+                    res();
+                };
+                req.onerror = res;
+            }));
         });
-        delete feed.entries;
-        feed.last_pull = date;
-        transaction.objectStore('feeds').put(feed);
-        return new Promise((res, rej) => {
+
+        Promise.all(entrySaveProcesses).then(()=> {
+            delete feed.entries;
+            feed.last_pull = date;
+            feed.unreadCount = unreadCount;
+
+            transaction.objectStore('feeds').put(feed);
+        });
+        return await new Promise<Feed>((res, rej) => {
             transaction.oncomplete = () => {
                 res(feed);
                 console.log('Saved entries');
@@ -152,11 +171,11 @@ export class StorageService {
         })
     }
 
-    countUnreadEntries(feed: Feed) {
+    countUnreadEntries(feedUrl): Promise<number> {
         let transaction = this.db.transaction('entries');
         let store = transaction.objectStore('entries');
         let idx = store.index('feed_url');
-        let req = idx.openCursor(IDBKeyRange.only(feed.url));
+        let req = idx.openCursor(IDBKeyRange.only(feedUrl));
         let count = 0;
         req.onsuccess = () => {
             let cursor = req.result;

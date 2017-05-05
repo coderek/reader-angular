@@ -64,8 +64,8 @@ export class ReaderService {
     }
 
     @async
-    countUnreadEntries(feed: Feed) {
-        return this.storage.countUnreadEntries(feed);
+    countUnreadEntries(feedUrl) {
+        return this.storage.countUnreadEntries(feedUrl);
     }
 
     @async

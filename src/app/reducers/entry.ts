@@ -69,3 +69,4 @@ export function reducer(state: Entry = initial, action): Entry {
             return state;
     }
 }
+

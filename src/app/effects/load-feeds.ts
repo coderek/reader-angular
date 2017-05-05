@@ -3,9 +3,9 @@ import {Effect, Actions, toPayload} from "@ngrx/effects";
 import {Action} from "@ngrx/store";
 import {Observable} from "rxjs";
 import * as feeds from "../reducers/feeds";
-import * as entries from "../reducers/entries";
 import * as feed from "../reducers/feed";
 import {ReaderService} from "../services/reader.service";
+import {UpdateUnreadAction} from "../reducers/feed";
 
 @Injectable()
 export class LoadFeedsEffects {
@@ -23,7 +23,9 @@ export class LoadFeedsEffects {
         .ofType(feeds.ADD_FEED)
         .map(toPayload)
         .switchMap(url=>
-            Observable.fromPromise(this.reader.addFeed(url)).map(feed=> new feeds.AddFeedCompleteAction(feed))
+            Observable
+                .fromPromise(this.reader.addFeed(url))
+                .map(feed=> new feeds.AddFeedCompleteAction(feed))
         );
 
     @Effect()
@@ -38,9 +40,15 @@ export class LoadFeedsEffects {
     pullFeed: Observable<Action> = this.actions
         .ofType(feed.PULL_FEED)
         .map(toPayload)
-        .switchMap(feedUrl=>
-            Observable.fromPromise(this.reader.pullFeed(feedUrl)).map(entries=> new feed.PullFinished(entries))
-        );
+        .switchMap(feedUrl => {
+            // pull entries first, then update count
+            let promises = this.reader.pullFeed(feedUrl).then(entries=>{
+                return this.reader.countUnreadEntries(feedUrl).then(count=> {
+                    return [new feed.PullFinished(entries), new UpdateUnreadAction({id: feedUrl, value: count})];
+                })
+            });
+            return Observable.fromPromise(promises).concatAll();
+        });
 
     constructor(private actions: Actions, private reader: ReaderService) {}
 }

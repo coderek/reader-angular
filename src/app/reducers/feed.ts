@@ -30,7 +30,6 @@ export class Pull implements Action {
 
 export class PullFinished implements Action {
     readonly type = PULL_FEED_COMPLETE;
-
     constructor(public payload: Entry[]) {}
 }
 

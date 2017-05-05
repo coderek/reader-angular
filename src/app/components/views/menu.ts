@@ -49,23 +49,16 @@ export class FeedItemView {
     styleUrls: ['menu.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuComponent implements OnChanges, OnInit, OnDestroy {
+export class MenuComponent {
     @Input()
     title;
 
     @Output()
     onNewFeed = new EventEmitter<string>();
-
     feeds: Observable<Feed[]>;
 
-    currentFeeds: Feed[] = [];
-    currentFeedsSubscription: Subscription;
-
-    constructor(private store: Store<fromFeeds.State>, private router: Router, private reader: ReaderService) {
-        this.feeds = store.select(s => s.feeds);
-        this.currentFeedsSubscription = this.feeds.subscribe(feeds => {
-            this.currentFeeds = feeds;
-        })
+    constructor(private store: Store<fromFeeds.State>) {
+        this.feeds = store.select(s => s.feeds).map(feeds=> feeds.sort((a,b)=> a.title<b.title?-1:1));
     }
 
     openDialog() {
@@ -76,15 +69,6 @@ export class MenuComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     pullAll() {
-        this.currentFeeds.forEach((feed: Feed) => {
-        })
-    }
-    ngOnInit() {
-    }
-    ngOnChanges() {
-    }
 
-    ngOnDestroy() {
-        this.currentFeedsSubscription.unsubscribe();
     }
 }

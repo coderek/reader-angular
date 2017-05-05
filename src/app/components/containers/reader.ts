@@ -1,9 +1,12 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
+import {State, selectors} from "../../reducers/index";
+import {Store} from "@ngrx/store";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'reader-main',
     template: `
-        <header>{{(feedUrl | async)?.title || title}}</header>
+        <header>{{title | async}}</header>
         <router-outlet></router-outlet>
     `,
     styles: [
@@ -26,6 +29,12 @@ import {Component} from "@angular/core";
     ]
 })
 export class ReaderMainComponent {
-    title = 'All feeds';
+    title: Observable<string>;
     newItemsCount = 0;
+
+    feeds = [];
+
+    constructor(private store: Store<State>) {
+        this.title = store.select(selectors.pageTitle);
+    }
 }

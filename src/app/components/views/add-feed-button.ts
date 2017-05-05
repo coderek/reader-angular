@@ -60,8 +60,7 @@ import {AddFeedAction} from "../../reducers/feeds";
     `]
 })
 export class NewFeedFormComponent {
-    constructor(private dialogRef: MdDialogRef<NewFeedFormComponent>, private reader: ReaderService, private store: Store<State>) {
-    }
+    constructor(private dialogRef: MdDialogRef<NewFeedFormComponent>, private reader: ReaderService, private store: Store<State>) {}
 
     onSubmit(form: NgForm) {
         let {feedUrl} = form.value;
@@ -77,11 +76,7 @@ export class NewFeedFormComponent {
     `
 })
 export class AddFeedButtonComponent {
-
-    constructor(public dialog: MdDialog) {
-
-    }
-
+    constructor(public dialog: MdDialog) {}
     openDialog() {
         this.dialog.open(NewFeedFormComponent);
     }

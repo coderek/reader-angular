@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {ReaderService} from "../../services/reader.service";
 import {State} from "../../reducers/index";
 import {LoadEntries} from "../../reducers/entries";
+import {SetPageTitleAction} from "../../reducers/global";
 
 @Component({
     selector: 'reader-entries',
@@ -23,5 +24,6 @@ export class FavoriteEntriesComponent implements OnInit {
 
     ngOnInit() {
         this.store.dispatch(new LoadEntries('favorites'));
+        this.store.dispatch(new SetPageTitleAction('Favorites'));
     }
 }
