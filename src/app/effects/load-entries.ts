@@ -6,13 +6,12 @@ import {Observable} from "rxjs";
 import {LoadEntriesComplete, LOAD_ENTRIES} from "../reducers/entries";
 import {READ_ENTRY, ReadEntryCompleteAction, TOGGLE_FAVORITE, FavoriteComplete} from "../reducers/entry";
 import {SELECT_FEED, EntityPayload} from "../reducers/index";
-import {DecrementUnreadAction} from "../reducers/feed";
+import {UpdateUnreadAction, DecrementUnreadAction} from "../reducers/feed";
 
 
 @Injectable()
 export class EntryEffects {
-    constructor(private reader: ReaderService, private actions: Actions) {
-    }
+    constructor(private reader: ReaderService, private actions: Actions) {}
 
     @Effect()
     loadEntries: Observable<Action> = this.actions.ofType(SELECT_FEED, LOAD_ENTRIES)
@@ -20,7 +19,7 @@ export class EntryEffects {
         .distinctUntilChanged()
         .switchMap(url => {
             console.log(url);
-            if (url === 'favorites') {
+            if (url==='favorites') {
                 return Observable
                     .fromPromise(this.reader.getFavorites())
                     .map(entries => new LoadEntriesComplete(entries))
@@ -35,7 +34,7 @@ export class EntryEffects {
     @Effect()
     favorite: Observable<Action> = this.actions.ofType(TOGGLE_FAVORITE)
         .map(toPayload)
-        .switchMap((payload: EntityPayload) => {
+        .switchMap((payload: EntityPayload)=> {
                 let {id, value} = payload;
                 return Observable
                     .fromPromise(this.reader.updateEntry(id, 'favorite', value))
@@ -46,13 +45,13 @@ export class EntryEffects {
     @Effect()
     markRead: Observable<Action> = this.actions.ofType(READ_ENTRY)
         .map(toPayload)
-        .switchMap((payload: EntityPayload) => {
-            let {id} = payload;
-            return Observable
-                .fromPromise(this.reader.updateEntry(id, 'read', true))
-                .flatMap((entry) => {
-                    return [new ReadEntryCompleteAction(), new DecrementUnreadAction({id: entry.feed_url})]
-                });
+        .switchMap((payload: EntityPayload)=> {
+                let {id} = payload;
+                return Observable
+                    .fromPromise(this.reader.updateEntry(id, 'read', true))
+                    .flatMap((entry) => {
+                        return [new ReadEntryCompleteAction(), new DecrementUnreadAction({id: entry.feed_url})]
+                    });
             }
         );
 }

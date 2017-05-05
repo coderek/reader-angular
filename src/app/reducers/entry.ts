@@ -51,7 +51,8 @@ const initial = {
     read: false,
     favorite: false,
     published: null,
-    last_pull: null
+    last_pull: null,
+    feed_url: '',
 };
 
 export function reducer(state: Entry = initial, action): Entry {
