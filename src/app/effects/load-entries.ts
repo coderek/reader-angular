@@ -3,7 +3,7 @@ import {ReaderService} from "../services/reader.service";
 import {Actions, Effect, toPayload} from "@ngrx/effects";
 import {Action} from "@ngrx/store";
 import {Observable} from "rxjs";
-import {LoadEntriesComplete, LOAD_ENTRIES} from "../reducers/entries";
+import {LoadEntriesComplete, LOAD_ENTRIES, READ_ALL_ENTRIES, ReadAllEntriesCompleteAction} from "../reducers/entries";
 import {READ_ENTRY, ReadEntryCompleteAction, TOGGLE_FAVORITE, FavoriteComplete} from "../reducers/entry";
 import {EntityPayload} from "../reducers/index";
 import {DecrementUnreadAction} from "../reducers/feed";
@@ -48,6 +48,7 @@ export class EntryEffects {
         .map(toPayload)
         .switchMap((payload: EntityPayload)=> {
                 let {id} = payload;
+                console.log('read '+id)
                 return Observable
                     .fromPromise(this.reader.updateEntry(id, 'read', true))
                     .flatMap((entry) => {
@@ -55,4 +56,12 @@ export class EntryEffects {
                     });
             }
         );
+
+    @Effect()
+    readAll: Observable<Action>  = this.actions.ofType(READ_ALL_ENTRIES)
+        .map(toPayload)
+        .switchMap(feedUrl=>{
+            return Observable
+                .fromPromise(this.reader.markAllRead(feedUrl)).map(()=>new ReadAllEntriesCompleteAction());
+        })
 }

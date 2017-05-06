@@ -38,7 +38,7 @@ export class FeedItemView {
     </ul>
     <ul class="feed-list">
       <li><b>Subscriptions</b></li>
-      <li routerLinkActive="selected" *ngFor="let feed of feeds | async" routerLink="feeds/{{feed.url | hash}}">
+      <li routerLinkActive="selected" *ngFor="let feed of feeds | async" [routerLink]="['feeds', feed.url]">
         <feed-item [feed]="feed"></feed-item>
       </li>
     </ul>
@@ -67,8 +67,5 @@ export class MenuComponent {
             this.onNewFeed.next(url);
         }
     }
-
-    pullAll() {
-
-    }
+    pullAll() {}
 }

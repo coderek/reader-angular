@@ -15,10 +15,8 @@ import {Observable} from "rxjs";
             display: flex;
             flex: 1 1;
             flex-direction: column;
-            height: 100%;
         }
         header {
-            /*height: 30px;*/
             flex: none;
             color: black;
             padding-left: 10px;

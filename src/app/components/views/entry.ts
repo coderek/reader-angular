@@ -1,9 +1,10 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnInit, OnChanges} from "@angular/core";
 import {Entry} from "../../models/entry";
 import {Store} from "@ngrx/store";
 import {Router, ActivatedRoute} from "@angular/router";
 import {ToggleFavoriteAction, ReadEntryAction} from "../../reducers/entry";
 import {State, EntityPayload} from "../../reducers/index";
+import {Observable} from "rxjs";
 @Component({
     template: `
         <div>
@@ -15,20 +16,16 @@ import {State, EntityPayload} from "../../reducers/index";
           </span>
           <md-icon (click)="open(entry.url)">link</md-icon>
         </div>
-        <article *ngIf="showArticle" [innerHTML]="content"></article>
+        <article [hidden]="!opened" [innerHTML]="content"></article>
     `,
     selector: 'feed-entry',
     styleUrls: ['entry.css']
 })
-export class EntryComponent implements OnInit {
+export class EntryComponent implements OnInit, OnChanges {
     @Input() entry: Entry;
+    @Input() opened: boolean;
 
-    private get showArticle() {
-        return decodeURIComponent(this.route.snapshot.params['open']) === this.entry.url;
-    }
-
-    constructor(private store: Store<State>, private route: ActivatedRoute, private router: Router) {
-    }
+    constructor(private store: Store<State>, private router: Router) {}
 
     get content() {
         let entry = this.entry;
@@ -39,7 +36,12 @@ export class EntryComponent implements OnInit {
         }
     }
 
-    ngOnInit() {
+    ngOnInit() {}
+
+    ngOnChanges() {
+        if (this.opened && !this.entry.read) {
+            this.store.dispatch(new ReadEntryAction({id: this.entry.url}));
+        }
     }
 
     /**
@@ -67,10 +69,11 @@ export class EntryComponent implements OnInit {
      * @param entry
      */
     toggleEntry(entry) {
-        if (!this.entry.read) {
-            this.store.dispatch(new ReadEntryAction({id: this.entry.url}));
+        let path = decodeURIComponent(entry.feed_url);
+        if (this.opened) {
+            this.router.navigate(['feeds', path]);
+        } else {
+            this.router.navigate(['feeds', path, {open: encodeURIComponent(this.entry.url)}]);
         }
-        let open = this.showArticle ? null : encodeURIComponent(entry.url);
-        this.router.navigate(['feeds', encodeURIComponent(entry.feed_url), {open}]);
     }
 }

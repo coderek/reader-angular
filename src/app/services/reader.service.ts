@@ -104,8 +104,8 @@ export class ReaderService {
     }
 
     @async
-    markAllRead(feed) {
-        this.storage.markAllRead(feed);
+    markAllRead(feedUrl): Promise<void>{
+        return this.storage.markAllRead(feedUrl);
     }
 
     @async

@@ -23,6 +23,7 @@ import {EntryEffects} from "../effects/load-entries";
 import {FeedEntriesComponent} from "./views/entries";
 import {FavoriteEntriesComponent} from "./views/favorites";
 import {routes} from "./routes";
+import {UniqueFeedValidatorDirective} from "../validations/add-feed";
 
 const COMPONENTS = [
     MenuComponent,
@@ -39,6 +40,7 @@ const COMPONENTS = [
     NewFeedFormComponent,
     FeedItemView,
     FeedEntriesComponent,
+    UniqueFeedValidatorDirective,
 ];
 
 @NgModule({

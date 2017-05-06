@@ -1,10 +1,11 @@
-import {Component} from "@angular/core";
+import {Component, OnChanges, SimpleChanges} from "@angular/core";
 import {MdDialog, MdDialogRef} from "@angular/material";
 import {NgForm} from "@angular/forms";
 import {ReaderService} from "../../services/reader.service";
 import {Store} from "@ngrx/store";
 import {State} from "../../reducers/index";
 import {AddFeedAction} from "../../reducers/feeds";
+import {UniqueFeedValidatorDirective} from "../../validations/add-feed";
 
 
 @Component({
@@ -15,9 +16,9 @@ import {AddFeedAction} from "../../reducers/feeds";
             <div>
                 <label for="feed_url">Atom/RSS URL</label>
                 <div class="control">
-                    <input type="text" ngModel required id="feed_url" name="feedUrl" pattern="^https?:\/\/.*">    
-                    <div [hidden]="feedForm.valid || feedForm.pristine">
-                        <span class="error">Please enter a valid feed URL</span>
+                    <input type="text" ngModel #feedUrl="ngModel" uniqueFeed required id="feed_url" name="feedUrl" pattern="^https?:\/\/.*">    
+                    <div [hidden]="feedUrl.valid || feedUrl.pristine">
+                        <span class="error">{{feedUrl.errors | json}}</span>
                     </div>    
                 </div>
                 <button [disabled]="feedForm.invalid">Add</button>
@@ -57,9 +58,9 @@ import {AddFeedAction} from "../../reducers/feeds";
         button { width: 50px; }
         h3 { margin-top: 0; }
         
-    `]
+    `],
 })
-export class NewFeedFormComponent {
+export class NewFeedFormComponent  {
     constructor(private dialogRef: MdDialogRef<NewFeedFormComponent>, private reader: ReaderService, private store: Store<State>) {}
 
     onSubmit(form: NgForm) {
@@ -76,9 +77,12 @@ export class NewFeedFormComponent {
     `
 })
 export class AddFeedButtonComponent {
+    // @Input()
+
     constructor(public dialog: MdDialog) {}
     openDialog() {
-        this.dialog.open(NewFeedFormComponent);
+        let config = {data: 123};
+        this.dialog.open(NewFeedFormComponent, config);
     }
 }
 

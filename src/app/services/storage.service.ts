@@ -249,13 +249,22 @@ export class StorageService {
         });
     }
 
-    markAllRead(entries) {
+    markAllRead(feedUrl) :Promise<void>{
         let transaction = this.db.transaction('entries', 'readwrite');
-        for (let entry of entries) {
-            transaction.objectStore('entries').put(entry);
+        let entriesStore = transaction.objectStore('entries');
+        let idx = entriesStore.index('feed_url');
+        let req = idx.openCursor(IDBKeyRange.only(feedUrl));
+        req.onsuccess = ()=> {
+            let cursor = req.result;
+            if (cursor) {
+                let entry = cursor.value as Entry;
+                entry.read = true;
+                entriesStore.put(entry);
+                cursor.continue();
+            }
         }
-        return new Promise((res, rej) => {
-            transaction.oncomplete = res;
+        return new Promise<void>((res, rej) => {
+            transaction.oncomplete = ()=> res();
             transaction.onerror = rej;
         })
     }

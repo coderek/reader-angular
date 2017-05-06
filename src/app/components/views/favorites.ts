@@ -1,11 +1,10 @@
-import {Component, OnInit} from "@angular/core";
-import {Entry} from "../../models/entry";
+import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
-import {Observable} from "rxjs";
-import {ReaderService} from "../../services/reader.service";
-import {State} from "../../reducers/index";
 import {LoadEntries} from "../../reducers/entries";
 import {SetPageTitleAction} from "../../reducers/global";
+import {FeedEntriesComponent} from "./entries";
+import {Router, ActivatedRoute} from "@angular/router";
+import {State as ReaderState} from "../../reducers";
 
 @Component({
     selector: 'reader-entries',
@@ -15,14 +14,14 @@ import {SetPageTitleAction} from "../../reducers/global";
     `,
     styleUrls: ['favorites.css']
 })
-export class FavoriteEntriesComponent implements OnInit {
-    entries: Observable<Entry[]>;
-
-    constructor(private reader: ReaderService, private store: Store<State>) {
-        this.entries = this.store.select(s => s.entries);
+export class FavoriteEntriesComponent extends FeedEntriesComponent{
+    constructor(protected store: Store<ReaderState>, protected route: ActivatedRoute, protected router: Router) {
+        super(store, route, router);
+        console.log('favorites');
     }
 
     ngOnInit() {
+        super.ngOnInit.call(this);
         this.store.dispatch(new LoadEntries('favorites'));
         this.store.dispatch(new SetPageTitleAction('Favorites'));
     }

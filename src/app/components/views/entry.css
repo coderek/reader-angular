@@ -19,11 +19,15 @@ article /deep/ img {
     color: rgba(53, 47, 136, 0.58);
 }
 
+
+article /deep/ * {
+    font-size: 90%;
+}
+
 article {
     margin: 10px 20px;
     padding: 10px;
     background-color: #f1f5ff;
-    max-width: 800px;
     font-size: 110%;
     border: 1px solid #c2cff1;
 }
