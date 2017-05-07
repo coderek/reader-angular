@@ -6,6 +6,7 @@ import * as feeds from "../reducers/feeds";
 import * as feed from "../reducers/feed";
 import {ReaderService} from "../services/reader.service";
 import {UpdateUnreadAction} from "../reducers/feed";
+import {PullAllIntermediateAction} from "../reducers/feed";
 
 @Injectable()
 export class LoadFeedsEffects {
@@ -43,7 +44,7 @@ export class LoadFeedsEffects {
         .switchMap(entity => {
             let {id} = entity;
             // pull entries first, then update count
-            let promises = this.reader.pullFeed(id).then(entries=>{
+            let promises = this.reader.pullFeedWithEnties(id).then(entries=>{
                 return this.reader.countUnreadEntries(id).then(count=> {
                     return [
                         new feed.PullFinished({value: entries, id: id}),
@@ -52,6 +53,15 @@ export class LoadFeedsEffects {
             });
             return Observable.fromPromise(promises).concatAll();
         });
+
+
+    @Effect()
+    pullAll: Observable<Action> = this.actions
+        .ofType(feeds.PULL_ALL_FEED)
+        .flatMap(()=> {
+            return this.reader.pullAllFeeds().map(feed=> new PullAllIntermediateAction({id: feed.url, value: feed.unreadCount}));
+        });
+
 
     constructor(private actions: Actions, private reader: ReaderService) {}
 }

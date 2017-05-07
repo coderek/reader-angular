@@ -6,6 +6,7 @@ import {Store} from "@ngrx/store";
 import {State} from "../reducers";
 import {StopLoadingAction, StartLoadingAction} from "../reducers/global";
 import {Entry} from "../models/entry";
+import {Observable, Subject} from "rxjs";
 
 
 function async(target, prop, property) {
@@ -84,8 +85,24 @@ export class ReaderService {
         });
     }
 
+    pullAllFeeds(): Observable<Feed> {
+        let ret = new Subject<Feed>();
+        this.getFeeds().then(feeds=> {
+            for (let feed of feeds) {
+                this.pullFeed(feed.url).then(feed=> ret.next(feed));
+            }
+        });
+        return ret;
+    }
+
+    pullFeed(feedUrl): Promise<Feed> {
+        return this.feedService.fetch(feedUrl).then(async updatedFeed => {
+            return this.storage.saveFeed(updatedFeed);
+        });
+    }
+
     @async
-    pullFeed(feedUrl): Promise<Entry[]> {
+    pullFeedWithEnties(feedUrl): Promise<Entry[]> {
         return this.feedService.fetch(feedUrl).then(async updatedFeed => {
             await this.storage.saveFeed(updatedFeed);
             return this.storage.getEntries({feed_url: feedUrl});

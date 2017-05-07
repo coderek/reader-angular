@@ -67,7 +67,7 @@ export class StorageService {
         })
     }
 
-    async getEntries(conditions): Promise<any[]> {
+    async getEntries(conditions): Promise<Entry[]> {
         await this.initPromise;
         let entries = [];
         return new Promise<any[]>((res, rej) => {

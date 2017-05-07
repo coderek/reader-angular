@@ -6,6 +6,12 @@ export const UPDATE_UNREAD_COUNT = '[Feed] update unread';
 export const DECREMENT_UNREAD_COUNT = '[Feed] decrement unread';
 export const PULL_FEED = '[Feed] pull';
 export const PULL_FEED_COMPLETE = '[Feed] pull complete';
+export const PULL_ALL_FEED_INTERMEDIATE = '[Feed] pull all intermediate';
+
+export class PullAllIntermediateAction implements Action {
+    readonly type = PULL_ALL_FEED_INTERMEDIATE;
+    constructor(public payload: EntityPayload<number>) {}
+}
 
 export class UpdateUnreadAction implements Action {
     readonly type = UPDATE_UNREAD_COUNT;
@@ -27,8 +33,7 @@ export class PullFinished implements Action {
     constructor(public payload: EntityPayload<Entry[]>) {}
 }
 
-
-export type FeedActions = UpdateUnreadAction  | PullAction | PullFinished | DecrementUnreadAction;
+export type FeedActions = UpdateUnreadAction  | PullAction | PullFinished | DecrementUnreadAction | PullAllIntermediateAction;
 
 const initial = {
     title: '',
@@ -51,6 +56,8 @@ export function reducer(state: Feed = initial, action: FeedActions): Feed {
             return Object.assign({}, state, {unreadCount: Math.max(0, state.unreadCount - 1)});
         case PULL_FEED:
             return Object.assign({}, state, {loading: true});
+        case PULL_ALL_FEED_INTERMEDIATE:
+            return Object.assign({}, state, {loading: false, unreadCount: action.payload.value});
         case PULL_FEED_COMPLETE:
             return Object.assign({}, state, {loading: false});
         default:

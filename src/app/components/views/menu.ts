@@ -14,11 +14,12 @@ import * as fromFeeds from "../../reducers";
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
 import {ReaderService} from "../../services/reader.service";
+import {PullAllAction} from "../../reducers/feeds";
 
 @Component({
     selector: 'feed-item',
     template: `
-        {{feed.title}} (<span class="count">{{feed.unreadCount}}</span>) <img *ngIf='feed.loading' src="/assets/loading-spinning-bubbles.svg" width='10' height='10'>
+        {{feed.title}} (<span class="count">{{feed.unreadCount}}</span>) <img *ngIf='feed.loading' src="/assets/loading-spinning-bubbles.svg" width='10' height='10' class="loading">
     `,
     styles: [`
         .count {color: red;}    
@@ -70,5 +71,7 @@ export class MenuComponent {
             this.onNewFeed.next(url);
         }
     }
-    pullAll() {}
+    pullAll() {
+        this.store.dispatch(new PullAllAction())
+    }
 }
