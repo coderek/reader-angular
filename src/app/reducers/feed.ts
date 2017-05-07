@@ -9,32 +9,26 @@ export const PULL_FEED_COMPLETE = '[Feed] pull complete';
 
 export class UpdateUnreadAction implements Action {
     readonly type = UPDATE_UNREAD_COUNT;
-
-    constructor(public payload: EntityPayload) {
-    }
+    constructor(public payload: EntityPayload<number>) {}
 }
 
 export class DecrementUnreadAction implements Action {
     readonly type = DECREMENT_UNREAD_COUNT;
-
-    constructor(public payload: EntityPayload) {
-    }
+    constructor(public payload: EntityPayload<void>) {}
 }
 
-export class Pull implements Action {
+export class PullAction implements Action {
     readonly type = PULL_FEED;
-
-    constructor(public payload: string) {
-    }
+    constructor(public payload: EntityPayload<void>) {}
 }
 
 export class PullFinished implements Action {
     readonly type = PULL_FEED_COMPLETE;
-    constructor(public payload: Entry[]) {}
+    constructor(public payload: EntityPayload<Entry[]>) {}
 }
 
 
-export type FeedActions = UpdateUnreadAction  | Pull | PullFinished | DecrementUnreadAction;
+export type FeedActions = UpdateUnreadAction  | PullAction | PullFinished | DecrementUnreadAction;
 
 const initial = {
     title: '',
@@ -43,13 +37,14 @@ const initial = {
     url: '',
     last_modified: null,
     last_pull: null,
-    unreadCount: 0
+    unreadCount: 0,
+    loading: false
 };
 
 export function reducer(state: Feed = initial, action: FeedActions): Feed {
     switch (action.type) {
         case UPDATE_UNREAD_COUNT: {
-            let {value} = action.payload as EntityPayload;
+            let {value} = action.payload as EntityPayload<number>;
             return Object.assign({}, state, {unreadCount: value});
         }
         case DECREMENT_UNREAD_COUNT:

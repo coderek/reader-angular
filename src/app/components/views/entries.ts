@@ -1,9 +1,9 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ChangeDetectionStrategy} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {State as ReaderState, selectors} from "../../reducers";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Delete} from "../../reducers/feeds";
-import {Pull, UpdateUnreadAction} from "../../reducers/feed";
+import {PullAction, UpdateUnreadAction} from "../../reducers/feed";
 import {Entry} from "../../models/entry";
 import {Observable} from "rxjs";
 import {SelectFeedAction, SelectEntryAction, SetPageTitleAction} from "../../reducers/global";
@@ -14,9 +14,12 @@ import {LoadEntries, ReadAllEntriesAction} from "../../reducers/entries";
     selector: 'feed-entries',
     template: `
         <feed-toolbar [feed]="feed | async" [newItemsCount]="newItemsCount" (onPullFeed)="onPullFeed($event)" (onReadEntries)="onReadEntries($event)" (onDeleteFeed)="onDeleteFeed($event)"></feed-toolbar>
-        <feed-entry [opened]="entry.url === (opened | async)" [entry]="entry" *ngFor="let entry of entries | async" class="entry" [ngClass]="{'read': entry.read}"></feed-entry>
+        <div class="entries">
+            <feed-entry [opened]="entry.url === (opened | async)" [entry]="entry" *ngFor="let entry of entries | async" class="entry" [ngClass]="{'read': entry.read}"></feed-entry>
+        </div>
     `,
-    styleUrls: ['feed-entries.css']
+    styleUrls: ['feed-entries.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedEntriesComponent implements OnInit{
     feed: Observable<Feed>;
@@ -52,7 +55,7 @@ export class FeedEntriesComponent implements OnInit{
     }
 
     onPullFeed(feedUrl: string) {
-        this.store.dispatch(new Pull(feedUrl));
+        this.store.dispatch(new PullAction({id: feedUrl}));
     }
 
     onReadEntries(feedUrl: string) {

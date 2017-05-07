@@ -22,11 +22,20 @@ function async(target, prop, property) {
 @Injectable()
 export class ReaderService {
     asyncTasks = new Set();
+    cache = new Map();
+
 
     constructor(private feedService: FeedService,
                 private storage: StorageService,
                 private store: Store<State>) {
+    }
 
+    saveSetting(key, value) {
+        localStorage.setItem(key, value);
+    }
+
+    getSetting(key) {
+        return localStorage.getItem(key);
     }
 
     addAsyncTask(task: Promise<any>) {
@@ -85,7 +94,14 @@ export class ReaderService {
 
     @async
     getEntriesForFeed(feedUrl) {
-        return this.storage.getEntries({feed_url: feedUrl});
+        // console.log(feedUrl)
+        // if (this.cache.has(feedUrl)) {
+        //     return Promise.resolve(this.cache.get(feedUrl));
+        // }
+        return this.storage.getEntries({feed_url: feedUrl}).then(entries=>{
+            // this.cache.set(feedUrl, entries);
+            return entries;
+        });
     }
 
     @async

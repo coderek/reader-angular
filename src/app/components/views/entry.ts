@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnChanges} from "@angular/core";
+import {Component, Input, OnInit, OnChanges, ChangeDetectionStrategy} from "@angular/core";
 import {Entry} from "../../models/entry";
 import {Store} from "@ngrx/store";
 import {Router, ActivatedRoute} from "@angular/router";
@@ -16,25 +16,17 @@ import {Observable} from "rxjs";
           </span>
           <md-icon (click)="open(entry.url)">link</md-icon>
         </div>
-        <article [hidden]="!opened" [innerHTML]="content"></article>
+        <reader-article *ngIf="opened" [entry]="entry"></reader-article>
     `,
     selector: 'feed-entry',
-    styleUrls: ['entry.css']
+    styleUrls: ['entry.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntryComponent implements OnInit, OnChanges {
     @Input() entry: Entry;
     @Input() opened: boolean;
 
     constructor(private store: Store<State>, private router: Router) {}
-
-    get content() {
-        let entry = this.entry;
-        if (entry.content.length > entry.summary.length) {
-            return entry.content;
-        } else {
-            return entry.summary;
-        }
-    }
 
     ngOnInit() {}
 
@@ -57,7 +49,7 @@ export class EntryComponent implements OnInit, OnChanges {
      * @param entry
      */
     toggleStarEntry(entry) {
-        let payload: EntityPayload = {
+        let payload: EntityPayload<boolean> = {
             id: entry.url,
             value: !entry.favorite
         };

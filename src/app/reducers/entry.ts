@@ -10,9 +10,7 @@ export const CLOSE_ENTRY = '[Entry] close';
 
 export class ReadEntryAction implements Action {
     readonly type = READ_ENTRY;
-
-    constructor(public payload: EntityPayload) {
-    }
+    constructor(public payload: EntityPayload<any>) {}
 }
 
 export class ReadEntryCompleteAction implements Action {
@@ -31,9 +29,7 @@ export class Close implements Action {
 
 export class ToggleFavoriteAction implements Action {
     readonly type = TOGGLE_FAVORITE;
-
-    constructor(public payload: EntityPayload) {
-    }
+    constructor(public payload: EntityPayload<boolean>) {}
 }
 
 export class FavoriteComplete implements Action {

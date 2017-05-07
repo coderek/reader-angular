@@ -40,11 +40,14 @@ export class LoadFeedsEffects {
     pullFeed: Observable<Action> = this.actions
         .ofType(feed.PULL_FEED)
         .map(toPayload)
-        .switchMap(feedUrl => {
+        .switchMap(entity => {
+            let {id} = entity;
             // pull entries first, then update count
-            let promises = this.reader.pullFeed(feedUrl).then(entries=>{
-                return this.reader.countUnreadEntries(feedUrl).then(count=> {
-                    return [new feed.PullFinished(entries), new UpdateUnreadAction({id: feedUrl, value: count})];
+            let promises = this.reader.pullFeed(id).then(entries=>{
+                return this.reader.countUnreadEntries(id).then(count=> {
+                    return [
+                        new feed.PullFinished({value: entries, id: id}),
+                        new UpdateUnreadAction({id: id, value: count})];
                 })
             });
             return Observable.fromPromise(promises).concatAll();

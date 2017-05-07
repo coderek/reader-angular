@@ -1,6 +1,9 @@
 import {Action} from "@ngrx/store";
 import {Feed} from "../models/feed";
-import {UPDATE_UNREAD_COUNT, reducer as feedReducer, FeedActions, DECREMENT_UNREAD_COUNT} from "./feed";
+import {
+    UPDATE_UNREAD_COUNT, reducer as feedReducer, FeedActions, DECREMENT_UNREAD_COUNT, PULL_FEED,
+    PULL_FEED_COMPLETE
+} from "./feed";
 import {entityReducer} from "./index";
 import {SELECT_FEED, GlobalActions} from "./global";
 
@@ -56,6 +59,8 @@ export function reducer(state: Feed[] = [], action: Actions | FeedActions | Glob
             return action.payload;
         case DELETE_FEED:
             return state.filter(s => s.url != action.payload);
+        case PULL_FEED:
+        case PULL_FEED_COMPLETE:
         case UPDATE_UNREAD_COUNT:
         case DECREMENT_UNREAD_COUNT:
             return entityReducer(feedReducer, action, state);

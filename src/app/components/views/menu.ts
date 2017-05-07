@@ -18,8 +18,11 @@ import {ReaderService} from "../../services/reader.service";
 @Component({
     selector: 'feed-item',
     template: `
-        {{feed.title}} ({{feed.unreadCount}}) <span *ngIf="feed.loading" class="spinner-text">loading...</span>
-    `
+        {{feed.title}} (<span class="count">{{feed.unreadCount}}</span>) <img *ngIf='feed.loading' src="/assets/loading-spinning-bubbles.svg" width='10' height='10'>
+    `,
+    styles: [`
+        .count {color: red;}    
+    `]
 })
 export class FeedItemView {
     @Input() feed: Feed;

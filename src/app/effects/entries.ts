@@ -35,7 +35,7 @@ export class EntryEffects {
     @Effect()
     favorite: Observable<Action> = this.actions.ofType(TOGGLE_FAVORITE)
         .map(toPayload)
-        .switchMap((payload: EntityPayload)=> {
+        .switchMap((payload: EntityPayload<boolean>)=> {
                 let {id, value} = payload;
                 return Observable
                     .fromPromise(this.reader.updateEntry(id, 'favorite', value))
@@ -46,7 +46,7 @@ export class EntryEffects {
     @Effect()
     markRead: Observable<Action> = this.actions.ofType(READ_ENTRY)
         .map(toPayload)
-        .switchMap((payload: EntityPayload)=> {
+        .switchMap((payload: EntityPayload<any>)=> {
                 let {id} = payload;
                 console.log('read '+id)
                 return Observable

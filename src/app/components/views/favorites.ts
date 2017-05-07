@@ -12,7 +12,7 @@ import {State as ReaderState} from "../../reducers";
         <feed-toolbar [newItemsCount]="newItemsCount" (onReadEntries)="onReadEntries($event)"></feed-toolbar>
         <feed-entry [entry]="entry" *ngFor="let entry of entries | async" class="entry" [ngClass]="{'read': entry.read}"></feed-entry>
     `,
-    styleUrls: ['favorites.css']
+    styleUrls: ['./feed-entries.css']
 })
 export class FavoriteEntriesComponent extends FeedEntriesComponent{
     constructor(protected store: Store<ReaderState>, protected route: ActivatedRoute, protected router: Router) {

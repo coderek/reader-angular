@@ -30,11 +30,10 @@ export class ReadAllEntriesCompleteAction implements Action {
 
 type EntriesActions = ReadAllEntriesAction | LoadEntriesComplete  | LoadEntries;
 
-
 export function reducer(state: Entry[] = [], action: FeedActions | EntriesActions | EntryActions): Entry[] {
     switch (action.type) {
         case READ_ALL_ENTRIES:
-            return state.map(e=>Object.assign(e, {read:true}));
+            return state.map(e=>Object.assign({}, e, {read:true}));
         case LOAD_ENTRIES_COMPLETE:
             return action.payload;
         case LOAD_ENTRIES:
@@ -45,7 +44,7 @@ export function reducer(state: Entry[] = [], action: FeedActions | EntriesAction
         case TOGGLE_FAVORITE:
             return entityReducer(entryReducer, action, state);
         case PULL_FEED_COMPLETE:
-            return action.payload;
+            return action.payload.value;
         default:
             return state;
     }

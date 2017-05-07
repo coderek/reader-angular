@@ -15,6 +15,7 @@ export interface State {
         successMessage: string;
         loading: boolean;
         pageTitle: string;
+        fontSize: number; // em
     }
 }
 
@@ -28,15 +29,15 @@ const selectedFeed = s=>s.globals.selectedFeed;
 const selectedEntry = s=>s.globals.selectedEntry;
 const loading = s => s.globals.loading;
 const pageTitle = s => s.globals.pageTitle;
+const fontSize = s => s.globals.fontSize;
 
 export const selectors = {
-    selectedFeed, selectedEntry, loading, pageTitle
+    selectedFeed, selectedEntry, loading, pageTitle, fontSize
 };
 
-
-export type EntityPayload = {
+export type EntityPayload<T> = {
     id: string,
-    value?: any
+    value?: T
 };
 
 /**
@@ -47,7 +48,7 @@ export type EntityPayload = {
  * @returns {any}
  */
 export function entityReducer(reducer, action, arrayState, idAttr = 'url') {
-    let {id} = action.payload as EntityPayload;
+    let {id} = action.payload as EntityPayload<any>;
     let idx = arrayState.findIndex(e => e[idAttr] === id);
     // not found
     if (idx === -1) return arrayState;
