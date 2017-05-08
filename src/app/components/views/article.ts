@@ -15,6 +15,8 @@ export class ArticleComponent implements AfterViewInit {
 
     get content() {
         let entry = this.entry;
+        entry.content = entry.content || '';
+        entry.summary = entry.summary || '';
         if (entry.content.length > entry.summary.length) {
             return entry.content;
         } else {

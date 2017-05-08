@@ -8,7 +8,7 @@ import {Entry} from "../../models/entry";
 import {Observable} from "rxjs";
 import {SelectFeedAction, SelectEntryAction, SetPageTitleAction} from "../../reducers/global";
 import {Feed} from "../../models/feed";
-import {LoadEntries, ReadAllEntriesAction} from "../../reducers/entries";
+import {LoadEntriesAction, ReadAllEntriesAction} from "../../reducers/entries";
 
 @Component({
     selector: 'feed-entries',
@@ -45,7 +45,7 @@ export class FeedEntriesComponent implements OnInit{
                 let url = decodeURIComponent(val);
                 console.log(url);
                 this.store.dispatch(new SelectFeedAction(url));
-                this.store.dispatch(new LoadEntries(url));
+                this.store.dispatch(new LoadEntriesAction(url));
         });
         this.route.params.map(p => p['open'])
             .subscribe(val => {

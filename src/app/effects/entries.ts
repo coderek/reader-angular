@@ -3,7 +3,7 @@ import {ReaderService} from "../services/reader.service";
 import {Actions, Effect, toPayload} from "@ngrx/effects";
 import {Action} from "@ngrx/store";
 import {Observable} from "rxjs";
-import {LoadEntriesComplete, LOAD_ENTRIES, READ_ALL_ENTRIES, ReadAllEntriesCompleteAction} from "../reducers/entries";
+import {LoadEntriesCompleteAction, LOAD_ENTRIES, READ_ALL_ENTRIES, ReadAllEntriesCompleteAction} from "../reducers/entries";
 import {READ_ENTRY, ReadEntryCompleteAction, TOGGLE_FAVORITE, FavoriteComplete} from "../reducers/entry";
 import {EntityPayload} from "../reducers/index";
 import {DecrementUnreadAction} from "../reducers/feed";
@@ -19,16 +19,15 @@ export class EntryEffects {
         .map(toPayload)
         .distinctUntilChanged()
         .switchMap(url => {
-            console.log(url);
             if (url==='favorites') {
                 return Observable
                     .fromPromise(this.reader.getFavorites())
-                    .map(entries => new LoadEntriesComplete(entries))
+                    .map(entries => new LoadEntriesCompleteAction(entries))
 
             } else if (url.startsWith('http')) {
                 return Observable
                     .fromPromise(this.reader.getEntriesForFeed(url))
-                    .map(entries => new LoadEntriesComplete(entries))
+                    .map(entries => new LoadEntriesCompleteAction(entries))
             }
         });
 

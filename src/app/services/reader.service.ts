@@ -23,8 +23,6 @@ function async(target, prop, property) {
 @Injectable()
 export class ReaderService {
     asyncTasks = new Set();
-    cache = new Map();
-
 
     constructor(private feedService: FeedService,
                 private storage: StorageService,

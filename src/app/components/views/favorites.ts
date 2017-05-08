@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
-import {LoadEntries} from "../../reducers/entries";
+import {LoadEntriesAction} from "../../reducers/entries";
 import {SetPageTitleAction} from "../../reducers/global";
 import {FeedEntriesComponent} from "./entries";
 import {Router, ActivatedRoute} from "@angular/router";
@@ -22,7 +22,7 @@ export class FavoriteEntriesComponent extends FeedEntriesComponent{
 
     ngOnInit() {
         super.ngOnInit.call(this);
-        this.store.dispatch(new LoadEntries('favorites'));
+        this.store.dispatch(new LoadEntriesAction('favorites'));
         this.store.dispatch(new SetPageTitleAction('Favorites'));
     }
 }

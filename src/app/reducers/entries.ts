@@ -9,12 +9,12 @@ export const LOAD_ENTRIES = '[Entries] load';
 export const READ_ALL_ENTRIES = '[Entries] read all';
 export const READ_ALL_ENTRIES_COMPLETE = '[Entries] read all complete';
 
-export class LoadEntriesComplete implements Action {
+export class LoadEntriesCompleteAction implements Action {
     readonly type = LOAD_ENTRIES_COMPLETE;
     constructor(public payload: Entry[]) {}
 }
 
-export class LoadEntries implements Action {
+export class LoadEntriesAction implements Action {
     readonly type = LOAD_ENTRIES;
     constructor(public payload: string) {}
 }
@@ -28,7 +28,7 @@ export class ReadAllEntriesCompleteAction implements Action {
     readonly type = READ_ALL_ENTRIES_COMPLETE;
 }
 
-type EntriesActions = ReadAllEntriesAction | LoadEntriesComplete  | LoadEntries;
+type EntriesActions = ReadAllEntriesAction | LoadEntriesCompleteAction  | LoadEntriesAction;
 
 export function reducer(state: Entry[] = [], action: FeedActions | EntriesActions | EntryActions): Entry[] {
     switch (action.type) {
