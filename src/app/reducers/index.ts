@@ -1,6 +1,6 @@
 import {Feed} from "../models/feed";
 import {Entry} from "../models/entry";
-import {combineReducers} from "@ngrx/store";
+import {compose, combineReducers} from "@ngrx/store";
 import {reducer as feedsReducer} from "./feeds";
 import {reducer as entriesReducer} from "./entries";
 import {topLevelReducer} from "./global";
@@ -19,11 +19,13 @@ export interface State {
     }
 }
 
-export const reducer = combineReducers({
-    feeds: feedsReducer,
-    entries: entriesReducer,
-    globals: topLevelReducer
-});
+export function reducer() {
+    return compose(combineReducers)({
+        feeds: feedsReducer,
+        entries: entriesReducer,
+        globals: topLevelReducer
+    });
+}
 
 const selectedFeed = s=>s.globals.selectedFeed;
 const selectedEntry = s=>s.globals.selectedEntry;
