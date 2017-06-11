@@ -47,7 +47,7 @@ export class FeedItemView {
       </li>
     </ul>
     <footer>
-        <button (click)="pullAll()">Pull all</button>
+        <button md-button (click)="pullAll()">Pull all</button>
     </footer>
   `,
     styleUrls: ['menu.css'],

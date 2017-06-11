@@ -1,9 +1,9 @@
 import {Component, Input, OnInit, OnChanges, ChangeDetectionStrategy} from "@angular/core";
-import {Entry} from "../../models/entry";
+import {Entry} from "../../../models/entry";
 import {Store} from "@ngrx/store";
 import {Router, ActivatedRoute} from "@angular/router";
-import {ToggleFavoriteAction, ReadEntryAction} from "../../reducers/entry";
-import {State, EntityPayload} from "../../reducers/index";
+import {ToggleFavoriteAction, ReadEntryAction} from "../../../reducers/entry";
+import {State, EntityPayload} from "../../../reducers/index";
 import {Observable} from "rxjs";
 @Component({
     template: `

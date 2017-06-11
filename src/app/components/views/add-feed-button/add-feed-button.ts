@@ -1,11 +1,11 @@
 import {Component, OnChanges, SimpleChanges} from "@angular/core";
 import {MdDialog, MdDialogRef} from "@angular/material";
 import {NgForm} from "@angular/forms";
-import {ReaderService} from "../../services/reader.service";
+import {ReaderService} from "../../../services/reader.service";
 import {Store} from "@ngrx/store";
-import {State} from "../../reducers/index";
-import {AddFeedAction} from "../../reducers/feeds";
-import {UniqueFeedValidatorDirective} from "../../validations/add-feed";
+import {State} from "../../../reducers/index";
+import {AddFeedAction} from "../../../reducers/feeds";
+import {UniqueFeedValidatorDirective} from "../../../validations/add-feed";
 
 
 @Component({
@@ -73,7 +73,7 @@ export class NewFeedFormComponent  {
 @Component({
     selector: 'add-feed-button',
     template: `
-        <button (click)="openDialog()">Add a subscription</button>
+        <button md-raised-button (click)="openDialog()">Add a subscription</button>
     `
 })
 export class AddFeedButtonComponent {

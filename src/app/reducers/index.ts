@@ -1,9 +1,10 @@
 import {Feed} from "../models/feed";
 import {Entry} from "../models/entry";
-import {compose, combineReducers} from "@ngrx/store";
+import {combineReducers} from "@ngrx/store";
 import {reducer as feedsReducer} from "./feeds";
 import {reducer as entriesReducer} from "./entries";
 import {topLevelReducer} from "./global";
+import {compose} from "@ngrx/core/compose";
 
 export interface State {
     // NOTE can't use object reference, because that will make this action dependent on the presense of feeds
@@ -19,13 +20,13 @@ export interface State {
     }
 }
 
-export function reducer() {
-    return compose(combineReducers)({
-        feeds: feedsReducer,
-        entries: entriesReducer,
-        globals: topLevelReducer
-    });
-}
+export const reducer =
+ compose(combineReducers)({
+    feeds: feedsReducer,
+    entries: entriesReducer,
+    globals: topLevelReducer
+});
+
 
 const selectedFeed = s=>s.globals.selectedFeed;
 const selectedEntry = s=>s.globals.selectedEntry;

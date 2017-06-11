@@ -1,5 +1,5 @@
 import {Component, Input, HostListener, ElementRef, AfterViewInit} from "@angular/core";
-import {State, selectors} from "../../reducers/index";
+import {State, selectors} from "../../../reducers/index";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 
@@ -7,7 +7,7 @@ import {Observable} from "rxjs";
     selector: 'reader-article',
     template: `
         <article [innerHTML]="content" [ngStyle]="{'fontSize.em': (fontSize | async)}"> </article>`,
-    styleUrls: ['entry.css'],
+    styleUrls: ['../entry/entry.css'],
 })
 export class ArticleComponent implements AfterViewInit {
     @Input() entry;
@@ -43,7 +43,6 @@ export class ArticleComponent implements AfterViewInit {
         if (feed) {
             let baseUrl = feed.link;
             if (!baseUrl) return;
-            console.log(baseUrl);
             let el = this.el.nativeElement;
             let imgs = el.querySelectorAll('img');
             for (let img of imgs) {
