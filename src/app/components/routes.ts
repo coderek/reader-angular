@@ -1,6 +1,6 @@
 import {ReaderMainComponent} from "./containers/reader";
 import {FavoriteEntriesComponent} from "./views/favorites/favorites";
-import {FeedEntriesComponent} from "./views/entries/entries";
+import {FeedEntriesComponent} from "../reader/ui/entries/entries.component";
 import {EmptyPaneComponent} from "./views/empty-entries";
 import {Routes} from "@angular/router";
 

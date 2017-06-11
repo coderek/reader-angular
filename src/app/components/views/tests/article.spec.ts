@@ -1,5 +1,5 @@
 import {TestBed, async} from "@angular/core/testing";
-import {ArticleComponent} from "../article/article";
+import {ArticleComponent} from "../../../reader/ui/entries/entry/article/article.component";
 import {Store} from "@ngrx/store";
 import {ElementRef} from "@angular/core";
 import {Observable} from "rxjs";

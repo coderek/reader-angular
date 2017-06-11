@@ -1,0 +1,13 @@
+<h3>Add new feed</h3>
+<form #feedForm="ngForm" (ngSubmit)="onSubmit(feedForm)">
+	<div>
+		<label for="feed_url">Atom/RSS URL</label>
+		<div class="control">
+			<input type="text" ngModel #feedUrl="ngModel" uniqueFeed required id="feed_url" name="feedUrl" pattern="^https?:\/\/.*">
+			<div [hidden]="feedUrl.valid || feedUrl.pristine">
+				<span class="error">{{feedUrl.errors | json}}</span>
+			</div>
+		</div>
+		<button [disabled]="feedForm.invalid">Add</button>
+	</div>
+</form>

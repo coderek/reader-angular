@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
-import {Feed} from "../models/feed";
-import {Entry} from "../models/entry";
+import {Feed} from "../../models/feed";
+import {Entry} from "../../models/entry";
 
 @Injectable()
 export class StorageService {

@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {LoadEntriesAction} from "../../../reducers/entries";
 import {SetPageTitleAction} from "../../../reducers/global";
-import {FeedEntriesComponent} from "../entries/entries";
+import {FeedEntriesComponent} from "../../../reader/ui/entries/entries.component";
 import {Router, ActivatedRoute} from "@angular/router";
 import {State} from "app/reducers";
 
@@ -12,7 +12,7 @@ import {State} from "app/reducers";
         <feed-toolbar [newItemsCount]="newItemsCount" (onReadEntries)="onReadEntries($event)"></feed-toolbar>
         <feed-entry [entry]="entry" *ngFor="let entry of entries | async" class="entry" [ngClass]="{'read': entry.read}"></feed-entry>
     `,
-    styleUrls: ['../feed-entries.css']
+    styleUrls: ['../../../reader/ui/entries/entries.component.css']
 })
 export class FavoriteEntriesComponent extends FeedEntriesComponent{
     constructor(protected store: Store<State>, protected route: ActivatedRoute, protected router: Router) {

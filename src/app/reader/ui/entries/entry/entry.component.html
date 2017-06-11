@@ -1,0 +1,10 @@
+<div>
+	<md-icon (click)="toggleStarEntry(entry)">
+		{{entry.favorite ? 'favorite' : 'favorite_bordered'}}
+	</md-icon>
+	<span class="title" [ngClass]="{'read': entry.read}">
+              {{entry.title}} | <time>{{entry.published | prettyDate }}</time>
+          </span>
+	<md-icon (click)="open(entry.url)">link</md-icon>
+</div>
+<app-article *ngIf="opened" [entry]="entry"></app-article>

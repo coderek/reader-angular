@@ -1,0 +1,42 @@
+.error {
+	color: red;
+}
+
+.control {
+	display: inline-block;
+}
+
+input + div {
+	margin-top: 4px;
+	font-size: 80%;
+}
+
+form {
+	background-color: #c2cff1;
+	border: 1px solid #767f96;
+	padding: 10px;
+}
+
+label, input, button {
+	vertical-align: top;
+	line-height: 30px;
+}
+
+input, button {
+	height: 30px;
+}
+
+input {
+	width: 400px;
+	height: 25px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+button {
+	width: 50px;
+}
+
+h3 {
+	margin-top: 0;
+}

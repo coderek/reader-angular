@@ -1,0 +1,14 @@
+
+<!--<app-add-feed-button></app-add-feed-button>-->
+<!--<ul>-->
+	<!--<li routerLink="/feeds/favorites" routerLinkActive="selected">Favorites</li>-->
+<!--</ul>-->
+<ul class="feed-list">
+	<li><b>Subscriptions</b></li>
+	<li *ngFor="let feed of feeds" (click)="onSelectFeed.emit(feed)">
+		<app-feed [feed]="feed"></app-feed>
+	</li>
+</ul>
+<!--<footer>-->
+	<!--<button md-button (click)="pullAll()">Pull all</button>-->
+<!--</footer>-->
