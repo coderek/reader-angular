@@ -1,5 +1,7 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {
+	AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, Output,
+	SimpleChanges
+} from '@angular/core';
 import {Entry} from '../../../models/entry';
 import {Feed} from '../../../models/feed';
 
@@ -9,14 +11,14 @@ import {Feed} from '../../../models/feed';
 	styleUrls: ['./entries.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FeedEntriesComponent implements OnInit {
+export class FeedEntriesComponent implements OnChanges {
 
 	@Input() feed: Feed;
 	@Input() entries: Entry[];
 
 	@Output() clickEntry = new EventEmitter<Entry>();
 
-	constructor(protected route: ActivatedRoute, protected router: Router) {
+	constructor(private ref: ElementRef) {
 		// this.entries = this.store.select(s => s.entries);
 		// this.feed = this.store.select(s => {
 		// 	return s.feeds.find(f => f.url === s.globals.selectedFeed);
@@ -26,9 +28,15 @@ export class FeedEntriesComponent implements OnInit {
 		// 	}
 		// });
 		// this.opened = this.store.select(selectors.selectedEntry);
-		console.log('feed entries');
+		// console.log('feed entries');
+		// this.clickEntry.subscribe(()=> {
+		// 	console.log('changed')
+		// })
 	}
 
-	ngOnInit() {
+	ngOnChanges (changes: SimpleChanges) {
+		console.log('fuck')
+		// console.log(this.ref.nativeElement.querySelector('.entries'));
+		this.ref.nativeElement.querySelector('.entries').scrollTop = 0;
 	}
 }

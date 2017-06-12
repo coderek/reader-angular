@@ -33,21 +33,14 @@ interface FeedsStore {
 export class ReaderService {
 	asyncTasks = new Set();
 
-	// push
+	// continuously push feeds and entries
 	feeds = new Subject<Feed[]>();
-	store
 	entries = new Subject<Entry[]>();
+
+	_feeds: Feed[] = [];
 
 	constructor(private feedService: FeedService, private storage: StorageService) {
 		this.getFeeds();
-	}
-
-	saveSetting(key, value) {
-		localStorage.setItem(key, value);
-	}
-
-	getSetting(key) {
-		return localStorage.getItem(key);
 	}
 
 	addAsyncTask(task: Promise<any>) {
@@ -63,11 +56,25 @@ export class ReaderService {
 		// this.store.dispatch(new StartLoadingAction());
 	}
 
+	public getEntriesObservable() {
+		return this.entries;
+	}
+
+	public getFeedsObservable() {
+		return this.feeds.map(feeds => feeds.sort((a, b) => {
+			if (a.unreadCount === b.unreadCount) {
+				return a.title < b.title ? -1 : 1;
+			} else {
+				return b.unreadCount - a.unreadCount;
+			}
+		}));
+	}
+
 	@async
 	public getFeeds(): Promise<Feed[]> {
 		return this.storage.getFeeds().then(feeds => {
-			this._feeds = feeds;
 			this.feeds.next(feeds);
+			this._feeds = feeds;
 			return feeds;
 		});
 	}
@@ -77,28 +84,32 @@ export class ReaderService {
 		const that = this;
 		return this.storage.getEntries({feed_url: feed.url}).then(entries => {
 			for (const entry of entries) {
-				entry.feed = feed;
-				(function (e, a, v){
-					Object.defineProperty(e, a, {
-						enumerable: true,
-						configurable: true,
-						get: function () {return v; },
-						set: function (_) {
-							if (v) {
-								return;
-							}
-							v = true;
-							e.feed.unreadCount--;
-							that.feeds.next([...that._feeds]);
-						}
+				if (!entry.read) {
+					watch(entry, 'read', () => {
+						entry.feed.unreadCount--;
+						this.markFeedsChanged();
+						Object.defineProperty(entry, 'read', {set: noop});
+						this.saveEntry(entry);
 					});
-				})(entry, 'read', entry['read']);
+				}
+				watch(entry, 'favorite', (isFavorite) => {
+					console.log('favorite ' + entry.title + ' ' + isFavorite);
+					this.saveEntry(entry);
+				});
+				entry.feed = feed;
 			}
 			this.entries.next(entries);
 			return entries;
 		});
 	}
 
+	private markFeedsChanged() {
+		this.feeds.next([...this._feeds]);
+	}
+
+	private markEntriesChanged() {
+
+	}
 
 	getFeed(url): Promise<Feed> {
 		if (url == null) {
@@ -129,23 +140,23 @@ export class ReaderService {
 	addFeed(url) {
 		return this.feedService.fetch(url).then(feed => {
 			return this.storage.saveFeed(feed);
+		}).then(feed => {
+			this._feeds.push(feed);
+			this.markFeedsChanged();
+			return feed;
 		});
 	}
 
-	pullAllFeeds(): Observable<Feed> {
-		const ret = new Subject<Feed>();
-		this.getFeeds().then(feeds => {
-			for (const feed of feeds) {
-				this.pullFeed(feed.url).then(f => ret.next(f));
-			}
-		});
-		return ret;
-	}
-
-	pullFeed(feedUrl): Promise<Feed> {
+	public pullFeed(feed: Feed): Promise<Feed> {
+		const	feedUrl = feed.url;
+		feed.loading = true;
+		this.markFeedsChanged();
 		return this.feedService.fetch(feedUrl).then(async updatedFeed => {
-			return this.storage.saveFeed(updatedFeed);
-		});
+			return this.storage.saveFeed(updatedFeed).then(f => Object.assign(feed, f, {loading: false}));
+		}).then(f => {
+			this.markFeedsChanged();
+			return f;
+		}).catch(() => 123);
 	}
 
 	@async
@@ -168,7 +179,11 @@ export class ReaderService {
 	}
 
 	@async
-	deleteFeed(feedUrl): Promise<void> {
+	deleteFeed(feedUrl: Feed | string): Promise<void> {
+		if (typeof feedUrl === 'object') {
+			feedUrl = feedUrl.url;
+		}
+		console.assert(typeof feedUrl === 'string');
 		return this.storage.deleteFeed(feedUrl);
 	}
 
@@ -185,3 +200,23 @@ export class ReaderService {
 
 
 
+function watch(obj, prop, cb) {
+	let val = obj[prop];
+	Object.defineProperty(obj, prop, {
+		enumerable: true,
+		configurable: true,
+		get: function () {
+			return val;
+		},
+		set: function (_val) {
+			if (_val === val) {
+				return;
+			}
+			const old = val;
+			val = _val;
+			cb(val, old);
+		}
+	});
+}
+
+function noop(){}

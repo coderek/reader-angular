@@ -1,0 +1,15 @@
+<div class="flex row">
+	<div style="flex: 1 0">
+		<strong>
+			{{feed?.title}}
+		</strong>
+	</div>
+
+	<div>
+		<button *ngIf="feed" (click)="readAll.emit(feed)">Mark all as read</button>
+		<button *ngIf="feed" (click)="pull.emit(feed)">Pull</button>
+		<button *ngIf="feed" (click)="delete.emit(feed)">Delete</button>
+		<button (click)="increaseFontSize()">+</button>
+		<button (click)="decreaseFontSize()">-</button>
+	</div>
+</div>

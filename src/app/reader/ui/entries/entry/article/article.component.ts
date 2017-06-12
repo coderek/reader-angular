@@ -2,6 +2,7 @@ import {Component, Input, HostListener, ElementRef, AfterViewInit} from '@angula
 
 @Component({
 	selector: 'app-article',
+	styleUrls: ['./article.component.css'],
 	template: `
 		<article [innerHTML]="content" [ngStyle]="{'fontSize.em': (fontSize)}"></article>`,
 })

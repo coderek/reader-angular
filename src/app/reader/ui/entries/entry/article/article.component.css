@@ -1,0 +1,24 @@
+article /deep/ pre {
+	max-width: 100%;
+	overflow: auto;
+	background-color: white;
+}
+
+article /deep/ img {
+	max-width: 100%;
+	display: block;
+}
+
+
+
+article /deep/ * {
+	font-size: 90%;
+}
+
+article {
+	margin: 10px 20px;
+	padding: 10px;
+	background-color: #f1f5ff;
+	font-size: 110%;
+	border: 1px solid #c2cff1;
+}

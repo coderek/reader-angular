@@ -4,6 +4,11 @@
 	flex-direction: column;
 }
 
+:host /deep/ {
+	background-color: rgba(0, 0, 0, 0.77);
+	color: #d8c9c9;
+}
+
 ul {
 	margin: 0px;
 	padding: 10px;
@@ -13,7 +18,7 @@ ul {
 .feed-list {
 	flex: 1 0;
 	overflow-y: auto;
-	background-color: #f8fff1;
+	/*background-color: #f8fff1;*/
 }
 
 .spinner-text {
@@ -28,6 +33,7 @@ header {
 
 ul li {
 	list-style: none;
+	margin-top: 10px;
 }
 
 ul li:hover {
@@ -39,8 +45,5 @@ add-feed-button {
 }
 
 .selected {
-	background: #c2cff1;
-	margin-left: -10px;
-	margin-right: -10px;
-	padding-left: 10px;
+	font-weight: bold;
 }
