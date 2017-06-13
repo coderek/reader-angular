@@ -20,3 +20,7 @@ header {
 	font-weight: bold;
 	line-height: 17px;
 }
+
+:host {
+	/*border-right: 1px solid black;*/
+}

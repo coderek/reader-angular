@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnChanges, ChangeDetectionStrategy} from '@angular/core';
+import {Component, Input, OnInit, OnChanges, ChangeDetectionStrategy, EventEmitter, Output} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 import {Entry} from '../../../../models/entry';
@@ -8,23 +8,15 @@ import {Entry} from '../../../../models/entry';
 	styleUrls: ['entry.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntryComponent implements OnInit, OnChanges {
+export class EntryComponent {
 	@Input() entry: Entry;
-
+	@Output() browseUrl = new EventEmitter<string>();
+	@Output() clickEntry = new EventEmitter<Entry>();
 	constructor(private router: Router) {
-	}
-
-	ngOnInit() {
 	}
 
 	get opened () {
 		return this.entry && this.entry.is_open;
-	}
-
-	ngOnChanges() {
-		if (this.opened && !this.entry.read) {
-			// this.store.dispatch(new ReadEntryAction({id: this.entry.url}));
-		}
 	}
 
 	/**
@@ -32,7 +24,7 @@ export class EntryComponent implements OnInit, OnChanges {
 	 * @param url
 	 */
 	open(url) {
-		window.open(url, '_blank');
+		this.browseUrl.emit(url);
 	}
 
 	/**
@@ -45,18 +37,5 @@ export class EntryComponent implements OnInit, OnChanges {
 		// 	value: !entry.favorite
 		// };
 		// this.store.dispatch(new ToggleFavoriteAction(payload));
-	}
-
-	/**
-	 * use router to transfer the selected entry to the global state
-	 * @param entry
-	 */
-	toggleEntry(entry) {
-		const path = decodeURIComponent(entry.feed_url);
-		if (this.opened) {
-			this.router.navigate(['feeds', path]);
-		} else {
-			this.router.navigate(['feeds', path, {open: encodeURIComponent(this.entry.url)}]);
-		}
 	}
 }

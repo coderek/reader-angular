@@ -9,7 +9,7 @@
 
 	</div>
 
-	<div class="flex column"  style="flex: 1 0;">
+	<div class="flex column"  style="max-width: 800px; border-right: 1px solid #3b3b3b; flex: 1 0;">
 
 
 		<app-feed-toolbar [feed]="feed"
@@ -19,9 +19,12 @@
 		</app-feed-toolbar>
 
 
-		<app-entries (clickEntry)="onClickEntry($event)" [entries]="entries"></app-entries>
+		<app-entries (browseUrl)="setBrowserUrl($event)" (clickEntry)="onClickEntry($event)" [entries]="entries"></app-entries>
 
 
+	</div>
+	<div style="flex: 1 0">
+		<app-browser [sourceUrl]="browseUrl"></app-browser>
 	</div>
 </div>
 

@@ -23,6 +23,7 @@ export class LayoutComponent {
 	feed: Feed = null;
 	feeds: Feed[] = [];
 	entries: Entry[] = [];
+	browseUrl = null;
 
 	pullProgress = Observable.empty();
 
@@ -31,6 +32,10 @@ export class LayoutComponent {
 		this.reader.entries.subscribe(entries => this.entries = entries );
 	}
 
+	setBrowserUrl(url) {
+		console.log(url)
+		this.browseUrl = url;
+	}
 	onSelectFeed(feed) {
 		this.feed = feed;
 		this.reader.getEntriesForFeed(feed);

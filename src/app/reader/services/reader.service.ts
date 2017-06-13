@@ -96,6 +96,7 @@ export class ReaderService {
 					console.log('favorite ' + entry.title + ' ' + isFavorite);
 					this.saveEntry(entry);
 				});
+				watch(entry, 'is_open', () => this.saveEntry(entry));
 				entry.feed = feed;
 			}
 			this.entries.next(entries);
@@ -188,8 +189,8 @@ export class ReaderService {
 	}
 
 	@async
-	markAllRead(feedUrl): Promise<void> {
-		return this.storage.markAllRead(feedUrl);
+	markAllRead(feed: Feed): Promise<void> {
+		return this.storage.markAllRead(feed.url);
 	}
 
 	@async

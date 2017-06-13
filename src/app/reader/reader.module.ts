@@ -14,6 +14,7 @@ import {EntryComponent} from './ui/entries/entry/entry.component';
 import {PrettyDatePipe} from '../pipes/pretty-date';
 import {ArticleComponent} from './ui/entries/entry/article/article.component';
 import {ToolsComponent} from './ui/toolbar/toolbar.component';
+import { BrowserComponent } from './ui/browser/browser.component';
 
 
 @Component({
@@ -54,6 +55,7 @@ const routes = [
 		PrettyDatePipe,
 		ArticleComponent,
 		ToolsComponent,
+		BrowserComponent,
 	],
 
 })

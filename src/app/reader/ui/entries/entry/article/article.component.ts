@@ -1,4 +1,4 @@
-import {Component, Input, HostListener, ElementRef, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
 
 @Component({
 	selector: 'app-article',
@@ -9,6 +9,16 @@ import {Component, Input, HostListener, ElementRef, AfterViewInit} from '@angula
 export class ArticleComponent implements AfterViewInit {
 	@Input() entry;
 	@Input() fontSize: number;
+	@Output() browseUrl = new EventEmitter<string>();
+
+	@HostListener('click', ['$event.target'])
+	onClickElement(ele) {
+		if (ele.tagName === 'A') {
+			console.log(this);
+			this.browseUrl.emit(ele.href);
+			return false;
+		}
+	}
 
 	get content() {
 		const entry = this.entry;
