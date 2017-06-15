@@ -153,11 +153,14 @@ export class ReaderService {
 		feed.loading = true;
 		this.markFeedsChanged();
 		return this.feedService.fetch(feedUrl).then(async updatedFeed => {
-			return this.storage.saveFeed(updatedFeed).then(f => Object.assign(feed, f, {loading: false}));
+			return this.storage.saveFeed(updatedFeed).then(f => Object.assign(feed, f));
 		}).then(f => {
 			this.markFeedsChanged();
+			feed.loading = false;
 			return f;
-		}).catch(() => 123);
+		}).catch(() => {
+			feed.loading = false;
+		});
 	}
 
 	@async

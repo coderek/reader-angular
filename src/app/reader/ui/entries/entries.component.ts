@@ -20,7 +20,8 @@ export class FeedEntriesComponent implements OnChanges {
 	}
 
 	ngOnChanges (changes: SimpleChanges) {
-		this.ref.nativeElement.querySelector('.entries').scrollTop = 0;
+		if ('feed' in changes)
+			this.ref.nativeElement.querySelector('.entries').scrollTop = 0;
 	}
 
 }

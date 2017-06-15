@@ -5,9 +5,15 @@ import {FeedService} from '../../services/feed.service';
 import {StorageService} from '../../services/storage.service';
 import {Entry} from '../../../models/entry';
 import {FeedsComponent} from '../feeds/feeds.component';
-import {Observable} from 'rxjs';
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/concat';
+import 'rxjs/add/observable/empty';
+
+
+/**
+ * Act as a container component
+ */
 
 @Component({
 	selector: 'app-layout',
@@ -33,7 +39,6 @@ export class LayoutComponent {
 	}
 
 	setBrowserUrl(url) {
-		console.log(url)
 		this.browseUrl = url;
 	}
 	onSelectFeed(feed) {
@@ -57,9 +62,9 @@ export class LayoutComponent {
 	}
 
 	onClickEntry(entry: Entry) {
+		entry.read = true;
 		entry.is_open = !entry.is_open;
 		this.entries = [...this.entries];
-		entry.read = true;
 	}
 
 	onPullFeed(feed: Feed) {

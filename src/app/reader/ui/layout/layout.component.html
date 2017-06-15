@@ -1,16 +1,13 @@
 <div class="flex row" style="height: 100%;width: 100%;">
 	<div class="flex column" style="width: 400px;height: 100%;flex: none;border-right: 1px solid #337999;overflow-x: hidden">
 
-
 		<app-feeds style="flex: 1 0;" [feeds]="feeds" (selectFeed)="onSelectFeed($event)"></app-feeds>
 
 		<app-add-feed-button [progress]="pullProgress | async" (pullAll)="onPullAll()" (feedUrl)="onFeedUrl($event)"></app-add-feed-button>
 
-
 	</div>
 
 	<div class="flex column"  style="max-width: 800px; border-right: 1px solid #3b3b3b; flex: 1 0;">
-
 
 		<app-feed-toolbar [feed]="feed"
 									(pull)="onPullFeed($event)"
@@ -18,8 +15,7 @@
 									(delete)="onDeleteFeed($event)">
 		</app-feed-toolbar>
 
-
-		<app-entries (browseUrl)="setBrowserUrl($event)" (clickEntry)="onClickEntry($event)" [entries]="entries"></app-entries>
+		<app-entries [feed]="feed" (browseUrl)="setBrowserUrl($event)" (clickEntry)="onClickEntry($event)" [entries]="entries"></app-entries>
 
 
 	</div>

@@ -1,23 +1,24 @@
 md-icon {
-    font-size: 12px;
+	font-size: 12px;
 }
 
 .read {
-    color: #888888;
+	color: #888888;
 }
 .title:hover {
-    color: rgba(53, 47, 136, 0.58);
+	color: rgba(53, 47, 136, 0.58);
 }
 
 :host {
-    background-color: #fafafa;
-    list-style: none;
-    padding: 4px;
-    border-top: 1px solid #d4d2d2;
-    cursor: pointer;
-    line-height: 26px;
+	background-color: #fafafa;
+	list-style: none;
+	padding: 4px;
+	border-top: 1px solid #d4d2d2;
+	cursor: pointer;
+	line-height: 26px;
+	font-size: 13pt;
 }
 
 md-icon {
-    font-size: 12px;
+	font-size: 12px;
 }
