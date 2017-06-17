@@ -1,5 +1,9 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component} from '@angular/core';
 import {Feed} from '../../../models/feed';
+import {ReaderService} from '../../services/reader.service';
+import {Store} from '@ngrx/store';
+import {ReaderState} from '../../../store/index';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
 	selector: 'app-feeds',
@@ -7,11 +11,13 @@ import {Feed} from '../../../models/feed';
 	styleUrls: ['./feeds.component.css']
 })
 export class FeedsComponent {
-	@Output() selectFeed = new EventEmitter<Feed>();
+	feeds: Observable<Feed>;
 
-	@Input()
-	feeds: Feed[];
+	constructor(private reader: ReaderService, private store: Store<ReaderState>) {
+		this.feeds = store.select('app_state', 'current_feeds');
+	}
 
-	constructor() {
+	getFeedUrl(feed) {
+		return `/feeds/${encodeURIComponent(feed.url)}`;
 	}
 }

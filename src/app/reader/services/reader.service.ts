@@ -2,36 +2,14 @@ import {Injectable} from '@angular/core';
 import {FeedService} from './feed.service';
 import {StorageService} from './storage.service';
 import {Feed} from '../../models/feed';
-import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import {Entry} from '../../models/entry';
-
-
-function async(target, prop, property) {
-	const ctr = target.constructor;
-	const fn = ctr.prototype[prop];
-	property.value = function () {
-		const promise = fn.apply(this, arguments);
-		this.addAsyncTask(promise);
-		return promise;
-	};
-}
-
-
-interface FeedsStore {
-	feeds: Feed[];
-	entries: Map<Feed, Entry[]>;
-}
-
-/**
- * Define setter for Feed and Entry
- * Every change will trigger a save
- */
+import {async, AsyncAware} from '../../decorators/async';
+import {noop, watch} from '../../util/misc';
 
 
 @Injectable()
-export class ReaderService {
-	asyncTasks = new Set();
+export class ReaderService extends AsyncAware {
 
 	// continuously push feeds and entries
 	feeds = new Subject<Feed[]>();
@@ -40,35 +18,11 @@ export class ReaderService {
 	_feeds: Feed[] = [];
 
 	constructor(private feedService: FeedService, private storage: StorageService) {
-		this.getFeeds();
+		super();
 	}
 
-	addAsyncTask(task: Promise<any>) {
-		this.asyncTasks.add(task);
-		// task.then(
-		// 	() => this.asyncTasks.delete(task),
-		// 	() => this.asyncTasks.delete(task)
-		// ).then(() => {
-		// 	if (this.asyncTasks.size === 0) {
-		// 		this.store.dispatch(new StopLoadingAction());
-		// 	}
-		// });
-		// this.store.dispatch(new StartLoadingAction());
-	}
-
-	public getEntriesObservable() {
-		return this.entries;
-	}
-
-	public getFeedsObservable() {
-		return this.feeds.map(feeds => feeds.sort((a, b) => {
-			if (a.unreadCount === b.unreadCount) {
-				return a.title < b.title ? -1 : 1;
-			} else {
-				return b.unreadCount - a.unreadCount;
-			}
-		}));
-	}
+	onTasksComplete() {}
+	onTasksStart() {}
 
 	@async
 	public getFeeds(): Promise<Feed[]> {
@@ -116,7 +70,12 @@ export class ReaderService {
 		if (url == null) {
 			return Promise.resolve(null);
 		}
-		return this.storage.getFeed(url);
+		const foundArr = this._feeds.filter(f => f.url === url);
+		if (foundArr.length) {
+			return Promise.resolve(foundArr[0]);
+		} else {
+			return Promise.resolve(null);
+		}
 	}
 
 	getNewItemsCount(feed: Feed): Promise<number> {
@@ -204,23 +163,3 @@ export class ReaderService {
 
 
 
-function watch(obj, prop, cb) {
-	let val = obj[prop];
-	Object.defineProperty(obj, prop, {
-		enumerable: true,
-		configurable: true,
-		get: function () {
-			return val;
-		},
-		set: function (_val) {
-			if (_val === val) {
-				return;
-			}
-			const old = val;
-			val = _val;
-			cb(val, old);
-		}
-	});
-}
-
-function noop(){}

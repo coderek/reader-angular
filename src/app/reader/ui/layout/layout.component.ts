@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Feed} from '../../../models/feed';
 import {ReaderService} from '../../services/reader.service';
 import {FeedService} from '../../services/feed.service';
@@ -9,6 +9,9 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/concat';
 import 'rxjs/add/observable/empty';
+import 'rxjs/add/observable/of';
+import {AppState, ReaderState} from '../../../store/index';
+import {Store} from '@ngrx/store';
 
 
 /**
@@ -19,11 +22,8 @@ import 'rxjs/add/observable/empty';
 	selector: 'app-layout',
 	templateUrl: './layout.component.html',
 	styleUrls: ['./layout.component.css'],
-	providers: [
-		ReaderService, FeedService, StorageService
-	]
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
 	@ViewChild(FeedsComponent) feedViews: FeedsComponent;
 
 	feed: Feed = null;
@@ -33,15 +33,26 @@ export class LayoutComponent {
 
 	pullProgress = Observable.empty();
 
-	constructor(private reader: ReaderService) {
-		this.reader.getFeedsObservable().subscribe(feeds => this.feeds = feeds );
-		this.reader.entries.subscribe(entries => this.entries = entries );
+	constructor(private reader: ReaderService, private store: Store<ReaderState>) {
+		store.select('app_state').subscribe((state: AppState) => {
+			this.feed = state.current_feed;
+			this.entries = state.current_entries;
+		});
+	}
+
+	ngOnInit() {
+		this.reader.getFeeds().then(feeds => this.store.dispatch({type: 'SET_FEEDS', payload: feeds}));
 	}
 
 	setBrowserUrl(url) {
 		this.browseUrl = url;
 	}
+
 	onSelectFeed(feed) {
+		if (!feed) {
+			return;
+		}
+		console.log(feed)
 		this.feed = feed;
 		this.reader.getEntriesForFeed(feed);
 	}

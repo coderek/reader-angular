@@ -14,32 +14,40 @@ import {EntryComponent} from './ui/entries/entry/entry.component';
 import {PrettyDatePipe} from '../pipes/pretty-date';
 import {ArticleComponent} from './ui/entries/entry/article/article.component';
 import {ToolsComponent} from './ui/toolbar/toolbar.component';
-import { BrowserComponent } from './ui/browser/browser.component';
+import {BrowserComponent} from './ui/browser/browser.component';
+import {FeedResolverService} from './services/feed-resolver.service';
+import {ReaderService} from './services/reader.service';
+import {FeedService} from './services/feed.service';
+import {StorageService} from './services/storage.service';
+import {EncodeUrlPipe} from '../pipes/encode-url';
+import {ReadingPaneComponent} from './ui/reading-pane/reading-pane.component';
+import {StoreModule} from '@ngrx/store';
+import {readerReducer} from '../store/index';
+import {EffectsModule} from '@ngrx/effects';
+import {LoadFeedEffect} from '../store/effects';
 
-
-@Component({
-	selector: 'app-empty',
-	template: '',
-})
-class EmptyComponent {}
 
 const routes = [
 	{
-		path: '',
-		component: EmptyComponent
-	}
-];
+		path: 'feeds/:id',
+		component: ReadingPaneComponent,
+		resolve: {
+			feed: FeedResolverService
+		}
+	},
 
+];
 
 @NgModule({
 	imports: [
 		CommonModule,
 		BrowserModule,
-
 		CommonModule,
 		MaterialModule,
 		FormsModule,
+		EffectsModule.run(LoadFeedEffect),
 		RouterModule.forRoot(routes),
+		StoreModule.provideStore(readerReducer),
 		BrowserAnimationsModule,
 	],
 	entryComponents: [NewFeedFormComponent],
@@ -49,15 +57,21 @@ const routes = [
 		FeedComponent,
 		AddFeedButtonComponent,
 		NewFeedFormComponent,
-		EmptyComponent,
 		FeedEntriesComponent,
 		EntryComponent,
 		PrettyDatePipe,
 		ArticleComponent,
 		ToolsComponent,
 		BrowserComponent,
+		EncodeUrlPipe,
+		ReadingPaneComponent,
 	],
-
+	providers: [
+		ReaderService,
+		FeedService,
+		StorageService,
+		FeedResolverService
+	]
 })
 
 export class ReaderModule {
