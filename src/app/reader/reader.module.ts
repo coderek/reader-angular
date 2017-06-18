@@ -22,9 +22,9 @@ import {StorageService} from './services/storage.service';
 import {EncodeUrlPipe} from '../pipes/encode-url';
 import {ReadingPaneComponent} from './ui/reading-pane/reading-pane.component';
 import {StoreModule} from '@ngrx/store';
-import {readerReducer, StateCache} from '../store/index';
+import {readerReducer, StateCache} from '../redux/index';
 import {EffectsModule} from '@ngrx/effects';
-import {EntryEffects, FeedEffects} from '../store/effects';
+import {EntryEffects, FeedEffects} from '../redux/effects';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 

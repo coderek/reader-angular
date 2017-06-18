@@ -7,7 +7,7 @@ import {Entry} from '../../models/entry';
 import {async, AsyncAware} from '../../decorators/async';
 import {noop, watch} from '../../util/misc';
 import {Store} from '@ngrx/store';
-import {ReaderState} from '../../store/index';
+import {ReaderState} from '../../redux/index';
 import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 
 

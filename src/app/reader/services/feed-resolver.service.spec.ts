@@ -1,7 +1,7 @@
 import {TestBed, inject} from '@angular/core/testing';
 
 import {FeedResolverService} from './feed-resolver.service';
-import {StateCache} from '../../store/index';
+import {StateCache} from '../../redux/index';
 import Spy = jasmine.Spy;
 import {ReaderService} from './reader.service';
 

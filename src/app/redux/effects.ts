@@ -4,7 +4,6 @@ import {Feed} from '../models/feed';
 import {ReaderService} from '../reader/services/reader.service';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/concat';
-import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class FeedEffects {

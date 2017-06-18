@@ -2,6 +2,7 @@ import {Entry} from '../models/entry';
 import {Feed} from '../models/feed';
 import {Action, combineReducers} from '@ngrx/store';
 import {Injectable} from '@angular/core';
+import {compose} from "@ngrx/core";
 
 const _cached_app_state: any = {};
 
@@ -77,7 +78,7 @@ export function currentEntriesReducer(state: Entry[] = [], action: Action) {
 			break;
 		case 'OPEN_ENTRY':
 		case 'CLOSE_ENTRY':
-			const idx = state.findIndex(e => e.url === action.payload.url );
+			const idx = state.findIndex(e => e.url === action.payload.url);
 			if (idx !== -1) {
 				const updated = entryReducer(state[idx], action);
 				if (updated !== state[idx]) {
@@ -119,14 +120,18 @@ export function currentEntryReducer(state: Entry = null, action: Action) {
 	return s;
 }
 
-export const appStateReducer = combineReducers({
-	current_feeds: currentFeedsReducer,
-	current_feed: currentFeedReducer,
-	current_entries: currentEntriesReducer,
-	current_entry: currentEntryReducer
-});
+export function appStateReducer () {
+	return compose(combineReducers)({
+		current_feeds: currentFeedsReducer,
+		current_feed: currentFeedReducer,
+		current_entries: currentEntriesReducer,
+		current_entry: currentEntryReducer
+	});
+}
 
-export const readerReducer = {
-	ui_state: uiStateReducer,
-	app_state: appStateReducer
-};
+export function readerReducer () {
+	return compose(combineReducers)({
+		ui_state: uiStateReducer,
+		app_state: appStateReducer
+	});
+}

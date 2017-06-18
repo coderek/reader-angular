@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Feed} from '../../../models/feed';
 import {ReaderService} from '../../services/reader.service';
 import {Store} from '@ngrx/store';
-import {ReaderState} from '../../../store/index';
+import {ReaderState} from '../../../redux/index';
 import {Observable} from 'rxjs/Observable';
 
 @Component({

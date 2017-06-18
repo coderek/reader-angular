@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 import {Feed} from '../../models/feed';
 import {ReaderService} from './reader.service';
-import {StateCache} from '../../store/index';
+import {StateCache} from '../../redux/index';
 
 @Injectable()
 export class FeedResolverService implements Resolve<Feed> {

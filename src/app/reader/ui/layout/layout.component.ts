@@ -10,7 +10,7 @@ import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/concat';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/of';
-import {AppState, ReaderState} from '../../../store/index';
+import {AppState, ReaderState} from '../../../redux/index';
 import {Store} from '@ngrx/store';
 
 

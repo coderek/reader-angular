@@ -2,7 +2,7 @@ import {Component, Input, OnInit, OnChanges, ChangeDetectionStrategy, EventEmitt
 import {Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 import {Entry} from '../../../../models/entry';
-import {ReaderState} from '../../../../store/index';
+import {ReaderState} from '../../../../redux/index';
 @Component({
 	templateUrl: './entry.component.html',
 	selector: 'app-feed-entry',
@@ -51,6 +51,6 @@ export class EntryComponent {
 		// 	id: entry.url,
 		// 	value: !entry.favorite
 		// };
-		// this.store.dispatch(new ToggleFavoriteAction(payload));
+		// this.redux.dispatch(new ToggleFavoriteAction(payload));
 	}
 }

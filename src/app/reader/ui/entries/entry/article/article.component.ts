@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
-import {StateCache} from '../../../../../store/index';
+import {StateCache} from '../../../../../redux/index';
 
 @Component({
 	selector: 'app-article',
