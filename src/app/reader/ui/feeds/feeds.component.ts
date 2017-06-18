@@ -11,7 +11,7 @@ import {Observable} from 'rxjs/Observable';
 	styleUrls: ['./feeds.component.css']
 })
 export class FeedsComponent {
-	feeds: Observable<Feed>;
+	feeds: Observable<Feed[]>;
 
 	constructor(private reader: ReaderService, private store: Store<ReaderState>) {
 		this.feeds = store.select('app_state', 'current_feeds');

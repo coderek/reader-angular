@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {FeedService} from './feed.service';
 import {StorageService} from './storage.service';
 import {Feed} from '../../models/feed';
-import {Subject} from 'rxjs/Subject';
 import {Entry} from '../../models/entry';
 import {async, AsyncAware} from '../../decorators/async';
 import {noop, watch} from '../../util/misc';

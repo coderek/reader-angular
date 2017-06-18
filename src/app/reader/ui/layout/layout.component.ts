@@ -1,8 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Feed} from '../../../models/feed';
 import {ReaderService} from '../../services/reader.service';
-import {FeedService} from '../../services/feed.service';
-import {StorageService} from '../../services/storage.service';
 import {Entry} from '../../../models/entry';
 import {FeedsComponent} from '../feeds/feeds.component';
 import {Observable} from 'rxjs/Observable';
