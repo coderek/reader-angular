@@ -1,6 +1,7 @@
 import {async, AsyncAware} from './async';
 import {fakeAsync, tick} from '@angular/core/testing';
-fdescribe('Async decorator', function () {
+
+describe('Async decorator', function () {
 	class TestAsync extends AsyncAware {
 		constructor() {
 			super();

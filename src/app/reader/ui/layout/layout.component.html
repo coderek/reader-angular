@@ -2,16 +2,11 @@
 <div class="flex row" style="height: 100%;width: 100%;">
 	<div class="flex column" style="width: 400px;height: 100%;flex: none;border-right: 1px solid #337999;overflow-x: hidden">
 		<app-feeds style="flex: 1 0;"></app-feeds>
-
-		<app-add-feed-button [progress]="pullProgress | async" (pullAll)="onPullAll()" (feedUrl)="onFeedUrl($event)"></app-add-feed-button>
-
+		<app-add-feed-button [progress]="pullProgress | async"></app-add-feed-button>
 	</div>
 
 	<div class="flex column"  style="max-width: 800px; border-right: 1px solid #3b3b3b; flex: 1 0;">
 		<router-outlet></router-outlet>
 	</div>
-	<!--<div style="flex: 1 0">-->
-		<!--<app-browser [sourceUrl]="browseUrl"></app-browser>-->
-	<!--</div>-->
 </div>
 

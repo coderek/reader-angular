@@ -1,0 +1,7 @@
+<app-feed-toolbar [feed]="feed | async"
+									(pull)="onPullFeed($event)"
+									(readAll)="onReadEntries($event)"
+									(delete)="onDeleteFeed($event)">
+</app-feed-toolbar>
+
+<app-entries [feed]="feed | async" (browseUrl)="setBrowserUrl($event)" (clickEntry)="onClickEntry($event)" [entries]="entries | async"></app-entries>
