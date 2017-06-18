@@ -2,6 +2,7 @@ import {Component, Input, OnInit, OnChanges, ChangeDetectionStrategy, EventEmitt
 import {Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 import {Entry} from '../../../../models/entry';
+import {ReaderState} from '../../../../store/index';
 @Component({
 	templateUrl: './entry.component.html',
 	selector: 'app-feed-entry',
@@ -11,8 +12,7 @@ import {Entry} from '../../../../models/entry';
 export class EntryComponent {
 	@Input() entry: Entry;
 	@Output() browseUrl = new EventEmitter<string>();
-	@Output() clickEntry = new EventEmitter<Entry>();
-	constructor(private router: Router) {
+	constructor(private store: Store<ReaderState>) {
 	}
 
 	get opened () {
@@ -25,6 +25,21 @@ export class EntryComponent {
 	 */
 	open(url) {
 		this.browseUrl.emit(url);
+	}
+
+	onClickEntry() {
+		if (!this.entry.is_open) {
+			this.store.dispatch({type: 'OPEN_ENTRY', payload: {
+				url: this.entry.url,
+				read: true,
+				is_open: true
+			}});
+		} else {
+			this.store.dispatch({type: 'CLOSE_ENTRY', payload: {
+				url: this.entry.url,
+				is_open: false
+			}});
+		}
 	}
 
 	/**

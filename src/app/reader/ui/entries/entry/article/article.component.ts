@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {StateCache} from '../../../../../store/index';
 
 @Component({
 	selector: 'app-article',
@@ -14,7 +15,6 @@ export class ArticleComponent implements AfterViewInit {
 	@HostListener('click', ['$event.target'])
 	onClickElement(ele) {
 		if (ele.tagName === 'A') {
-			console.log(this);
 			this.browseUrl.emit(ele.href);
 			return false;
 		}
@@ -31,21 +31,19 @@ export class ArticleComponent implements AfterViewInit {
 		}
 	}
 
-	constructor(private el: ElementRef) {
+	constructor(private el: ElementRef, private cache: StateCache) {
 	}
 
 	ngAfterViewInit() {
-		// let sub = this.store.take(1).subscribe(
-		// 	s => this.checkAndUpdateUrls(s),
-		// );
+		this.checkAndUpdateUrls();
 	}
 
 	/**
 	 * Fix those links with relative url
 	 * @param state
 	 */
-	checkAndUpdateUrls(state) {
-		const feed = state.feeds.find(f => f.url === this.entry.feed_url);
+	checkAndUpdateUrls() {
+		const feed = this.cache.current_feeds.find(f => f.url === this.entry.feed_url);
 		if (feed) {
 			const baseUrl = feed.link;
 			if (!baseUrl) {

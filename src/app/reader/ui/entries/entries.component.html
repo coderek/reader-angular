@@ -1,8 +1,6 @@
 <div class="entries">
 	<app-feed-entry
 		[entry]="entry"
-		(browseUrl)="browseUrl.emit($event)"
-		(clickEntry)="clickEntry.emit(entry)"
 		*ngFor="let entry of entries" class="entry"
 		[ngClass]="{'read': entry.read}"></app-feed-entry>
 </div>

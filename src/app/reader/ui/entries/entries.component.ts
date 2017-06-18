@@ -26,7 +26,8 @@ export class FeedEntriesComponent implements OnInit, OnChanges {
 
 	constructor(private ref: ElementRef) {
 	}
-		ngOnChanges (changes: SimpleChanges) {
+
+	ngOnChanges(changes: SimpleChanges) {
 		if ('feed' in changes) {
 			this.ref.nativeElement.querySelector('.entries').scrollTop = 0;
 		}

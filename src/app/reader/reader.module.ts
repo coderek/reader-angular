@@ -22,10 +22,11 @@ import {StorageService} from './services/storage.service';
 import {EncodeUrlPipe} from '../pipes/encode-url';
 import {ReadingPaneComponent} from './ui/reading-pane/reading-pane.component';
 import {StoreModule} from '@ngrx/store';
-import {readerReducer} from '../store/index';
+import {readerReducer, StateCache} from '../store/index';
 import {EffectsModule} from '@ngrx/effects';
-import {LoadFeedEffect} from '../store/effects';
-
+import {EntryEffects, FeedEffects} from '../store/effects';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 
 const routes = [
 	{
@@ -45,9 +46,12 @@ const routes = [
 		CommonModule,
 		MaterialModule,
 		FormsModule,
-		EffectsModule.run(LoadFeedEffect),
+		SlimLoadingBarModule.forRoot(),
+		EffectsModule.run(FeedEffects),
+		EffectsModule.run(EntryEffects),
 		RouterModule.forRoot(routes),
 		StoreModule.provideStore(readerReducer),
+		StoreDevtoolsModule.instrumentOnlyWithExtension({maxAge: 5}),
 		BrowserAnimationsModule,
 	],
 	entryComponents: [NewFeedFormComponent],
@@ -70,7 +74,8 @@ const routes = [
 		ReaderService,
 		FeedService,
 		StorageService,
-		FeedResolverService
+		FeedResolverService,
+		StateCache
 	]
 })
 
