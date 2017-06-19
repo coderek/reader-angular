@@ -9,6 +9,7 @@ import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/of';
 import {AppState, ReaderState} from '../../../redux/index';
 import {Store} from '@ngrx/store';
+import {LoggingService} from '../../../src/app/util/logging.service';
 
 
 /**
@@ -27,12 +28,11 @@ export class LayoutComponent implements OnInit {
 
 	pullProgress = Observable.empty();
 
-	constructor(private reader: ReaderService, private store: Store<ReaderState>) {
+	constructor(private log: LoggingService, private reader: ReaderService, private store: Store<ReaderState>) {
 	}
 
 	ngOnInit() {
-		this.reader.getFeeds()
-			.then(feeds => this.store.dispatch({type: 'SET_FEEDS', payload: feeds}));
+		this.store.dispatch({type: 'INIT'});
 	}
 
 	setBrowserUrl(url) {

@@ -24,6 +24,13 @@ export class FeedEffects {
 			return {type: 'SET_FEED', payload: updatedFeed};
 		});
 
+	@Effect()
+	init = this.actions.ofType('INIT')
+		.switchMap(()=> this.reader.getFeeds())
+		.map(feeds => {
+			return {type: 'SET_FEEDS', payload: feeds};
+		});
+
 	constructor(private actions: Actions, private reader: ReaderService) {
 	}
 }

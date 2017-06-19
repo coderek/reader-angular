@@ -27,6 +27,8 @@ import {EffectsModule} from '@ngrx/effects';
 import {EntryEffects, FeedEffects} from '../redux/effects';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
+import {HttpModule} from '@angular/http';
+import {LoggingService} from '../src/app/util/logging.service';
 
 const routes = [
 	{
@@ -45,6 +47,7 @@ const routes = [
 		BrowserModule,
 		CommonModule,
 		MaterialModule,
+		HttpModule,
 		FormsModule,
 		SlimLoadingBarModule.forRoot(),
 		EffectsModule.run(FeedEffects),
@@ -75,7 +78,8 @@ const routes = [
 		FeedService,
 		StorageService,
 		FeedResolverService,
-		StateCache
+		StateCache,
+		LoggingService
 	]
 })
 

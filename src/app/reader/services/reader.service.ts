@@ -4,7 +4,6 @@ import {StorageService} from './storage.service';
 import {Feed} from '../../models/feed';
 import {Entry} from '../../models/entry';
 import {async, AsyncAware} from '../../decorators/async';
-import {noop, watch} from '../../util/misc';
 import {Store} from '@ngrx/store';
 import {ReaderState} from '../../redux/index';
 import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
@@ -36,7 +35,17 @@ export class ReaderService extends AsyncAware {
 
 	@async
 	public getFeeds(): Promise<Feed[]> {
-		return this.storage.getFeeds();
+		return this.storage.getFeeds().then(feeds => this.sortFeeds(feeds));
+	}
+
+	sortFeeds(feeds: Feed[]) {
+		return feeds.sort((f1, f2) => {
+			if (f1.unreadCount === f2.unreadCount) {
+				return f1.title < f2.title? -1: 1;
+			} else {
+				return f2.unreadCount - f1.unreadCount;
+			}
+		});
 	}
 
 	@async

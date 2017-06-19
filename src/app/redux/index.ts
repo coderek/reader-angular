@@ -120,18 +120,14 @@ export function currentEntryReducer(state: Entry = null, action: Action) {
 	return s;
 }
 
-export function appStateReducer () {
-	return compose(combineReducers)({
-		current_feeds: currentFeedsReducer,
-		current_feed: currentFeedReducer,
-		current_entries: currentEntriesReducer,
-		current_entry: currentEntryReducer
-	});
-}
+export const appStateReducer = compose(combineReducers)({
+	current_feeds: currentFeedsReducer,
+	current_feed: currentFeedReducer,
+	current_entries: currentEntriesReducer,
+	current_entry: currentEntryReducer
+});
 
-export function readerReducer () {
-	return compose(combineReducers)({
+export const readerReducer = {
 		ui_state: uiStateReducer,
 		app_state: appStateReducer
-	});
-}
+};

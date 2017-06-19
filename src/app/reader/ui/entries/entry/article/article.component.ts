@@ -15,7 +15,7 @@ export class ArticleComponent implements AfterViewInit {
 	@HostListener('click', ['$event.target'])
 	onClickElement(ele) {
 		if (ele.tagName === 'A') {
-			this.browseUrl.emit(ele.href);
+			window.open(ele.href, '_blank');
 			return false;
 		}
 	}

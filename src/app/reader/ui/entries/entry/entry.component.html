@@ -8,4 +8,4 @@
 	</span>
 	<md-icon (click)="open(entry.url)">link</md-icon>
 </div>
-<app-article (browseUrl)="browseUrl.emit($event)" *ngIf="opened" [entry]="entry"></app-article>
+<app-article *ngIf="opened" [entry]="entry"></app-article>

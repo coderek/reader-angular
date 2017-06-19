@@ -11,20 +11,11 @@ import {ReaderState} from '../../../../redux/index';
 })
 export class EntryComponent {
 	@Input() entry: Entry;
-	@Output() browseUrl = new EventEmitter<string>();
 	constructor(private store: Store<ReaderState>) {
 	}
 
 	get opened () {
 		return this.entry && this.entry.is_open;
-	}
-
-	/**
-	 * Open in new window
-	 * @param url
-	 */
-	open(url) {
-		this.browseUrl.emit(url);
 	}
 
 	onClickEntry() {
