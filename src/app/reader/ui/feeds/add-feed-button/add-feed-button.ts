@@ -3,7 +3,7 @@ import {MdDialog, MdDialogRef} from '@angular/material';
 import {NgForm} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {ReaderState} from '../../../../redux/index';
-import {PULL_FEED} from '../../../../redux/consts';
+import {PULL_NEW_FEED} from '../../../../redux/consts';
 
 @Component({
 	selector: 'app-new-feed-form',
@@ -39,7 +39,7 @@ export class AddFeedButtonComponent {
 		const config = {data: 123};
 		const ref = this.dialog.open(NewFeedFormComponent, config);
 		ref.afterClosed().subscribe(url =>
-			this.store.dispatch({type: PULL_FEED, payload: url})
+			this.store.dispatch({type: PULL_NEW_FEED, payload: url})
 		);
 	}
 }

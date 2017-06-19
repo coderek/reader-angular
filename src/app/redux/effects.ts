@@ -5,7 +5,7 @@ import {ReaderService} from '../reader/services/reader.service';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/concat';
 import {
-	CLOSE_ENTRY, DELETE_FEED, DELETED_FEED, INIT, OPEN_ENTRY, PULL_FEED, SET_ENTRIES, SET_FEED, SET_FEEDS,
+	CLOSE_ENTRY, DELETE_FEED, DELETED_FEED, INIT, OPEN_ENTRY, PULL_FEED, PULL_NEW_FEED, SET_ENTRIES, SET_FEED, SET_FEEDS,
 	UPDATED_ENTRY
 } from './consts';
 
@@ -26,6 +26,13 @@ export class FeedEffects {
 		.switchMap(feed => this.reader.pullFeed(feed))
 		.map(updatedFeed => {
 			return {type: SET_FEED, payload: updatedFeed};
+		});
+
+	@Effect()
+	pullNewFeed = this.actions.ofType(PULL_NEW_FEED)
+		.switchMap(action => this.reader.addFeed(action.payload))
+		.map(feed => {
+			return {type: 'ADD_FEED', payload: feed};
 		});
 
 	@Effect()

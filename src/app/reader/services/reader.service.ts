@@ -58,7 +58,7 @@ export class ReaderService extends AsyncAware {
 	}
 
 	@async
-	addFeed(url) {
+	addFeed(url) : Promise<Feed> {
 		return this.feedService.fetch(url).then(feed => {
 			return this.storage.saveFeed(feed);
 		});

@@ -23,4 +23,5 @@ export const INIT = 'INIT';
 
 export const DELETED_FEED = 'DELETED_FEED';
 
+export const PULL_NEW_FEED = 'PULL_NEW_FEED';
 export const ADD_FEED = 'ADD_FEED';

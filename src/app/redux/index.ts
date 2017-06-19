@@ -4,6 +4,7 @@ import {Action, combineReducers} from '@ngrx/store';
 import {Injectable} from '@angular/core';
 import {compose} from '@ngrx/core';
 import {
+	ADD_FEED,
 	CLOSE_ENTRY, DECREMENT_FONT, DELETED_FEED, FINISH_LOADING, INCREMENT_FONT, OPEN_ENTRY, READ_ENTRY, SET_ENTRIES,
 	SET_ENTRY,
 	SET_FEED, SET_FEEDS,
@@ -79,9 +80,22 @@ export function currentFeedsReducer(state: Feed[] = [], action: Action) {
 				s = state;
 			}
 			break;
+		case ADD_FEED:{
+			const feed = action.payload as Feed;
+			let i = 0;
+			while (i < state.length &&
+				(state[i].unreadCount > feed.unreadCount
+				|| state[i].unreadCount === feed.unreadCount && state[i].title > feed.title)) {
+					i++;
+				}
+				state.splice(i, 0, feed);
+				s = state;
+			}
+			break;
 		default:
 			s = state;
 	}
+
 	let changed = false;
 	const ret = [];
 	for (const feed of state) {
