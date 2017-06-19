@@ -6,7 +6,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {MaterialModule} from '@angular/material';
 import {FeedsComponent} from './ui/feeds/feeds.component';
-import {AddFeedButtonComponent, NewFeedFormComponent} from './ui/feeds/add-feed-button/add-feed-button';
+import {AddFeedButtonComponent, NewFeedFormComponent} from './ui/feeds/buttons/buttons';
 import {RouterModule} from '@angular/router';
 import {FeedComponent} from './ui/feeds/feed/feed.component';
 import {FeedEntriesComponent} from './ui/entries/entries.component';

@@ -7,8 +7,8 @@ import {PULL_NEW_FEED} from '../../../../redux/consts';
 
 @Component({
 	selector: 'app-new-feed-form',
-	templateUrl: './add-feed-button.html',
-	styleUrls: ['./add-feed-button.css']
+	templateUrl: './buttons.html',
+	styleUrls: ['./buttons.css']
 })
 export class NewFeedFormComponent {
 	constructor(private dialogRef: MdDialogRef<NewFeedFormComponent>) {}
@@ -20,11 +20,12 @@ export class NewFeedFormComponent {
 }
 
 @Component({
-	selector: 'app-add-feed-button',
+	selector: 'app-buttons',
 	template: `
 		<button md-raised-button (click)="openDialog()">Add a subscription</button>
 		<button md-raised-button (click)="doPullAll()">Pull all 
 			<span *ngIf="progress && process !== '100%'">({{progress}})</span></button>
+		<button md-raised-button (click)="export">Export (todo)</button>
 	`
 })
 export class AddFeedButtonComponent {
@@ -34,6 +35,8 @@ export class AddFeedButtonComponent {
 	constructor(private store: Store<ReaderState>, public dialog: MdDialog) {}
 
 	doPullAll() {}
+
+	export() {}
 
 	openDialog() {
 		const config = {data: 123};

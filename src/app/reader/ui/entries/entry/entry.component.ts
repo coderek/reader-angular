@@ -19,6 +19,10 @@ export class EntryComponent {
 		return this.entry && this.entry.is_open;
 	}
 
+	open(url) {
+		window.open(url, '_blank');
+	}
+
 	onClickEntry() {
 		if (!this.entry.is_open) {
 			if (!this.entry.read) {
