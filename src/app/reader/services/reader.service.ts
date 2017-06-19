@@ -82,7 +82,7 @@ export class ReaderService extends AsyncAware {
 	}
 
 	@async
-	deleteFeed(feedUrl: Feed | string): Promise<void> {
+	deleteFeed(feedUrl: Feed | string): Promise<string> {
 		if (typeof feedUrl === 'object') {
 			feedUrl = feedUrl.url;
 		}

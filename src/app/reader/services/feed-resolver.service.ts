@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
+import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
 import {Feed} from '../../models/feed';
 import {ReaderService} from './reader.service';
 import {StateCache} from '../../redux/index';
@@ -7,7 +7,7 @@ import {StateCache} from '../../redux/index';
 @Injectable()
 export class FeedResolverService implements Resolve<Feed> {
 
-	constructor(private cache: StateCache, private reader: ReaderService) {}
+	constructor(private cache: StateCache, private reader: ReaderService, private router: Router) {}
 
 	resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Feed> {
 		const id = decodeURIComponent(route.params['id']);
@@ -16,7 +16,14 @@ export class FeedResolverService implements Resolve<Feed> {
 		if (idx !== -1) {
 			return Promise.resolve(feeds[idx]);
 		} else {
-			return this.reader.getFeed(id);
+			return this.reader.getFeed(id).then(feed => {
+				if (feed) {
+					return feed;
+				} else {
+					this.router.navigate(['']);
+					return null;
+				}
+			});
 		}
 	}
 }

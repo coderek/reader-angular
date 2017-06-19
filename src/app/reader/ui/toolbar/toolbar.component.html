@@ -6,9 +6,9 @@
 	</div>
 
 	<div>
-		<button *ngIf="feed" (click)="readAll.emit(feed)">Mark all as read</button>
-		<button *ngIf="feed" (click)="pull.emit(feed)">Pull</button>
-		<button *ngIf="feed" (click)="delete.emit(feed)">Delete</button>
+		<button *ngIf="feed" (click)="readAll()">Mark all as read</button>
+		<button *ngIf="feed" (click)="pull()" [disabled]="feed.loading">Update</button>
+		<button *ngIf="feed" (click)="delete()">Delete</button>
 		<button (click)="increaseFontSize()">+</button>
 		<button (click)="decreaseFontSize()">-</button>
 	</div>

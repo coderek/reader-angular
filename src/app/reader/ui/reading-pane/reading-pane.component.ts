@@ -5,11 +5,11 @@ import {Feed} from '../../../models/feed';
 import {Entry} from '../../../models/entry';
 import {Store} from '@ngrx/store';
 import {ReaderState} from '../../../redux/index';
-import {ReaderService} from '../../services/reader.service';
 import 'rxjs/add/operator/last';
 import 'rxjs/add/operator/skip';
 import 'rxjs/add/observable/zip';
 import 'rxjs/add/observable/of';
+import {SET_ENTRIES, SET_FEED} from '../../../redux/consts';
 
 
 /**
@@ -28,7 +28,7 @@ export class ReadingPaneComponent implements OnInit {
 	entries: Observable<Entry[]>;
 	feeds: Observable<Feed[]>;
 
-	constructor(private reader: ReaderService, private store: Store<ReaderState>, private route: ActivatedRoute) {
+	constructor(private store: Store<ReaderState>, private route: ActivatedRoute) {
 		this.feed = this.store.select('app_state', 'current_feed');
 		this.feeds = this.store.select('app_state', 'current_feeds');
 		this.entries = this.store.select('app_state', 'current_entries');
@@ -36,20 +36,8 @@ export class ReadingPaneComponent implements OnInit {
 
 	ngOnInit() {
 		this.route.data.subscribe(data => {
-				this.store.dispatch({type: 'SET_FEED', payload: data.feed});
-				this.store.dispatch({type: 'SET_ENTRIES', payload: []});
+				this.store.dispatch({type: SET_FEED, payload: data.feed});
+				this.store.dispatch({type: SET_ENTRIES, payload: []});
 		});
-	}
-
-	onPullFeed(feed: Feed) {
-		this.store.dispatch({type: 'FETCH_FEED', payload: feed});
-	}
-
-	onReadEntries(feed: Feed) {
-		this.store.dispatch({type: 'MARK_FEED_ALL_READ', payload: feed});
-	}
-
-	onDeleteEntry(feed: Feed) {
-		this.store.dispatch({type: 'DELETE_FEED', payload: feed});
 	}
 }

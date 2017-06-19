@@ -229,7 +229,7 @@ export class StorageService {
 
 	}
 
-	deleteFeed(feedUrl): Promise<void> {
+	deleteFeed(feedUrl): Promise<string> {
 		const transaction = this.db.transaction(['entries', 'feeds'], 'readwrite');
 		const store = transaction.objectStore('entries');
 		const idx = store.index('feed_url');
@@ -244,11 +244,12 @@ export class StorageService {
 			}
 		};
 		transaction.objectStore('feeds').delete(feedUrl);
-		return new Promise<void>((res, rej) => {
+		return new Promise<string>((res, rej) => {
 			transaction.oncomplete = () => {
-				res();
+				res(feedUrl);
 				console.log('Deleted feedUrl and its entries');
 			};
+			transaction.onerror = rej;
 		});
 	}
 
