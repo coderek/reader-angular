@@ -12,6 +12,7 @@ export const SET_ENTRY = 'SET_ENTRY';
 export const MARK_FEED_READ = 'MARK_FEED_READ';
 export const DELETE_FEED = 'DELETE_FEED';
 export const PULL_FEED = 'PULL_FEED';
+export const PULL_ALL_FEEDS = 'PULL_ALL_FEEDS';
 
 export const INCREMENT_FONT = 'INCREMENT_FONT';
 export const DECREMENT_FONT = 'DECREMENT_FONT';
