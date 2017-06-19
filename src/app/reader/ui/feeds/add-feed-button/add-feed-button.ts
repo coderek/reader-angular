@@ -1,7 +1,9 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {MdDialog, MdDialogRef} from '@angular/material';
 import {NgForm} from '@angular/forms';
-import {Observable} from 'rxjs/Observable';
+import {Store} from '@ngrx/store';
+import {ReaderState} from '../../../../redux/index';
+import {PULL_FEED} from '../../../../redux/consts';
 
 @Component({
 	selector: 'app-new-feed-form',
@@ -27,20 +29,18 @@ export class NewFeedFormComponent {
 })
 export class AddFeedButtonComponent {
 
-	@Output() feedUrl = new EventEmitter<string>();
-	@Output() pullAll = new EventEmitter<void>();
 	@Input() progress;
 
-	constructor(public dialog: MdDialog) {}
+	constructor(private store: Store<ReaderState>, public dialog: MdDialog) {}
 
-	doPullAll() {
-		this.pullAll.emit();
-	}
+	doPullAll() {}
 
 	openDialog() {
 		const config = {data: 123};
 		const ref = this.dialog.open(NewFeedFormComponent, config);
-		ref.afterClosed().subscribe(url => this.feedUrl.emit(url));
+		ref.afterClosed().subscribe(url =>
+			this.store.dispatch({type: PULL_FEED, payload: url})
+		);
 	}
 }
 

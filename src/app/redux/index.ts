@@ -4,7 +4,8 @@ import {Action, combineReducers} from '@ngrx/store';
 import {Injectable} from '@angular/core';
 import {compose} from '@ngrx/core';
 import {
-	CLOSE_ENTRY, DECREMENT_FONT, DELETED_FEED, FINISH_LOADING, INCREMENT_FONT, OPEN_ENTRY, SET_ENTRIES, SET_ENTRY,
+	CLOSE_ENTRY, DECREMENT_FONT, DELETED_FEED, FINISH_LOADING, INCREMENT_FONT, OPEN_ENTRY, READ_ENTRY, SET_ENTRIES,
+	SET_ENTRY,
 	SET_FEED, SET_FEEDS,
 	START_LOADING
 } from './consts';
@@ -81,8 +82,34 @@ export function currentFeedsReducer(state: Feed[] = [], action: Action) {
 		default:
 			s = state;
 	}
+	let changed = false;
+	const ret = [];
+	for (const feed of state) {
+		const f = feedReducer(feed, action);
+		if (f !== feed) {
+			changed = true;
+		}
+		ret.push(f);
+	}
+
+	if (changed) {
+		s = ret;
+	}
 	Object.assign(_cached_app_state, {current_feeds: s});
 	return s;
+}
+
+export function feedReducer(state, action) {
+	switch (action.type) {
+		case READ_ENTRY:
+			if (state.url === action.payload.feed_url) {
+				return Object.assign({}, state, {unreadCount: state.unreadCount - 1});
+			} else {
+				return state;
+			}
+		default:
+			return state;
+	}
 }
 
 export function currentFeedReducer(state: Feed = null, action: Action) {

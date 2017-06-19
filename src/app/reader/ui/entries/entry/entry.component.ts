@@ -3,6 +3,7 @@ import {Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 import {Entry} from '../../../../models/entry';
 import {ReaderState} from '../../../../redux/index';
+import {CLOSE_ENTRY, OPEN_ENTRY, READ_ENTRY} from '../../../../redux/consts';
 @Component({
 	templateUrl: './entry.component.html',
 	selector: 'app-feed-entry',
@@ -20,13 +21,16 @@ export class EntryComponent {
 
 	onClickEntry() {
 		if (!this.entry.is_open) {
-			this.store.dispatch({type: 'OPEN_ENTRY', payload: {
+			if (!this.entry.read) {
+				this.store.dispatch({type: READ_ENTRY, payload: this.entry});
+			}
+			this.store.dispatch({type: OPEN_ENTRY, payload: {
 				url: this.entry.url,
 				read: true,
 				is_open: true
 			}});
 		} else {
-			this.store.dispatch({type: 'CLOSE_ENTRY', payload: {
+			this.store.dispatch({type: CLOSE_ENTRY, payload: {
 				url: this.entry.url,
 				is_open: false
 			}});
