@@ -2,6 +2,6 @@
 	<app-feed-entry
 		[entry]="entry"
 		*ngFor="let entry of entries" class="entry"
-		[ngClass]="{'read': entry.read}"></app-feed-entry>
+		[ngClass]="{'read': entry.read, 'recent': isRecent(entry)}"></app-feed-entry>
 	<app-floating-bar (closeEntry)="onCloseEntry()"></app-floating-bar>
 </div>

@@ -9,7 +9,7 @@ import {
 	DELETE_FEED,
 	DELETED_FEED,
 	FEED_UPDATED,
-	INIT,
+	INIT, MARK_FEED_READ,
 	OPEN_ENTRY,
 	PULL_ALL_FEEDS,
 	PULL_FEED,
@@ -75,6 +75,14 @@ export class FeedEffects {
 					return {type: PULL_FEED, payload: feed};
 			}));
 		});
+
+	@Effect()
+	markFeedRead = this.actions.ofType(MARK_FEED_READ)
+		.mergeMap(action => this.reader.markAllRead(action.payload))
+		.map(feed => {
+			feed.unreadCount = 0;
+			return {type: SET_FEED, payload: feed};
+		})
 
 	constructor(private actions: Actions, private cache: StateCache, private reader: ReaderService) {
 	}

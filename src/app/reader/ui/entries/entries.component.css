@@ -36,3 +36,7 @@ app-floating-bar {
 	bottom: 10px;
 	right: 15px;
 }
+
+.recent {
+	background-color: #def0ff;
+}

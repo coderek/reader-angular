@@ -95,8 +95,8 @@ export class ReaderService extends AsyncAware {
 	}
 
 	@async
-	markAllRead(feed: Feed): Promise<void> {
-		return this.storage.markAllRead(feed.url);
+	markAllRead(feed: Feed): Promise<Feed> {
+		return this.storage.markAllRead(feed.url).then(() => feed);
 	}
 
 	@async

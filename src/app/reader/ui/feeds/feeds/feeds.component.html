@@ -1,6 +1,7 @@
 <ul class="feed-list">
 	<li *ngFor="let feed of feeds" [routerLink]="getFeedUrl(feed)" routerLinkActive="selected">
 		<span class="caret"> > </span>
+		<app-counter class="count" [from]="0" [to]="feed.unreadCount"></app-counter>
 		<app-feed [feed]="feed"></app-feed>
 	</li>
 </ul>

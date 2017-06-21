@@ -270,7 +270,7 @@ export class StorageService {
 		return new Promise<void>((res, rej) => {
 			transaction.oncomplete = () => res();
 			transaction.onerror = rej;
-		})
+		});
 	}
 }
 

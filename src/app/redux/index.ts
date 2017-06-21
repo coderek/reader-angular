@@ -129,6 +129,8 @@ export function feedReducer(state, action) {
 			return Object.assign({}, state, {unreadCount: state.unreadCount - 1});
 		case FEED_UPDATED:
 			return Object.assign({}, action.payload);
+		// case SET_FEED:
+		// 	return Object.assign({}, action.payload);
 		default:
 			return state;
 	}

@@ -29,6 +29,10 @@ export class FeedEntriesComponent implements OnInit, OnChanges {
 
 	constructor(private ref: ElementRef, private cache: StateCache) {}
 
+	isRecent(entry) {
+		return !entry.read && entry.last_pull && (Date.now() - entry.last_pull.valueOf()) < 1000 * 10;
+	}
+
 	ngOnChanges(changes: SimpleChanges) {
 		if ('feed' in changes) {
 			this.ref.nativeElement.querySelector('.entries').scrollTop = 0;

@@ -32,6 +32,7 @@ import {LoggingService} from '../src/app/util/logging.service';
 import { CategoryComponent } from './ui/feeds/category/category.component';
 import {FeedsContainerComponent} from './ui/feeds/feeds-container.component';
 import { FloatingBarComponent } from './ui/entries/floating-bar/floating-bar.component';
+import {CounterComponent} from '../common/counter/counter.component';
 
 const routes = [
 	{
@@ -76,6 +77,7 @@ const routes = [
 		EncodeUrlPipe,
 		ReadingPaneComponent,
 		CategoryComponent,
+		CounterComponent,
 		FeedsContainerComponent,
 		FloatingBarComponent
 	],
