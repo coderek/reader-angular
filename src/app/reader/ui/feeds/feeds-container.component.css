@@ -1,0 +1,21 @@
+:host {
+	max-width: 400px;
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto !important;
+}
+
+:host /deep/ {
+	background-color: rgba(0, 0, 0, 0.77);
+	color: #d8c9c9;
+}
+
+
+add-feed-button {
+	margin: 0 10px;
+}
+
+/*:host > div {*/
+	/*height: 100%;*/
+	/*overflow-y: auto;*/
+/*}*/

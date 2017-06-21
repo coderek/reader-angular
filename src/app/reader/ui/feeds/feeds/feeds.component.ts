@@ -1,9 +1,8 @@
-import {Component} from '@angular/core';
-import {Feed} from '../../../models/feed';
-import {ReaderService} from '../../services/reader.service';
+import {Component, Input} from '@angular/core';
+import {Feed} from '../../../../models/feed';
+import {ReaderService} from '../../../services/reader.service';
 import {Store} from '@ngrx/store';
-import {ReaderState} from '../../../redux/index';
-import {Observable} from 'rxjs/Observable';
+import {ReaderState} from '../../../../redux/index';
 
 @Component({
 	selector: 'app-feeds',
@@ -11,10 +10,10 @@ import {Observable} from 'rxjs/Observable';
 	styleUrls: ['./feeds.component.css']
 })
 export class FeedsComponent {
-	feeds: Observable<Feed[]>;
+	@Input() feeds: Feed[];
 
 	constructor(private reader: ReaderService, private store: Store<ReaderState>) {
-		this.feeds = store.select('app_state', 'current_feeds');
+		// this.feeds = store.select('app_state', 'current_feeds');
 	}
 
 	getFeedUrl(feed) {

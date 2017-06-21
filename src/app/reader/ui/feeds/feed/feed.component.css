@@ -1,3 +1,11 @@
+:host {
+	position: relative;
+}
 .count {
+	white-space: pre;
 	color: #828ba0;
+}
+
+.all-read {
+	color: #888888;
 }

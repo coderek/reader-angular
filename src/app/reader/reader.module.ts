@@ -5,7 +5,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {MaterialModule} from '@angular/material';
-import {FeedsComponent} from './ui/feeds/feeds.component';
+import {FeedsComponent} from './ui/feeds/feeds/feeds.component';
 import {AddFeedButtonComponent, NewFeedFormComponent} from './ui/feeds/buttons/buttons';
 import {RouterModule} from '@angular/router';
 import {FeedComponent} from './ui/feeds/feed/feed.component';
@@ -29,6 +29,9 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 import {HttpModule} from '@angular/http';
 import {LoggingService} from '../src/app/util/logging.service';
+import { CategoryComponent } from './ui/feeds/category/category.component';
+import {FeedsContainerComponent} from './ui/feeds/feeds-container.component';
+import { FloatingBarComponent } from './ui/entries/floating-bar/floating-bar.component';
 
 const routes = [
 	{
@@ -72,6 +75,9 @@ const routes = [
 		BrowserComponent,
 		EncodeUrlPipe,
 		ReadingPaneComponent,
+		CategoryComponent,
+		FeedsContainerComponent,
+		FloatingBarComponent
 	],
 	providers: [
 		ReaderService,

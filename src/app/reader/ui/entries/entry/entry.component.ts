@@ -1,4 +1,7 @@
-import {Component, Input, OnInit, OnChanges, ChangeDetectionStrategy, EventEmitter, Output} from '@angular/core';
+import {
+	Component, Input, OnInit, OnChanges, ChangeDetectionStrategy, EventEmitter, Output,
+	ElementRef
+} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 import {Entry} from '../../../../models/entry';
@@ -12,7 +15,7 @@ import {CLOSE_ENTRY, OPEN_ENTRY, READ_ENTRY} from '../../../../redux/consts';
 })
 export class EntryComponent {
 	@Input() entry: Entry;
-	constructor(private store: Store<ReaderState>) {
+	constructor(private ref: ElementRef, private store: Store<ReaderState>) {
 	}
 
 	get opened () {
@@ -21,6 +24,10 @@ export class EntryComponent {
 
 	open(url) {
 		window.open(url, '_blank');
+	}
+
+	bound() {
+		return this.ref.nativeElement.getBoundingClientRect();
 	}
 
 	onClickEntry() {

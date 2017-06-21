@@ -5,9 +5,24 @@ import {ReaderService} from '../reader/services/reader.service';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/concat';
 import {
-	CLOSE_ENTRY, DELETE_FEED, DELETED_FEED, INIT, OPEN_ENTRY, PULL_FEED, PULL_NEW_FEED, SET_ENTRIES, SET_FEED, SET_FEEDS,
+	CLOSE_ENTRY,
+	DELETE_FEED,
+	DELETED_FEED,
+	FEED_UPDATED,
+	INIT,
+	OPEN_ENTRY,
+	PULL_ALL_FEEDS,
+	PULL_FEED,
+	PULL_NEW_FEED,
+	SET_ENTRIES,
+	SET_FEED,
+	SET_FEEDS,
 	UPDATED_ENTRY
 } from './consts';
+import {StateCache} from './index';
+import 'rxjs/add/observable/from';
+import 'rxjs/add/operator/mergeMap';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class FeedEffects {
@@ -23,9 +38,13 @@ export class FeedEffects {
 	@Effect()
 	fetchFeed = this.actions.ofType(PULL_FEED)
 		.map(action => action.payload as Feed)
-		.switchMap(feed => this.reader.pullFeed(feed))
-		.map(updatedFeed => {
-			return {type: SET_FEED, payload: updatedFeed};
+		.mergeMap(feed => this.reader.pullFeed(feed))
+		.mergeMap(updatedFeed => {
+			const actions = [{type: FEED_UPDATED, payload: updatedFeed}];
+			if (this.cache.current_feed && updatedFeed.url === this.cache.current_feed.url) {
+				actions.push({type: SET_FEED, payload: updatedFeed});
+			}
+			return Observable.from(actions);
 		});
 
 	@Effect()
@@ -44,12 +63,20 @@ export class FeedEffects {
 
 	@Effect()
 	deleteFeed = this.actions.ofType(DELETE_FEED)
-		.switchMap(action => this.reader.deleteFeed(action.payload))
+		.flatMap(action => this.reader.deleteFeed(action.payload))
 		.map(url => {
 			return {type: DELETED_FEED, payload: url};
 		});
 
-	constructor(private actions: Actions, private reader: ReaderService) {
+	@Effect()
+	pullAllFeeds = this.actions.ofType(PULL_ALL_FEEDS)
+		.mergeMap(() => {
+			return Observable.from(this.cache.current_feeds.map(feed => {
+					return {type: PULL_FEED, payload: feed};
+			}));
+		});
+
+	constructor(private actions: Actions, private cache: StateCache, private reader: ReaderService) {
 	}
 }
 

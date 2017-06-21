@@ -40,10 +40,14 @@ export class ReaderService extends AsyncAware {
 
 	sortFeeds(feeds: Feed[]) {
 		return feeds.sort((f1, f2) => {
-			if (f1.unreadCount === f2.unreadCount) {
+			if (f1.unreadCount === 0 && f2.unreadCount === 0) {
 				return f1.title < f2.title? -1: 1;
+			} else if (f1.unreadCount === 0) {
+				return 1;
+			} else if (f2.unreadCount === 0) {
+				return -1;
 			} else {
-				return f2.unreadCount - f1.unreadCount;
+				return f1.title < f2.title? -1: 1;
 			}
 		});
 	}

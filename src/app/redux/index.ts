@@ -5,7 +5,8 @@ import {Injectable} from '@angular/core';
 import {compose} from '@ngrx/core';
 import {
 	ADD_FEED,
-	CLOSE_ENTRY, DECREMENT_FONT, DELETED_FEED, FINISH_LOADING, INCREMENT_FONT, OPEN_ENTRY, READ_ENTRY, SET_ENTRIES,
+	CLOSE_ENTRY, DECREMENT_FONT, DELETED_FEED, FEED_UPDATED, FINISH_LOADING, INCREMENT_FONT, OPEN_ENTRY, READ_ENTRY,
+	SET_ENTRIES,
 	SET_ENTRY,
 	SET_FEED, SET_FEEDS,
 	START_LOADING
@@ -17,6 +18,12 @@ const _cached_app_state: any = {};
 export class StateCache {
 	get current_feeds() {
 		return _cached_app_state.current_feeds || [];
+	}
+	get current_entries() {
+		return _cached_app_state.current_entries || [];
+	}
+	get current_feed() {
+		return _cached_app_state.current_feed || null;
 	}
 }
 
@@ -114,13 +121,14 @@ export function currentFeedsReducer(state: Feed[] = [], action: Action) {
 }
 
 export function feedReducer(state, action) {
+	if (action.payload && state.url !== action.payload.feed_url && state.url !== action.payload.url) {
+		return state;
+	}
 	switch (action.type) {
 		case READ_ENTRY:
-			if (state.url === action.payload.feed_url) {
-				return Object.assign({}, state, {unreadCount: state.unreadCount - 1});
-			} else {
-				return state;
-			}
+			return Object.assign({}, state, {unreadCount: state.unreadCount - 1});
+		case FEED_UPDATED:
+			return Object.assign({}, action.payload);
 		default:
 			return state;
 	}

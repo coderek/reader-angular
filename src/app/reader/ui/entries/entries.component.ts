@@ -6,10 +6,12 @@ import {
 	OnChanges,
 	OnInit,
 	Output,
-	SimpleChanges
+	SimpleChanges, ViewChildren
 } from '@angular/core';
 import {Entry} from '../../../models/entry';
 import {Feed} from '../../../models/feed';
+import {StateCache} from '../../../redux/index';
+import {EntryComponent} from './entry/entry.component';
 
 @Component({
 	selector: 'app-entries',
@@ -23,13 +25,31 @@ export class FeedEntriesComponent implements OnInit, OnChanges {
 
 	@Output() clickEntry = new EventEmitter<Entry>();
 	@Output() browseUrl = new EventEmitter<string>();
+	@ViewChildren(EntryComponent) entryViews;
 
-	constructor(private ref: ElementRef) {
-	}
+	constructor(private ref: ElementRef, private cache: StateCache) {}
 
 	ngOnChanges(changes: SimpleChanges) {
 		if ('feed' in changes) {
 			this.ref.nativeElement.querySelector('.entries').scrollTop = 0;
+		}
+	}
+
+	findShowingEntryView() {
+		for (const entryView of this.entryViews) {
+			if (entryView.opened) {
+				const {top, bottom} = entryView.bound();
+				if (top > 0 || bottom > 0) {
+					return entryView;
+				}
+			}
+		}
+		return null;
+	}
+	onCloseEntry() {
+		const view = this.findShowingEntryView();
+		if (view) {
+			view.onClickEntry();
 		}
 	}
 

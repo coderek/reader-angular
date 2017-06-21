@@ -1,8 +1,0 @@
-<ul class="feed-list">
-	<li style="
-    border-bottom: 1px solid #636262;
-    padding-bottom: 12px;"><b>Geek Reader</b></li>
-	<li *ngFor="let feed of feeds | async" [routerLink]="getFeedUrl(feed)" routerLinkActive="selected">
-		<app-feed [feed]="feed"></app-feed>
-	</li>
-</ul>

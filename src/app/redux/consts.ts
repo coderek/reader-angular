@@ -19,6 +19,8 @@ export const DECREMENT_FONT = 'DECREMENT_FONT';
 
 
 export const UPDATED_ENTRY = 'UPDATED_ENTRY';
+export const ALL_FEED_UPDATE_COMPLETE = 'ALL_FEED_UPDATE_COMPLETE';
+export const FEED_UPDATED = 'FEED_UPDATED';
 
 export const INIT = 'INIT';
 

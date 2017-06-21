@@ -1,5 +1,8 @@
 md-icon {
-	font-size: 12px;
+	font-size: 10px;
+}
+.mat-icon {
+	height: auto;
 }
 
 .read {
@@ -12,11 +15,11 @@ md-icon {
 :host {
 	background-color: #fafafa;
 	list-style: none;
-	padding: 4px;
+	padding: 10px;
 	border-top: 1px solid #d4d2d2;
 	cursor: pointer;
-	line-height: 26px;
-	font-size: 13pt;
+	/*line-height: 26px;*/
+	font-size: 11pt;
 }
 
 md-icon {

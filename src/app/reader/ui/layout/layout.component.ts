@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ReaderService} from '../../services/reader.service';
 import {Entry} from '../../../models/entry';
-import {FeedsComponent} from '../feeds/feeds.component';
+import {FeedsComponent} from '../feeds/feeds/feeds.component';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/concat';

@@ -1,14 +1,3 @@
-:host {
-	max-width: 400px;
-	display: flex;
-	flex-direction: column;
-}
-
-:host /deep/ {
-	background-color: rgba(0, 0, 0, 0.77);
-	color: #d8c9c9;
-}
-
 ul {
 	margin: 0px;
 	padding: 10px;
@@ -33,17 +22,24 @@ header {
 
 ul li {
 	list-style: none;
-	margin-top: 10px;
+	font-size: 10pt;
 }
+
 
 ul li:hover {
 	cursor: pointer;
 }
 
-add-feed-button {
-	margin: 0 10px;
-}
-
 .selected {
 	font-weight: bold;
+}
+
+.caret {
+	display: none;
+	position: absolute;
+	left: 2px;
+	margin-top: 2px;
+}
+.selected .caret {
+	display: inline-block;
 }
