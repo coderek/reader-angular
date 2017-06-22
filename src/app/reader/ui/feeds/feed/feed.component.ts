@@ -5,11 +5,11 @@ import {Feed} from '../../../../models/feed';
 	selector: 'app-feed',
 	templateUrl: './feed.component.html',
 	styleUrls: ['./feed.component.css'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedComponent implements OnChanges {
 	@Input() feed: Feed;
 
 	ngOnChanges() {
-		console.log(arguments);
 	}
 }

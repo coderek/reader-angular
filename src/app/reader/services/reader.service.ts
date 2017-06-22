@@ -54,6 +54,9 @@ export class ReaderService extends AsyncAware {
 
 	@async
 	public getEntriesForFeed(feed: Feed) {
+		if (!feed) {
+			return Promise.resolve([]);
+		}
 		return this.storage.getEntries({feed_url: feed.url});
 	}
 

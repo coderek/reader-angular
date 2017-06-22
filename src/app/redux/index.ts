@@ -9,6 +9,10 @@ export let _cached_state: any = {};
 
 @Injectable()
 export class StateCache {
+	get finish_init() {
+		return _cached_state.ui_state.finish_init
+			;
+	}
 	get display_feeds() {
 		return _cached_state.app_state.display_feeds;
 	}

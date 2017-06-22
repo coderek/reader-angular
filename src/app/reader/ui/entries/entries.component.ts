@@ -17,7 +17,6 @@ import {EntryComponent} from './entry/entry.component';
 	selector: 'app-entries',
 	templateUrl: './entries.component.html',
 	styleUrls: ['./entries.component.css'],
-	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedEntriesComponent implements OnInit, OnChanges {
 	@Input() feed: Feed;

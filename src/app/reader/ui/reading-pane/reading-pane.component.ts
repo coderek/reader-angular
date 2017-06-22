@@ -10,14 +10,11 @@ import 'rxjs/add/observable/zip';
 import 'rxjs/add/observable/of';
 import {ReaderState} from '../../../redux/state';
 import {StateCache} from '../../../redux/index';
-import {SetDisplayFeedAction} from '../../../redux/actions';
-
+import {SetDisplayEntriesAction, SetDisplayFeedAction} from '../../../redux/actions';
 
 /**
  * Container component
  */
-
-
 @Component({
 	selector: 'app-reading-pane',
 	templateUrl: './reading-pane.component.html',
@@ -34,13 +31,18 @@ export class ReadingPaneComponent implements OnInit {
 			.map(url => this.cache.feeds[url as string]);
 		this.feeds = this.store.select('app_state', 'display_feeds')
 			.map((feedUrls: string[]) => feedUrls.map(url => this.cache.feeds[url]));
-		this.entries = this.store.select('app_state', 'display_entries')
-			.map((entryUrls: string[]) => entryUrls.map(url => this.cache.entries[url]));
+		const entriesUrl = this.store.select('app_state', 'display_entries').distinctUntilChanged();
+		const entriesDict = this.store.select('domain_state', 'entries').distinctUntilChanged();
+		this.entries = Observable.combineLatest(entriesDict, entriesUrl,
+			(entries, urls) =>
+				(<string[]>urls).map(url => entries[url]).sort((a: Entry, b: Entry) => a.published < b.published ? 1 : -1)
+		);
 	}
 
 	ngOnInit() {
 		this.route.params.subscribe(params => {
-				this.store.dispatch(new SetDisplayFeedAction(decodeURIComponent(params.id)));
+			this.store.dispatch(new SetDisplayEntriesAction([]));
+			this.store.dispatch(new SetDisplayFeedAction(decodeURIComponent(params.id)));
 		});
 	}
 }

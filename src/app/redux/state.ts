@@ -21,6 +21,7 @@ export interface DomainState {
 export interface UIState {
 	http_loading: boolean;
 	font_size: number;
+	finish_init: boolean;
 }
 
 export interface AppState {

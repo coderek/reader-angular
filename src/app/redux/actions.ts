@@ -1,6 +1,6 @@
 import {Action} from '@ngrx/store';
 import {
-	ADD_FEED, CLOSE_ENTRY, DELETE_FEED, FINISH_LOADING, MARK_FEED_READ, OPEN_ENTRY, PULL_FEED, READ_ENTRY,
+	ADD_FEED, CLOSE_ENTRY, DELETE_FEED, FINISH_INIT, FINISH_LOADING, MARK_FEED_READ, OPEN_ENTRY, PULL_FEED, READ_ENTRY,
 	SET_DISPLAY_ENTRIES,
 	SET_DISPLAY_FEED,
 	SET_DISPLAY_FEEDS, SET_ENTRIES,
@@ -101,4 +101,7 @@ export class StartLoadingAction implements Action {
 
 export class FinishLoadingAction implements Action {
 	type = FINISH_LOADING;
+}
+export class SetFinishInitAction implements Action {
+	type = FINISH_INIT;
 }

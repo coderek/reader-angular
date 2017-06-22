@@ -23,10 +23,12 @@ import {StateCache} from './index';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/concatAll';
+import 'rxjs/add/operator/concatMap';
 import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
 import {
 	PullFeedAction, SetDisplayEntriesAction, SetDisplayFeedsAction, SetFeedAction, SetFeedsAction, SetFeedsEntriesAction,
+	SetFinishInitAction,
 	UpdateFeedAction
 } from './actions';
 
@@ -44,15 +46,8 @@ export class FeedEffects {
 
 	@Effect()
 	fetchFeed = this.actions.ofType(PULL_FEED)
-		.switchMap(action => this.reader.pullFeed(this.cache.feeds[action.payload]))
-		.switchMap(updatedFeed => {
-
-			const actions = [new UpdateFeedAction(updatedFeed)];
-			// if (this.cache.current_feed && updatedFeed.url === this.cache.current_feed.url) {
-			// 	actions.push({type: SET_FEED, payload: updatedFeed});
-			// }
-			return Observable.from(actions);
-		});
+		.flatMap(action => this.reader.pullFeed(this.cache.feeds[action.payload]))
+		.map(updatedFeed => new UpdateFeedAction(updatedFeed));
 
 	@Effect()
 	pullNewFeed = this.actions.ofType(PULL_NEW_FEED)
@@ -69,7 +64,8 @@ export class FeedEffects {
 			const feedsDict = _.zipObject(urls, feeds);
 			return [
 				new SetFeedsAction(feedsDict),
-				new SetDisplayFeedsAction(urls)
+				new SetDisplayFeedsAction(urls),
+				new SetFinishInitAction()
 			];
 		});
 
@@ -82,11 +78,7 @@ export class FeedEffects {
 
 	@Effect()
 	pullAllFeeds = this.actions.ofType(PULL_ALL_FEEDS)
-		.switchMap(() => {
-			return Observable.from(this.cache.display_feeds.map(feedUrl => {
-				return new PullFeedAction(feedUrl);
-			}));
-		});
+		.flatMap(() => this.cache.display_feeds.map(feedUrl => new PullFeedAction(feedUrl)));
 
 	@Effect()
 	markFeedRead = this.actions.ofType(MARK_FEED_READ)

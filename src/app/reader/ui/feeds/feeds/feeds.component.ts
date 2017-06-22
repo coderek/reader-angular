@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {StateCache} from '../../../../redux/index';
 import {Feed} from '../../../../models/feed';
 
 @Component({
@@ -9,9 +8,6 @@ import {Feed} from '../../../../models/feed';
 })
 export class FeedsComponent {
 	@Input() feeds: Feed[];
-
-	constructor(private cache: StateCache) {
-	}
 
 	getFeedUrl(feed) {
 		return `/feeds/${encodeURIComponent(feed.url)}`;

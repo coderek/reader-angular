@@ -16,9 +16,5 @@ import {ReaderState} from '../../../redux/state';
 	templateUrl: './layout.component.html',
 	styleUrls: ['./layout.component.css'],
 })
-export class LayoutComponent implements OnInit {
-	constructor(private store: Store<ReaderState>) {}
-	ngOnInit() {
-		this.store.dispatch({type: 'INIT'});
-	}
+export class LayoutComponent {
 }

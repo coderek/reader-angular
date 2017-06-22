@@ -33,16 +33,18 @@ import { CategoryComponent } from './ui/feeds/category/category.component';
 import {FeedsContainerComponent} from './ui/feeds/feeds-container.component';
 import { FloatingBarComponent } from './ui/entries/floating-bar/floating-bar.component';
 import {CounterComponent} from '../common/counter/counter.component';
+import {DomainGuard} from '../domain.guard';
 
 const routes = [
 	{
 		path: 'feeds/:id',
 		component: ReadingPaneComponent,
-		// resolve: {
-		// 	feed: FeedResolverService
-		// }
+		canActivate: [DomainGuard],
 	},
-
+	{
+		path: '',
+		component: ReadingPaneComponent
+	}
 ];
 
 @NgModule({
@@ -56,7 +58,7 @@ const routes = [
 		SlimLoadingBarModule.forRoot(),
 		EffectsModule.run(FeedEffects),
 		EffectsModule.run(EntryEffects),
-		RouterModule.forRoot(routes, {initialNavigation: false}),
+		RouterModule.forRoot(routes),
 		StoreModule.provideStore(readerReducer),
 		StoreDevtoolsModule.instrumentOnlyWithExtension({maxAge: 5}),
 		BrowserAnimationsModule,
@@ -79,7 +81,7 @@ const routes = [
 		CategoryComponent,
 		CounterComponent,
 		FeedsContainerComponent,
-		FloatingBarComponent
+		FloatingBarComponent,
 	],
 	providers: [
 		ReaderService,
@@ -87,7 +89,8 @@ const routes = [
 		StorageService,
 		FeedResolverService,
 		StateCache,
-		LoggingService
+		LoggingService,
+		DomainGuard
 	]
 })
 

@@ -1,3 +1,6 @@
 <app-feed-toolbar [feed]="feed | async"></app-feed-toolbar>
-<app-entries [feed]="feed | async" (browseUrl)="setBrowserUrl($event)" (clickEntry)="onClickEntry($event)"
-						 [entries]="entries | async"></app-entries>
+<app-entries
+	[feed]="feed | async"
+	(browseUrl)="setBrowserUrl($event)"
+	(clickEntry)="onClickEntry($event)"
+	[entries]="entries | async"></app-entries>

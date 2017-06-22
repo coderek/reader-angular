@@ -5,7 +5,7 @@ import {
 	ADD_FEED, CLOSE_ENTRY, DELETE_FEED, MARK_FEED_READ, OPEN_ENTRY, READ_ENTRY, SET_ENTRIES, SET_FEEDS, UPDATE_FEED,
 	UPDATED_ENTRY
 } from './consts';
-import {merge} from 'lodash';
+import {assign} from 'lodash';
 
 
 /**
@@ -23,7 +23,7 @@ function feedsReducer(state: any = {}, action: Action) {
 			const url = action.payload as string;
 			if (url in state) {
 				delete state[url];
-				return merge({}, state);
+				return assign({}, state);
 			} else {
 				return state;
 			}
@@ -31,7 +31,11 @@ function feedsReducer(state: any = {}, action: Action) {
 		case UPDATE_FEED: {
 			const feed = action.payload as Feed;
 			const url = feed.url;
-			return merge({}, state, {[url]: feed});
+			if (url in state) {
+				return assign({}, state, {[url]: feed});
+			} else {
+				return state;
+			}
 		}
 		case ADD_FEED: {
 			const feed = action.payload as Feed;
@@ -40,7 +44,7 @@ function feedsReducer(state: any = {}, action: Action) {
 				return state;
 			}
 			state[feed.url] = feed;
-			return merge({}, state);
+			return assign({}, state);
 		}
 		case READ_ENTRY: {
 			const entry = action.payload as Entry;
@@ -50,16 +54,15 @@ function feedsReducer(state: any = {}, action: Action) {
 			}
 			feed.unreadCount--;
 			// mark feed changed
-			state[entry.feed_url] = merge({}, feed);
-			// mark feeds changed
-			return merge({}, state);
+			state[entry.feed_url] = assign({}, feed);
+			return assign({}, state);
 		}
 		case MARK_FEED_READ: {
 			const url = action.payload as string;
 			if (url in state) {
 				const feed = state[url];
-				state[url] = merge({}, state, {unreadCount: 0});
-				return merge({}, state);
+				state[url] = assign({}, state, {unreadCount: 0});
+				return assign({}, state);
 			} else {
 				return state;
 			}
@@ -76,33 +79,22 @@ function entriesReducer(state: any = {}, action: Action) {
 		}
 		case OPEN_ENTRY: {
 			const entry = action.payload as Entry;
-			state[entry.url] = merge({}, entry, {is_open: true, read: true});
-			return merge({}, state);
+			state[entry.url] = assign({}, entry, {is_open: true, read: true});
+			return assign({}, state);
 		}
 		case CLOSE_ENTRY: {
 			const entry = action.payload as Entry;
-			state[entry.url] = merge({}, entry, {is_open: false});
-			return merge({}, state);
-		}
-		case READ_ENTRY: {
-			const entry = action.payload as Entry;
-			state[entry.url] = merge({}, entry, {read: true});
-			return merge({}, state);
+			state[entry.url] = assign({}, entry, {is_open: false});
+			return assign({}, state);
 		}
 		case MARK_FEED_READ: {
 			const feedUrl = action.payload as string;
-			let changed = false;
 			for (const key in state) {
 				if (state[key].feed_url === feedUrl) {
-					changed = true;
-					state[key] = merge({}, state[key], {read: true});
+					state[key] = assign({}, state[key], {read: true});
 				}
 			}
-			if (changed) {
-				return merge({}, state);
-			} else {
-				return state;
-			}
+			return state;
 		}
 		default:
 			return state;
