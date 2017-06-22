@@ -29,9 +29,9 @@ export class ReadingPaneComponent implements OnInit {
 	feeds: Observable<Feed[]>;
 
 	constructor(private store: Store<ReaderState>, private route: ActivatedRoute) {
-		this.feed = this.store.select('app_state', 'current_feed');
-		this.feeds = this.store.select('app_state', 'current_feeds');
-		this.entries = this.store.select('app_state', 'current_entries');
+		this.feed = this.store.select('app_state', 'feed');
+		this.feeds = this.store.select('app_state', 'feeds');
+		this.entries = this.store.select('app_state', 'entries');
 	}
 
 	ngOnInit() {

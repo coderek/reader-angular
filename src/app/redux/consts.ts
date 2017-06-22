@@ -1,5 +1,6 @@
 export const START_LOADING = 'START_LOADING';
 export const FINISH_LOADING = 'FINISH_LOADING';
+
 export const SET_FEEDS = 'SET_FEEDS';
 export const SET_FEED = 'SET_FEED';
 export const SET_ENTRIES = 'SET_ENTRIES';

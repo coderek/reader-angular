@@ -1,3 +1,4 @@
+import {Entry} from './entry';
 export interface Feed {
 	title: string;
 	description: string;
@@ -8,4 +9,5 @@ export interface Feed {
 	unreadCount: number;
 	loading?: boolean;
 	category: string;
+	entries?: {string: Entry};
 }

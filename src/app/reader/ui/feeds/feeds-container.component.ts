@@ -13,14 +13,13 @@ import 'rxjs/add/operator/distinctUntilChanged';
 	template: `
 		<app-category [category]="category[0]" [feeds]="category[1]" *ngFor="let category of categories | async"></app-category>
 	`,
-	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedsContainerComponent {
 	categories: Observable<[string, Feed[]]>;
 
 	constructor(private store: Store<ReaderState>) {
-		this.categories = this.store.select('app_state', 'current_feeds')
-			.distinctUntilChanged().do(()=> console.log('changed'))
+		this.categories = this.store.select('app_state', 'feeds')
+			.distinctUntilChanged().do(() => console.log('changed'))
 			.map(feeds =>
 				_.chain(feeds).map(f => _.defaults(f, {category: 'Default'}))
 					.groupBy(f => f.category)
