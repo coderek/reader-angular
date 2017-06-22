@@ -43,7 +43,7 @@ export class ArticleComponent implements AfterViewInit {
 	 * @param state
 	 */
 	checkAndUpdateUrls() {
-		const feed = this.cache.current_feeds.find(f => f.url === this.entry.feed_url);
+		const feed = this.cache.display_feeds.find(f => f.url === this.entry.feed_url);
 		if (feed) {
 			const baseUrl = feed.link;
 			if (!baseUrl) {

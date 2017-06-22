@@ -1,7 +1,10 @@
 import {Feed} from '../models/feed';
 import {Entry} from '../models/entry';
 import {Action, combineReducers} from '@ngrx/store';
-import {ADD_FEED, CLOSE_ENTRY, DELETE_FEED, MARK_FEED_READ, OPEN_ENTRY, READ_ENTRY, SET_FEEDS} from './consts';
+import {
+	ADD_FEED, CLOSE_ENTRY, DELETE_FEED, MARK_FEED_READ, OPEN_ENTRY, READ_ENTRY, SET_ENTRIES, SET_FEEDS, UPDATE_FEED,
+	UPDATED_ENTRY
+} from './consts';
 import {merge} from 'lodash';
 
 
@@ -11,10 +14,10 @@ import {merge} from 'lodash';
  * @param action
  * @returns {any}
  */
-function feedsReducer(state: {string: Feed}, action: Action) {
+function feedsReducer(state: any = {}, action: Action) {
 	switch (action.type) {
 		case SET_FEEDS: {
-			return action.payload as {string: Feed};
+			return action.payload;
 		}
 		case DELETE_FEED: {
 			const url = action.payload as string;
@@ -24,6 +27,11 @@ function feedsReducer(state: {string: Feed}, action: Action) {
 			} else {
 				return state;
 			}
+		}
+		case UPDATE_FEED: {
+			const feed = action.payload as Feed;
+			const url = feed.url;
+			return merge({}, state, {[url]: feed});
 		}
 		case ADD_FEED: {
 			const feed = action.payload as Feed;
@@ -61,8 +69,11 @@ function feedsReducer(state: {string: Feed}, action: Action) {
 	}
 }
 
-function entriesReducer(state: {string: Entry}, action: Action) {
+function entriesReducer(state: any = {}, action: Action) {
 	switch (action.type) {
+		case SET_ENTRIES: {
+			return action.payload;
+		}
 		case OPEN_ENTRY: {
 			const entry = action.payload as Entry;
 			state[entry.url] = merge({}, entry, {is_open: true, read: true});
@@ -100,5 +111,6 @@ function entriesReducer(state: {string: Entry}, action: Action) {
 
 export const domainStateReducer = combineReducers({
 	feeds: feedsReducer,
+	entries: entriesReducer
 });
 

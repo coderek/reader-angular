@@ -4,46 +4,53 @@ import {Feed} from '../models/feed';
 import {ReaderService} from '../reader/services/reader.service';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/concat';
+import 'rxjs/add/operator/mergeMap';
 import {
 	CLOSE_ENTRY,
 	DELETE_FEED,
 	DELETED_FEED,
-	FEED_UPDATED,
-	INIT, MARK_FEED_READ,
+	INIT,
+	MARK_FEED_READ,
 	OPEN_ENTRY,
 	PULL_ALL_FEEDS,
 	PULL_FEED,
-	PULL_NEW_FEED,
+	PULL_NEW_FEED, SET_DISPLAY_FEED, SET_DISPLAY_FEEDS,
 	SET_ENTRIES,
 	SET_FEED,
-	SET_FEEDS,
 	UPDATED_ENTRY
 } from './consts';
 import {StateCache} from './index';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/concatAll';
 import {Observable} from 'rxjs/Observable';
+import * as _ from 'lodash';
+import {
+	PullFeedAction, SetDisplayEntriesAction, SetDisplayFeedsAction, SetFeedAction, SetFeedsAction, SetFeedsEntriesAction,
+	UpdateFeedAction
+} from './actions';
 
 @Injectable()
 export class FeedEffects {
 
 	@Effect()
-	loadEntries = this.actions.ofType(SET_FEED)
-		.map(action => action.payload as Feed)
-		.switchMap(feed => this.reader.getEntriesForFeed(feed))
-		.map(entries => {
-			return {type: SET_ENTRIES, payload: entries};
+	loadEntries = this.actions.ofType(SET_DISPLAY_FEED)
+		.switchMap(action => this.reader.getEntriesForFeed(this.cache.feeds[action.payload]))
+		.flatMap(entries => {
+			const urls = _.map(entries, 'url');
+			const entriesDict = _.zipObject(urls, entries);
+			return [new SetFeedsEntriesAction(entriesDict), new SetDisplayEntriesAction(urls)];
 		});
 
 	@Effect()
 	fetchFeed = this.actions.ofType(PULL_FEED)
-		.map(action => action.payload as Feed)
-		.mergeMap(feed => this.reader.pullFeed(feed))
-		.mergeMap(updatedFeed => {
-			const actions = [{type: FEED_UPDATED, payload: updatedFeed}];
-			if (this.cache.current_feed && updatedFeed.url === this.cache.current_feed.url) {
-				actions.push({type: SET_FEED, payload: updatedFeed});
-			}
+		.switchMap(action => this.reader.pullFeed(this.cache.feeds[action.payload]))
+		.switchMap(updatedFeed => {
+
+			const actions = [new UpdateFeedAction(updatedFeed)];
+			// if (this.cache.current_feed && updatedFeed.url === this.cache.current_feed.url) {
+			// 	actions.push({type: SET_FEED, payload: updatedFeed});
+			// }
 			return Observable.from(actions);
 		});
 
@@ -56,9 +63,14 @@ export class FeedEffects {
 
 	@Effect()
 	init = this.actions.ofType(INIT)
-		.switchMap(()=> this.reader.getFeeds())
-		.map(feeds => {
-			return {type: SET_FEEDS, payload: feeds};
+		.switchMap(() => this.reader.getFeeds())
+		.switchMap(feeds => {
+			const urls = _.map(feeds, 'url');
+			const feedsDict = _.zipObject(urls, feeds);
+			return [
+				new SetFeedsAction(feedsDict),
+				new SetDisplayFeedsAction(urls)
+			];
 		});
 
 	@Effect()
@@ -70,9 +82,9 @@ export class FeedEffects {
 
 	@Effect()
 	pullAllFeeds = this.actions.ofType(PULL_ALL_FEEDS)
-		.mergeMap(() => {
-			return Observable.from(this.cache.current_feeds.map(feed => {
-					return {type: PULL_FEED, payload: feed};
+		.switchMap(() => {
+			return Observable.from(this.cache.display_feeds.map(feedUrl => {
+				return new PullFeedAction(feedUrl);
 			}));
 		});
 

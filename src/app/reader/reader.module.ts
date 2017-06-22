@@ -38,9 +38,9 @@ const routes = [
 	{
 		path: 'feeds/:id',
 		component: ReadingPaneComponent,
-		resolve: {
-			feed: FeedResolverService
-		}
+		// resolve: {
+		// 	feed: FeedResolverService
+		// }
 	},
 
 ];
@@ -56,7 +56,7 @@ const routes = [
 		SlimLoadingBarModule.forRoot(),
 		EffectsModule.run(FeedEffects),
 		EffectsModule.run(EntryEffects),
-		RouterModule.forRoot(routes),
+		RouterModule.forRoot(routes, {initialNavigation: false}),
 		StoreModule.provideStore(readerReducer),
 		StoreDevtoolsModule.instrumentOnlyWithExtension({maxAge: 5}),
 		BrowserAnimationsModule,

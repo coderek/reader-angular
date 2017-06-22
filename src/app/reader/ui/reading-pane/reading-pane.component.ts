@@ -4,12 +4,13 @@ import {Observable} from 'rxjs/Observable';
 import {Feed} from '../../../models/feed';
 import {Entry} from '../../../models/entry';
 import {Store} from '@ngrx/store';
-import {ReaderState} from '../../../redux/index';
 import 'rxjs/add/operator/last';
 import 'rxjs/add/operator/skip';
 import 'rxjs/add/observable/zip';
 import 'rxjs/add/observable/of';
-import {SET_ENTRIES, SET_FEED} from '../../../redux/consts';
+import {ReaderState} from '../../../redux/state';
+import {StateCache} from '../../../redux/index';
+import {SetDisplayFeedAction} from '../../../redux/actions';
 
 
 /**
@@ -28,16 +29,18 @@ export class ReadingPaneComponent implements OnInit {
 	entries: Observable<Entry[]>;
 	feeds: Observable<Feed[]>;
 
-	constructor(private store: Store<ReaderState>, private route: ActivatedRoute) {
-		this.feed = this.store.select('app_state', 'feed');
-		this.feeds = this.store.select('app_state', 'feeds');
-		this.entries = this.store.select('app_state', 'entries');
+	constructor(private store: Store<ReaderState>, private route: ActivatedRoute, private cache: StateCache) {
+		this.feed = this.store.select('app_state', 'display_feed')
+			.map(url => this.cache.feeds[url as string]);
+		this.feeds = this.store.select('app_state', 'display_feeds')
+			.map((feedUrls: string[]) => feedUrls.map(url => this.cache.feeds[url]));
+		this.entries = this.store.select('app_state', 'display_entries')
+			.map((entryUrls: string[]) => entryUrls.map(url => this.cache.entries[url]));
 	}
 
 	ngOnInit() {
-		this.route.data.subscribe(data => {
-				this.store.dispatch({type: SET_FEED, payload: data.feed});
-				this.store.dispatch({type: SET_ENTRIES, payload: []});
+		this.route.params.subscribe(params => {
+				this.store.dispatch(new SetDisplayFeedAction(decodeURIComponent(params.id)));
 		});
 	}
 }

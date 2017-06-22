@@ -11,14 +11,13 @@ export class FeedResolverService implements Resolve<Feed> {
 
 	resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Feed> {
 		const id = decodeURIComponent(route.params['id']);
-		const feeds = this.cache.current_feeds;
-		const idx = feeds.findIndex(f => f.url === id);
-		if (idx !== -1) {
-			return Promise.resolve(feeds[idx]);
+		const feed = this.cache.feeds[id];
+		if (feed) {
+			return Promise.resolve(feed);
 		} else {
-			return this.reader.getFeed(id).then(feed => {
-				if (feed) {
-					return feed;
+			return this.reader.getFeed(id).then(f => {
+				if (f) {
+					return f;
 				} else {
 					this.router.navigate(['']);
 					return null;

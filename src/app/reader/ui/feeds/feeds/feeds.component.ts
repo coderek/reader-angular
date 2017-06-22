@@ -1,8 +1,6 @@
 import {Component, Input} from '@angular/core';
+import {StateCache} from '../../../../redux/index';
 import {Feed} from '../../../../models/feed';
-import {ReaderService} from '../../../services/reader.service';
-import {Store} from '@ngrx/store';
-import {ReaderState} from '../../../../redux/index';
 
 @Component({
 	selector: 'app-feeds',
@@ -12,8 +10,7 @@ import {ReaderState} from '../../../../redux/index';
 export class FeedsComponent {
 	@Input() feeds: Feed[];
 
-	constructor(private reader: ReaderService, private store: Store<ReaderState>) {
-		// this.feeds = store.select('app_state', 'current_feeds');
+	constructor(private cache: StateCache) {
 	}
 
 	getFeedUrl(feed) {

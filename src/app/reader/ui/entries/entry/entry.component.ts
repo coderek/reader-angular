@@ -1,12 +1,10 @@
-import {
-	Component, Input, OnInit, OnChanges, ChangeDetectionStrategy, EventEmitter, Output,
-	ElementRef
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, Input} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Router} from '@angular/router';
 import {Entry} from '../../../../models/entry';
-import {ReaderState} from '../../../../redux/index';
 import {CLOSE_ENTRY, OPEN_ENTRY, READ_ENTRY} from '../../../../redux/consts';
+import {ReaderState} from '../../../../redux/state';
+import {StateCache} from '../../../../redux/index';
+
 @Component({
 	templateUrl: './entry.component.html',
 	selector: 'app-feed-entry',
@@ -15,6 +13,7 @@ import {CLOSE_ENTRY, OPEN_ENTRY, READ_ENTRY} from '../../../../redux/consts';
 })
 export class EntryComponent {
 	@Input() entry: Entry;
+
 	constructor(private ref: ElementRef, private store: Store<ReaderState>) {
 	}
 

@@ -1,8 +1,12 @@
 import {Action} from '@ngrx/store';
 import {
-	ADD_FEED, CLOSE_ENTRY, DELETE_FEED, FINISH_LOADING, MARK_FEED_READ, OPEN_ENTRY, PULL_FEED, READ_ENTRY, SET_FEED,
+	ADD_FEED, CLOSE_ENTRY, DELETE_FEED, FINISH_LOADING, MARK_FEED_READ, OPEN_ENTRY, PULL_FEED, READ_ENTRY,
+	SET_DISPLAY_ENTRIES,
+	SET_DISPLAY_FEED,
+	SET_DISPLAY_FEEDS, SET_ENTRIES,
+	SET_FEED,
 	SET_FEEDS,
-	START_LOADING
+	START_LOADING, UPDATE_FEED
 } from './consts';
 import {Feed} from '../models/feed';
 import {Entry} from '../models/entry';
@@ -15,32 +19,52 @@ import {Entry} from '../models/entry';
 /**
  * Feed related actions
  */
-class SetFeedsAction implements Action {
+export class SetFeedsAction implements Action {
 	type = SET_FEEDS;
 	constructor(public payload: any) {}
 }
 
-class SetFeedAction implements Action {
+export class UpdateFeedAction implements Action {
+	type = UPDATE_FEED;
+	constructor(public payload: Feed) {}
+}
+
+export class SetDisplayFeedsAction implements Action {
+	type = SET_DISPLAY_FEEDS;
+	constructor(public payload: string[]) {}
+}
+
+export class SetDisplayFeedAction implements Action {
+	type = SET_DISPLAY_FEED;
+	constructor(public payload: string) {}
+}
+
+export class SetDisplayEntriesAction implements Action {
+	type = SET_DISPLAY_ENTRIES;
+	constructor(public payload: string[]) {}
+}
+
+export class SetFeedAction implements Action {
 	type = SET_FEED;
 	constructor(public payload: string) {}
 }
 
-class AddFeedAction implements Action {
+export class AddFeedAction implements Action {
 	type = ADD_FEED;
 	constructor(public payload: Feed) {}
 }
 
-class DeleteFeedAction implements Action {
+export class DeleteFeedAction implements Action {
 	type = DELETE_FEED;
 	constructor(public payload: string) {}
 }
 
-class ReadFeedAction implements Action {
+export class MarkFeedReadAction implements Action {
 	type = MARK_FEED_READ;
 	constructor(public payload: string) {}
 }
 
-class PullFeedAction implements Action {
+export class PullFeedAction implements Action {
 	type = PULL_FEED;
 	constructor(public payload: string) {}
 }
@@ -48,17 +72,21 @@ class PullFeedAction implements Action {
 /**
  * Entry related
  */
-class ReadEntryAction implements Action {
+export class SetFeedsEntriesAction implements Action {
+	type = SET_ENTRIES;
+	constructor(public payload: any) {}
+}
+export class ReadEntryAction implements Action {
 	type = READ_ENTRY;
 	constructor(public payload: Entry) {}
 }
 
-class OpenEntryAction implements Action {
+export class OpenEntryAction implements Action {
 	type = OPEN_ENTRY;
 	constructor(public payload: Entry) {}
 }
 
-class CloseEntryAction implements Action {
+export class CloseEntryAction implements Action {
 	type = CLOSE_ENTRY;
 	constructor(public payload: Entry) {}
 }
@@ -67,10 +95,10 @@ class CloseEntryAction implements Action {
 /**
  * Domain unrelated
  */
-class StartLoadingAction implements Action {
+export class StartLoadingAction implements Action {
 	type = START_LOADING;
 }
 
-class FinishLoadingAction implements Action {
+export class FinishLoadingAction implements Action {
 	type = FINISH_LOADING;
 }

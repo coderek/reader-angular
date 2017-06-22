@@ -9,12 +9,12 @@ export let _cached_state: any = {};
 
 @Injectable()
 export class StateCache {
-	get current_feeds() {
-		return _cached_state.app_state.feeds;
+	get display_feeds() {
+		return _cached_state.app_state.display_feeds;
 	}
 
-	get current_entries() {
-		return _cached_state.app_state.entries;
+	get display_entries() {
+		return _cached_state.app_state.display_entries;
 	}
 
 	get feeds() {

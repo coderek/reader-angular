@@ -2,8 +2,8 @@ import {Component, Input} from '@angular/core';
 import {MdDialog, MdDialogRef} from '@angular/material';
 import {NgForm} from '@angular/forms';
 import {Store} from '@ngrx/store';
-import {ReaderState} from '../../../../redux/index';
 import {PULL_ALL_FEEDS, PULL_NEW_FEED} from '../../../../redux/consts';
+import {ReaderState} from '../../../../redux/state';
 
 @Component({
 	selector: 'app-new-feed-form',
@@ -24,7 +24,8 @@ export class NewFeedFormComponent {
 	template: `
 		<button md-raised-button (click)="openDialog()">Add a subscription</button>
 		<button md-raised-button (click)="doPullAll()">Pull all 
-			<span *ngIf="progress && process !== '100%'">({{progress}})</span></button>
+			<!--<span *ngIf="progress && process !== '100%'">({{progress}})</span>-->
+		</button>
 		<button md-raised-button (click)="export">Export (todo)</button>
 	`
 })

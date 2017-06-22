@@ -29,3 +29,8 @@ export const DELETED_FEED = 'DELETED_FEED';
 
 export const PULL_NEW_FEED = 'PULL_NEW_FEED';
 export const ADD_FEED = 'ADD_FEED';
+
+export const SET_DISPLAY_FEED = 'SET_DISPLAY_FEED';
+export const SET_DISPLAY_FEEDS = 'SET_DISPLAY_FEEDS';
+export const SET_DISPLAY_ENTRIES = 'SET_DISPLAY_ENTRIES';
+export const UPDATE_FEED = 'UPDATE_FEED';

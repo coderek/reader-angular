@@ -25,5 +25,7 @@ export interface UIState {
 
 export interface AppState {
 	// currently displaying feed
-	feed: string;
+	display_feed: string;
+	display_feeds: string[];
+	display_entries: string[];
 }

@@ -1,9 +1,10 @@
 import {Component, Input} from '@angular/core';
 import {Feed} from '../../../models/feed';
 import {Store} from '@ngrx/store';
-import {ReaderState} from '../../../redux/index';
-import {DECREMENT_FONT, DELETE_FEED, INCREMENT_FONT, MARK_FEED_READ, PULL_FEED} from '../../../redux/consts';
+import {DECREMENT_FONT, INCREMENT_FONT} from '../../../redux/consts';
 import {Router} from '@angular/router';
+import {ReaderState} from '../../../redux/state';
+import {DeleteFeedAction, MarkFeedReadAction, PullFeedAction} from '../../../redux/actions';
 
 @Component({
 	selector: 'app-feed-toolbar',
@@ -17,16 +18,16 @@ export class ToolsComponent {
 	constructor(private store: Store<ReaderState>, private router: Router) {}
 
 	readAll() {
-		this.store.dispatch({type: MARK_FEED_READ, payload: this.feed});
+		this.store.dispatch(new MarkFeedReadAction(this.feed.url));
 	}
 
 	delete() {
-		this.store.dispatch({type: DELETE_FEED, payload: this.feed});
+		this.store.dispatch(new DeleteFeedAction(this.feed.url));
 		this.router.navigate(['']);
 	}
 
 	pull() {
-		this.store.dispatch({type: PULL_FEED, payload: this.feed});
+		this.store.dispatch(new PullFeedAction(this.feed.url));
 	}
 
 	increaseFontSize() {

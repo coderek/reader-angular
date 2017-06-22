@@ -5,8 +5,8 @@ import {Feed} from '../../models/feed';
 import {Entry} from '../../models/entry';
 import {async, AsyncAware} from '../../decorators/async';
 import {Store} from '@ngrx/store';
-import {ReaderState} from '../../redux/index';
 import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
+import {ReaderState} from '../../redux/state';
 
 
 /**
