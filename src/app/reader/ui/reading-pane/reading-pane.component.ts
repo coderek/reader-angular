@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Feed} from '../../../models/feed';
 import {Entry} from '../../../models/entry';
@@ -26,7 +26,7 @@ export class ReadingPaneComponent implements OnInit {
 	entries: Observable<Entry[]>;
 	feeds: Observable<Feed[]>;
 
-	constructor(private store: Store<ReaderState>, private route: ActivatedRoute, private cache: StateCache) {
+	constructor(private store: Store<ReaderState>, private router: Router, private route: ActivatedRoute, private cache: StateCache) {
 		this.feed = this.store.select('app_state', 'display_feed')
 			.map(url => this.cache.feeds[url as string]);
 		this.feeds = this.store.select('app_state', 'display_feeds')
@@ -41,8 +41,12 @@ export class ReadingPaneComponent implements OnInit {
 
 	ngOnInit() {
 		this.route.params.subscribe(params => {
+			const url = decodeURIComponent(params.id);
+			if (!this.cache.feeds[url]) {
+				this.router.navigate(['']);
+			}
 			this.store.dispatch(new SetDisplayEntriesAction([]));
-			this.store.dispatch(new SetDisplayFeedAction(decodeURIComponent(params.id)));
+			this.store.dispatch(new SetDisplayFeedAction(url));
 		});
 	}
 }

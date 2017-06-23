@@ -1,6 +1,5 @@
 import {Actions, Effect} from '@ngrx/effects';
 import {Injectable} from '@angular/core';
-import {Feed} from '../models/feed';
 import {ReaderService} from '../reader/services/reader.service';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/concat';
@@ -14,23 +13,25 @@ import {
 	OPEN_ENTRY,
 	PULL_ALL_FEEDS,
 	PULL_FEED,
-	PULL_NEW_FEED, SET_DISPLAY_FEED, SET_DISPLAY_FEEDS,
-	SET_ENTRIES,
-	SET_FEED,
+	PULL_NEW_FEED,
+	SET_DISPLAY_FEED,
 	UPDATED_ENTRY
 } from './consts';
 import {StateCache} from './index';
 import 'rxjs/add/observable/from';
-import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/concatAll';
 import 'rxjs/add/operator/concatMap';
-import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
 import {
-	PullFeedAction, SetDisplayEntriesAction, SetDisplayFeedsAction, SetFeedAction, SetFeedsAction, SetFeedsEntriesAction,
+	PullFeedAction,
+	SetDisplayEntriesAction,
+	SetDisplayFeedsAction,
+	SetFeedsAction,
+	SetFeedsEntriesAction,
 	SetFinishInitAction,
 	UpdateFeedAction
 } from './actions';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class FeedEffects {
@@ -47,7 +48,21 @@ export class FeedEffects {
 	@Effect()
 	fetchFeed = this.actions.ofType(PULL_FEED)
 		.flatMap(action => this.reader.pullFeed(this.cache.feeds[action.payload]))
-		.map(updatedFeed => new UpdateFeedAction(updatedFeed));
+		.flatMap(updatedFeed => {
+			if (updatedFeed.url === this.cache.display_feed) {
+				const promise = this.reader.getEntriesForFeed(updatedFeed).then(entries => {
+					const urls = _.map(entries, 'url');
+					const entriesDict = _.zipObject(urls, entries);
+					return [new SetFeedsEntriesAction(entriesDict), new SetDisplayEntriesAction(urls)];
+				});
+				return Observable
+								.fromPromise(promise)
+								.flatMap(a => Observable.from(a))
+								.concat(Observable.of(new UpdateFeedAction(updatedFeed)));
+			} else {
+				return Observable.of(new UpdateFeedAction(updatedFeed));
+			}
+		});
 
 	@Effect()
 	pullNewFeed = this.actions.ofType(PULL_NEW_FEED)
@@ -82,11 +97,8 @@ export class FeedEffects {
 
 	@Effect()
 	markFeedRead = this.actions.ofType(MARK_FEED_READ)
-		.mergeMap(action => this.reader.markAllRead(action.payload))
-		.map(feed => {
-			feed.unreadCount = 0;
-			return {type: SET_FEED, payload: feed};
-		})
+		.flatMap(action => this.reader.markAllRead(this.cache.feeds[action.payload]))
+		.map(feed => new UpdateFeedAction(feed));
 
 	constructor(private actions: Actions, private cache: StateCache, private reader: ReaderService) {
 	}

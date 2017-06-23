@@ -7,6 +7,7 @@ import {async, AsyncAware} from '../../decorators/async';
 import {Store} from '@ngrx/store';
 import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 import {ReaderState} from '../../redux/state';
+import {assign} from 'lodash';
 
 
 /**
@@ -99,7 +100,7 @@ export class ReaderService extends AsyncAware {
 
 	@async
 	markAllRead(feed: Feed): Promise<Feed> {
-		return this.storage.markAllRead(feed.url).then(() => feed);
+		return this.storage.markAllRead(feed.url).then(() => assign(feed, {unreadCount: 0}));
 	}
 
 	@async

@@ -2,8 +2,15 @@ import {Feed} from '../models/feed';
 import {Entry} from '../models/entry';
 import {Action, combineReducers} from '@ngrx/store';
 import {
-	ADD_FEED, CLOSE_ENTRY, DELETE_FEED, MARK_FEED_READ, OPEN_ENTRY, READ_ENTRY, SET_ENTRIES, SET_FEEDS, UPDATE_FEED,
-	UPDATED_ENTRY
+	ADD_FEED,
+	CLOSE_ENTRY,
+	DELETE_FEED,
+	MARK_FEED_READ,
+	OPEN_ENTRY,
+	READ_ENTRY,
+	SET_ENTRIES,
+	SET_FEEDS,
+	UPDATE_FEED
 } from './consts';
 import {assign} from 'lodash';
 
@@ -57,16 +64,6 @@ function feedsReducer(state: any = {}, action: Action) {
 			state[entry.feed_url] = assign({}, feed);
 			return assign({}, state);
 		}
-		case MARK_FEED_READ: {
-			const url = action.payload as string;
-			if (url in state) {
-				const feed = state[url];
-				state[url] = assign({}, state, {unreadCount: 0});
-				return assign({}, state);
-			} else {
-				return state;
-			}
-		}
 		default:
 			return state;
 	}
@@ -89,12 +86,18 @@ function entriesReducer(state: any = {}, action: Action) {
 		}
 		case MARK_FEED_READ: {
 			const feedUrl = action.payload as string;
+			let changed = false;
 			for (const key in state) {
 				if (state[key].feed_url === feedUrl) {
+					changed = true;
 					state[key] = assign({}, state[key], {read: true});
 				}
 			}
-			return state;
+			if (changed) {
+				return assign({}, state);
+			} else {
+				return state;
+			}
 		}
 		default:
 			return state;

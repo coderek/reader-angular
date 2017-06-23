@@ -14,6 +14,7 @@ export class CounterComponent implements OnInit, OnChanges {
 
 	lastUpdate = 0;
 	stop = false;
+	dir = 1;
 
 	constructor(private ele: ElementRef) {
 	}
@@ -27,11 +28,11 @@ export class CounterComponent implements OnInit, OnChanges {
 
 	update(t) {
 		if (t - this.lastUpdate > 10) {
-			this.cur++;
+			this.cur += this.dir;
 			// this.ele.nativeElement.textContent = this.pad(this.cur);
 			this.lastUpdate = t;
 		}
-		if (this.cur < this.to && !this.stop) {
+		if (this.cur !== this.to && !this.stop) {
 			this.from = this.to;
 			requestAnimationFrame(this.update.bind(this));
 		}
@@ -43,8 +44,12 @@ export class CounterComponent implements OnInit, OnChanges {
 
 		if ('to' in changes) {
 			this.stop = true;
+			if (this.to === this.cur) {
+				return;
+			}
 			setTimeout(() => {
 				this.stop = false;
+				this.dir = this.to > this.cur ? 1 : -1;
 				this.update(0);
 			}, 0);
 		}
