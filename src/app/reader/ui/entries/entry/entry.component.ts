@@ -16,7 +16,10 @@ export class EntryComponent implements OnChanges {
 	@Input() entry: Entry;
 	@Input() fontSize: number;
 
-	constructor(private ref: ElementRef, private store: Store<ReaderState>) {
+	constructor(
+		private ref: ElementRef,
+		private store: Store<ReaderState>,
+		private cache: StateCache) {
 	}
 
 	get opened () {
@@ -41,6 +44,10 @@ export class EntryComponent implements OnChanges {
 		} else {
 			this.store.dispatch(new CloseEntryAction(this.entry));
 		}
+	}
+
+	getSourceFeedTitle(entry) {
+		return this.cache.feeds[entry.feed_url].title;
 	}
 
 	/**

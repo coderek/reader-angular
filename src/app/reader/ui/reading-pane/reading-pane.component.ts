@@ -29,6 +29,7 @@ export class ReadingPaneComponent implements OnInit {
 	entries: Observable<Entry[]>;
 	feeds: Observable<Feed[]>;
 	fontSize: Observable<number>;
+	title;
 
 	constructor(private store: Store<ReaderState>, private router: Router, private route: ActivatedRoute, private cache: StateCache) {
 		this.feed = this.store.select('app_state', 'display_feed')
@@ -48,12 +49,14 @@ export class ReadingPaneComponent implements OnInit {
 		this.route.params.subscribe(params => {
 			const url = decodeURIComponent(params.id);
 			if (url === 'home') {
+				this.title = 'Unread feeds';
 				this.displayHomePage();
 				return;
 			}
 			if (!this.cache.feeds[url]) {
 				this.router.navigate(['']);
 			}
+			this.title = null;
 			this.store.dispatch(new SetDisplayEntriesAction([]));
 			this.store.dispatch(new SetDisplayFeedAction(url));
 		});

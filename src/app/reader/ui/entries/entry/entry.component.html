@@ -8,6 +8,7 @@
 		<span class="title"
 					[ngClass]="{'read': entry.read}" (click)="onClickEntry()">
 			{{entry.title.trim()}} | <time>{{entry.published | prettyDate }}</time>
+			<span *ngIf="!feed">{{getSourceFeedTitle(entry)}}</span>
 		</span>
 		<md-icon (click)="open(entry.url)">link</md-icon>
 	</div>

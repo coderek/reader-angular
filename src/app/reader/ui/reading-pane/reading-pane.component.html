@@ -1,4 +1,6 @@
-<app-feed-toolbar [feed]="feed | async"></app-feed-toolbar>
+<app-feed-toolbar
+	[title]="title"
+	[feed]="feed | async"></app-feed-toolbar>
 <app-entries
 	[fontSize]="fontSize | async"
 	[feed]="feed | async"

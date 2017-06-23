@@ -14,6 +14,8 @@ import {DeleteFeedAction, MarkFeedReadAction, PullFeedAction} from '../../../red
 export class ToolsComponent {
 	@Input()
 	feed: Feed;
+	@Input()
+	title;
 
 	constructor(private store: Store<ReaderState>, private router: Router) {}
 
