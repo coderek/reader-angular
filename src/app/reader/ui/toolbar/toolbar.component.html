@@ -3,12 +3,15 @@
 		<strong>
 			{{feed?.title}}
 		</strong>
+		<div style="font-size: 80%;">
+			- {{feed?.description}}
+		</div>
 	</div>
 
-	<div>
-		<button *ngIf="feed" (click)="readAll()">Mark all as read</button>
-		<button *ngIf="feed" (click)="pull()" [disabled]="feed.loading">Update</button>
-		<button *ngIf="feed" (click)="delete()">Delete</button>
+	<div *ngIf="feed">
+		<button (click)="readAll()">Mark all as read</button>
+		<button (click)="pull()" [disabled]="feed.loading">Update</button>
+		<button (click)="delete()">Delete</button>
 		<button (click)="increaseFontSize()">+</button>
 		<button (click)="decreaseFontSize()">-</button>
 	</div>

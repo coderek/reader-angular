@@ -6,8 +6,7 @@
 }
 
 :host /deep/ {
-	background-color: rgba(0, 0, 0, 0.77);
-	color: #d8c9c9;
+	/** background-color: rgba(0, 0, 0, 0.77);  */
 }
 
 

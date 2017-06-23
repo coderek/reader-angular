@@ -13,6 +13,9 @@ import {Feed} from '../../../models/feed';
 import {StateCache} from '../../../redux/index';
 import {EntryComponent} from './entry/entry.component';
 
+
+const FRESHNESS = 1000 * 3600 * 24;
+
 @Component({
 	selector: 'app-entries',
 	templateUrl: './entries.component.html',
@@ -21,6 +24,7 @@ import {EntryComponent} from './entry/entry.component';
 export class FeedEntriesComponent implements OnInit, OnChanges {
 	@Input() feed: Feed;
 	@Input() entries: Entry[];
+	@Input() fontSize: number;
 
 	@Output() clickEntry = new EventEmitter<Entry>();
 	@Output() browseUrl = new EventEmitter<string>();
@@ -29,7 +33,7 @@ export class FeedEntriesComponent implements OnInit, OnChanges {
 	constructor(private ref: ElementRef, private cache: StateCache) {}
 
 	isRecent(entry) {
-		return entry && !entry.read && entry.last_pull && (Date.now() - entry.last_pull.valueOf()) < 1000 * 10;
+		return entry && !entry.read && entry.last_pull && (Date.now() - entry.last_pull.valueOf()) < FRESHNESS;
 	}
 
 	ngOnChanges(changes: SimpleChanges) {

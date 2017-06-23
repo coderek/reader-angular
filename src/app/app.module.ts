@@ -5,12 +5,11 @@ import { CounterComponent } from './common/counter/counter.component';
 
 
 @NgModule({
-	// declarations: [CounterComponent],
 	imports: [
 		ReaderModule,
 	],
 	providers: [],
-	bootstrap: [LayoutComponent]
+	bootstrap: [LayoutComponent],
 })
 export class AppModule {
 }

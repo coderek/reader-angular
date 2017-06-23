@@ -14,8 +14,8 @@ export class FeedResolverService implements Resolve<Feed> {
 		const feed = this.cache.feeds[id];
 		console.log(feed);
 		if (!feed) {
-			this.router.navigate(['']);
-			return Promise.reject(null);
+			this.router.navigate(['/']);
+			return Promise.resolve(null);
 		}
 		return Promise.resolve(feed);
 	}

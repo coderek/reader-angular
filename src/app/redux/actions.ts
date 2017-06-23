@@ -6,6 +6,7 @@ import {
 	SET_DISPLAY_FEEDS, SET_ENTRIES,
 	SET_FEED,
 	SET_FEEDS,
+	CHANGE_FILTER,
 	START_LOADING, UPDATE_FEED
 } from './consts';
 import {Feed} from '../models/feed';
@@ -104,4 +105,8 @@ export class FinishLoadingAction implements Action {
 }
 export class SetFinishInitAction implements Action {
 	type = FINISH_INIT;
+}
+export class ChangeFilterAction implements Action {
+	type = CHANGE_FILTER;
+	constructor(public payload: string) {}
 }

@@ -1,5 +1,6 @@
 <div class="entries">
 	<app-feed-entry
+		[fontSize]="fontSize"
 		[entry]="entry"
 		*ngFor="let entry of entries" class="entry"
 		[ngClass]="{'read': entry.read, 'recent': isRecent(entry)}"></app-feed-entry>

@@ -14,6 +14,7 @@ import {CloseEntryAction, OpenEntryAction} from '../../../../redux/actions';
 })
 export class EntryComponent implements OnChanges {
 	@Input() entry: Entry;
+	@Input() fontSize: number;
 
 	constructor(private ref: ElementRef, private store: Store<ReaderState>) {
 	}

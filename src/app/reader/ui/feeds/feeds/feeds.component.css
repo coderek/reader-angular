@@ -7,7 +7,7 @@ ul {
 .feed-list {
 	flex: 1 0;
 	overflow-y: auto;
-	/*background-color: #f8fff1;*/
+	background-color: #f8fff1;
 }
 
 .spinner-text {

@@ -12,4 +12,6 @@
 		<md-icon (click)="open(entry.url)">link</md-icon>
 	</div>
 </div>
-<app-article *ngIf="opened" [entry]="entry"></app-article>
+<app-article
+				[fontSize]="fontSize"
+				*ngIf="opened" [entry]="entry"></app-article>

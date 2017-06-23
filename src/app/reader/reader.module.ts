@@ -1,3 +1,4 @@
+import {FeedsFilterPipe} from '../feeds-filter.pipe';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {LayoutComponent} from './ui/layout/layout.component';
@@ -37,13 +38,18 @@ import {DomainGuard} from '../domain.guard';
 
 const routes = [
 	{
-		path: 'feeds/:id',
-		component: ReadingPaneComponent,
-		canActivate: [DomainGuard],
-	},
-	{
 		path: '',
-		component: ReadingPaneComponent
+		canActivate: [DomainGuard],
+		children: [
+			{
+				path: 'feeds/:id',
+				component: ReadingPaneComponent,
+			},
+			{
+				path: '',
+				component: ReadingPaneComponent,
+			}
+		]
 	}
 ];
 
@@ -82,6 +88,7 @@ const routes = [
 		CounterComponent,
 		FeedsContainerComponent,
 		FloatingBarComponent,
+		FeedsFilterPipe,
 	],
 	providers: [
 		ReaderService,

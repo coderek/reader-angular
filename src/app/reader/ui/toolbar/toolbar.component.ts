@@ -33,6 +33,7 @@ export class ToolsComponent {
 	increaseFontSize() {
 		this.store.dispatch({type: INCREMENT_FONT});
 	}
+
 	decreaseFontSize() {
 		this.store.dispatch({type: DECREMENT_FONT});
 	}

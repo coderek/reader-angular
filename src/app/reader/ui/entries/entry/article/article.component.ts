@@ -5,7 +5,7 @@ import {StateCache} from '../../../../../redux/index';
 	selector: 'app-article',
 	styleUrls: ['./article.component.css'],
 	template: `
-		<article [innerHTML]="content" [ngStyle]="{'fontSize.em': (fontSize)}"></article>`,
+		<article [innerHTML]="content" [ngStyle]="{'fontSize.px': (fontSize)}"></article>`,
 })
 export class ArticleComponent implements AfterViewInit {
 	@Input() entry;

@@ -8,6 +8,7 @@ import {Feed} from '../../../../models/feed';
 })
 export class FeedsComponent {
 	@Input() feeds: Feed[];
+	@Input() filter: string;
 
 	getFeedUrl(feed) {
 		return `/feeds/${encodeURIComponent(feed.url)}`;

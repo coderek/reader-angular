@@ -25,6 +25,7 @@ export class ReadingPaneComponent implements OnInit {
 	feed: Observable<Feed>;
 	entries: Observable<Entry[]>;
 	feeds: Observable<Feed[]>;
+	fontSize: Observable<number>;
 
 	constructor(private store: Store<ReaderState>, private router: Router, private route: ActivatedRoute, private cache: StateCache) {
 		this.feed = this.store.select('app_state', 'display_feed')
@@ -37,6 +38,7 @@ export class ReadingPaneComponent implements OnInit {
 			(entries, urls) =>
 				(<string[]>urls).map(url => entries[url]).sort((a: Entry, b: Entry) => a.published < b.published ? 1 : -1)
 		);
+		this.fontSize = this.store.select('ui_state', 'font_size');
 	}
 
 	ngOnInit() {
