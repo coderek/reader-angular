@@ -12,10 +12,12 @@ export class DomainGuard implements CanActivate {
 
 	canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
 		if (this.cache.finish_init) {
-			console.log('finish init')
 			return true;
 		} else {
-			return this.store.select('ui_state', 'finish_init').skipWhile(a => a === false).timeout(10000).do(console.log);
+			return this.store
+				.select('ui_state', 'finish_init')
+				.skipWhile(a => a === false)
+				.timeout(10000);
 		}
 	}
 }

@@ -6,6 +6,7 @@ import 'rxjs/add/observable/concat';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/delay';
 import {
+	DISPLAY_HOME,
 	CLOSE_ENTRY,
 	DELETE_FEED,
 	DELETED_FEED,
@@ -133,6 +134,19 @@ export class EntryEffects {
 		.map(updatedEntry => {
 			return {type: UPDATED_ENTRY, payload: updatedEntry};
 		});
+
+	@Effect()
+	displayHomeEntries = this.actions.ofType(DISPLAY_HOME)
+		.flatMap(() => this.reader.getHomeEntries())
+		.flatMap(entries => {
+			const urls = _.map(entries, 'url')
+			const entriesDict = _.zipObject(_.map(entries, 'url'), entries);
+			return [
+				new SetFeedsEntriesAction(entriesDict),
+				new SetDisplayEntriesAction(urls.sort((u1, u2)=> entriesDict[u2].published - entriesDict[u1].published)),
+			];
+		})
+		.do(console.log);
 
 	constructor(private actions: Actions, private reader: ReaderService) {
 	}

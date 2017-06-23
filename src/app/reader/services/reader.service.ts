@@ -8,6 +8,13 @@ import {Store} from '@ngrx/store';
 import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 import {ReaderState} from '../../redux/state';
 import {assign} from 'lodash';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/toArray';
+import * as moment from 'moment';
 
 
 /**
@@ -92,6 +99,32 @@ export class ReaderService extends AsyncAware {
 	@async
 	getFavorites() {
 		return this.storage.getEntries({favorite: true});
+	}
+
+	/**
+	 * Get a mix of all entries from various feed
+	 * steps
+	 * 1. get latest (age < 30 days) 10 unread entries from each feed source
+	 * 2. merge them according to time
+	 */
+	@async
+	getHomeEntries(): Promise<Entry[]> {
+		const now = moment();
+		const duration = moment.duration(30, 'days');
+		return Observable.fromPromise(this.storage.getFeeds(false))
+			.flatMap(feeds => Observable.from(feeds))
+			.flatMap(feed => {
+				return Observable.fromPromise(this.storage.getEntries({
+					read: false,
+					published: function (p) {
+						if (!p) return false;
+						const timeLapsed = now.valueOf() - moment(p).valueOf();
+						const inRange = timeLapsed < duration.valueOf();
+						return inRange;
+					},
+					feed_url: feed.url
+				})).flatMap(arr => Observable.from(arr)).take(10);
+			}).take(100).toArray().toPromise();
 	}
 }
 

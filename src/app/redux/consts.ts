@@ -36,3 +36,5 @@ export const SET_DISPLAY_ENTRIES = 'SET_DISPLAY_ENTRIES';
 export const UPDATE_FEED = 'UPDATE_FEED';
 export const FINISH_INIT = 'FINISH_INIT';
 export const CHANGE_FILTER = 'CHANGE_FILTER';
+
+export const DISPLAY_HOME = 'DISPLAY_HOME';

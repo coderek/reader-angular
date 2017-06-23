@@ -10,7 +10,7 @@ import {ReaderState} from '../../../redux/state';
 	styleUrls: ['./feeds-container.component.css'],
 	template: `
 		<ul>
-			<li routerLink="/feeds/all/">Home</li>
+			<li routerLink="/feeds/home">Home</li>
 		</ul>
 		<app-feeds [feeds]="feeds | async" [filter]="filter | async"></app-feeds>
 	`,

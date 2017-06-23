@@ -33,7 +33,7 @@ export class StorageService {
 		});
 	}
 
-	async getFeeds(): Promise<Feed[]> {
+	async getFeeds(withCount=true): Promise<Feed[]> {
 		await this.initPromise;
 		const feeds = [];
 		const transaction = this.db.transaction(['feeds', 'entries']);
@@ -44,19 +44,21 @@ export class StorageService {
 				if (cursor) {
 					const f = cursor.value;
 					feeds.push(f);
-					let count = 0;
-					const entriesReq = transaction.objectStore('entries').index('feed_url').openCursor(IDBKeyRange.only(f.url));
-					entriesReq.onsuccess = () => {
-						const c = entriesReq.result;
-						if (c) {
-							if (!c.value.read) {
-								count++;
+					if (withCount) {
+						let count = 0;
+						const entriesReq = transaction.objectStore('entries').index('feed_url').openCursor(IDBKeyRange.only(f.url));
+						entriesReq.onsuccess = () => {
+							const c = entriesReq.result;
+							if (c) {
+								if (!c.value.read) {
+									count++;
+								}
+								c.continue();
+							} else {
+								f.unreadCount = count;
 							}
-							c.continue();
-						} else {
-							f.unreadCount = count;
-						}
-					};
+						};
+					}
 					cursor.continue();
 				}
 			};
@@ -277,7 +279,13 @@ export class StorageService {
 
 function matchConditions(target, conditions = {}) {
 	for (const prop in conditions) {
-		if (target[prop] !== conditions[prop]) {
+		if (typeof conditions[prop] === 'function') {
+			if (!conditions[prop].call(null, target[prop])) {
+				return false;
+			} else {
+				continue;
+			}
+		} else if (target[prop] !== conditions[prop]) {
 			return false;
 		}
 	}

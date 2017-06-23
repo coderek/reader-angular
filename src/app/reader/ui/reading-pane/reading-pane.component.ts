@@ -10,7 +10,10 @@ import 'rxjs/add/observable/zip';
 import 'rxjs/add/observable/of';
 import {ReaderState} from '../../../redux/state';
 import {StateCache} from '../../../redux/index';
-import {SetDisplayEntriesAction, SetDisplayFeedAction} from '../../../redux/actions';
+import {
+	DisplayHomePageAction,
+	SetDisplayEntriesAction,
+	SetDisplayFeedAction} from '../../../redux/actions';
 
 /**
  * Container component
@@ -44,11 +47,18 @@ export class ReadingPaneComponent implements OnInit {
 	ngOnInit() {
 		this.route.params.subscribe(params => {
 			const url = decodeURIComponent(params.id);
+			if (url === 'home') {
+				this.displayHomePage();
+				return;
+			}
 			if (!this.cache.feeds[url]) {
 				this.router.navigate(['']);
 			}
 			this.store.dispatch(new SetDisplayEntriesAction([]));
 			this.store.dispatch(new SetDisplayFeedAction(url));
 		});
+	}
+	displayHomePage() {
+		this.store.dispatch(new DisplayHomePageAction());
 	}
 }

@@ -7,7 +7,7 @@ import {
 	SET_FEED,
 	SET_FEEDS,
 	CHANGE_FILTER,
-	START_LOADING, UPDATE_FEED
+	START_LOADING, UPDATE_FEED, DISPLAY_HOME
 } from './consts';
 import {Feed} from '../models/feed';
 import {Entry} from '../models/entry';
@@ -90,6 +90,10 @@ export class OpenEntryAction implements Action {
 export class CloseEntryAction implements Action {
 	type = CLOSE_ENTRY;
 	constructor(public payload: Entry) {}
+}
+
+export class DisplayHomePageAction implements Action {
+	type = DISPLAY_HOME;
 }
 
 
