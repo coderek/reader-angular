@@ -50,8 +50,7 @@ function feedsReducer(state: any = {}, action: Action) {
 				// already exists
 				return state;
 			}
-			state[feed.url] = feed;
-			return assign({}, state);
+			return assign({}, state, {[feed.url]: feed});
 		}
 		case READ_ENTRY: {
 			const entry = action.payload as Entry;

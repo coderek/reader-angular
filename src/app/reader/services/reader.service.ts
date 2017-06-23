@@ -36,21 +36,7 @@ export class ReaderService extends AsyncAware {
 
 	@async
 	public getFeeds(): Promise<Feed[]> {
-		return this.storage.getFeeds().then(feeds => this.sortFeeds(feeds));
-	}
-
-	sortFeeds(feeds: Feed[]) {
-		return feeds.sort((f1, f2) => {
-			if (f1.unreadCount === 0 && f2.unreadCount === 0) {
-				return f1.title < f2.title? -1: 1;
-			} else if (f1.unreadCount === 0) {
-				return 1;
-			} else if (f2.unreadCount === 0) {
-				return -1;
-			} else {
-				return f1.title < f2.title? -1: 1;
-			}
-		});
+		return this.storage.getFeeds(); // .then(feeds => this.sortFeeds(feeds));
 	}
 
 	@async

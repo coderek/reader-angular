@@ -4,6 +4,7 @@ import {ReaderService} from '../reader/services/reader.service';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/concat';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/delay';
 import {
 	CLOSE_ENTRY,
 	DELETE_FEED,
@@ -15,7 +16,8 @@ import {
 	PULL_FEED,
 	PULL_NEW_FEED,
 	SET_DISPLAY_FEED,
-	UPDATED_ENTRY
+	UPDATED_ENTRY,
+	ADD_FEED,
 } from './consts';
 import {StateCache} from './index';
 import 'rxjs/add/observable/from';
@@ -23,6 +25,7 @@ import 'rxjs/add/operator/concatAll';
 import 'rxjs/add/operator/concatMap';
 import * as _ from 'lodash';
 import {
+	AddFeedAction,
 	PullFeedAction,
 	SetDisplayEntriesAction,
 	SetDisplayFeedsAction,
@@ -66,10 +69,11 @@ export class FeedEffects {
 
 	@Effect()
 	pullNewFeed = this.actions.ofType(PULL_NEW_FEED)
-		.switchMap(action => this.reader.addFeed(action.payload))
-		.map(feed => {
-			return {type: 'ADD_FEED', payload: feed};
-		});
+		.flatMap(action => this.reader.addFeed(action.payload).then(feed => new AddFeedAction(feed)))
+
+	@Effect()
+	newFeedAdded = this.actions.ofType(ADD_FEED)
+		.map(_ => new SetDisplayFeedsAction(this.sortFeeds(this.cache.feeds)));
 
 	@Effect()
 	init = this.actions.ofType(INIT)
@@ -79,10 +83,26 @@ export class FeedEffects {
 			const feedsDict = _.zipObject(urls, feeds);
 			return [
 				new SetFeedsAction(feedsDict),
-				new SetDisplayFeedsAction(urls),
+				new SetDisplayFeedsAction(this.sortFeeds(feedsDict)),
 				new SetFinishInitAction()
 			];
 		});
+
+	sortFeeds(feeds: any): string[] {
+		return _.map(feeds, 'url').sort((u1, u2) => {
+			const f1 = feeds[u1];
+			const f2 = feeds[u2];
+			if (f1.unreadCount === 0 && f2.unreadCount === 0) {
+				return f1.title < f2.title? -1: 1;
+			} else if (f1.unreadCount === 0) {
+				return 1;
+			} else if (f2.unreadCount === 0) {
+				return -1;
+			} else {
+				return f1.title < f2.title? -1: 1;
+			}
+		});
+	}
 
 	@Effect()
 	deleteFeed = this.actions.ofType(DELETE_FEED)
